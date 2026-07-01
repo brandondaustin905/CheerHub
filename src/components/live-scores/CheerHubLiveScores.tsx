@@ -649,6 +649,18 @@ function TeamRow({
               <span style={{ color: COLORS.coral }}>-{formatScore(dedTotal)} ded.</span>
             )}
           </div>
+          {entry.deductions.length > 0 && (
+            <div className="mt-1 space-y-0.5">
+              {entry.deductions.map((d) => (
+                <div key={d.id} className="flex items-center gap-1.5 text-[11px]" style={{ color: COLORS.mist }}>
+                  <span className="shrink-0" style={{ color: COLORS.coral }}>
+                    -{formatScore(d.amount)}
+                  </span>
+                  <span className="truncate">{d.reason}</span>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Score */}
@@ -893,36 +905,58 @@ function PasscodeModal({ onUnlock, onClose }: { onUnlock: () => void; onClose: (
    ================================================================ */
 
 function DivisionSection({
-  name, entries, canEdit, onAddScore, onEntryAction,
+  name, entries, canEdit, onAddScore, onEntryAction, showLabel = true,
 }: {
   name: string;
   entries: Entry[];
   canEdit: boolean;
   onAddScore: () => void;
   onEntryAction: (e: Entry, a: EntryAction) => void;
+  showLabel?: boolean;
 }) {
   const { order, placements } = computePlacements(entries);
   return (
     <div className="mb-6">
-      <div className="flex items-center justify-between mb-2 px-1">
-        <div className="flex items-center gap-2">
-          <h3 className="chl-display text-lg" style={{ color: COLORS.gold }}>{name}</h3>
-          <span className="text-xs flex items-center gap-1" style={{ color: COLORS.mist }}>
-            <Users size={12} /> {entries.length}
-          </span>
+      {/* Header — suppressed when a tab bar already shows the division name */}
+      {showLabel && (
+        <div className="flex items-center justify-between mb-3 px-1">
+          <div className="flex items-center gap-2">
+            <h3 className="chl-display text-lg" style={{ color: COLORS.gold }}>{name}</h3>
+            <span className="text-xs flex items-center gap-1" style={{ color: COLORS.mist }}>
+              <Users size={12} /> {entries.length}
+            </span>
+          </div>
+          {canEdit && (
+            <button
+              onClick={onAddScore}
+              className="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold"
+              style={{ background: COLORS.gold, color: COLORS.ink }}
+            >
+              <Plus size={13} /> Add Score
+            </button>
+          )}
         </div>
-        {canEdit && (
-          <button
-            onClick={onAddScore}
-            className="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold"
-            style={{ background: COLORS.gold, color: COLORS.ink }}
-          >
-            <Plus size={13} /> Add Score
-          </button>
-        )}
-      </div>
+      )}
+
       {order.length === 0 ? (
-        <p className="text-sm px-1" style={{ color: COLORS.mist }}>No teams added yet.</p>
+        <div
+          className="flex flex-col items-center justify-center py-14 rounded-2xl"
+          style={{ background: COLORS.court, border: `1px dashed ${COLORS.courtLight}` }}
+        >
+          <Users size={28} style={{ color: COLORS.courtLight }} />
+          <p className="text-sm mt-3 font-medium" style={{ color: COLORS.mist }}>
+            No teams scored yet
+          </p>
+          {canEdit && (
+            <button
+              onClick={onAddScore}
+              className="mt-4 flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold"
+              style={{ background: COLORS.gold, color: COLORS.ink }}
+            >
+              <Plus size={13} /> Add first score
+            </button>
+          )}
+        </div>
       ) : (
         order.map((entry) => (
           <TeamRow
@@ -1206,6 +1240,26 @@ function CompetitionDetail({
           </p>
         </div>
 
+        {/* ── Action bar (shown when tabs hide the division label) ── */}
+        {divisions.length > 1 && !loading && (
+          <div className="flex items-center justify-between mb-3 px-1">
+            <span className="text-xs flex items-center gap-1.5" style={{ color: COLORS.mist }}>
+              <Users size={12} />
+              {entries.filter((e) => (e.division || 'General') === activeDiv).length} team
+              {entries.filter((e) => (e.division || 'General') === activeDiv).length !== 1 ? 's' : ''}
+            </span>
+            {canEdit && (
+              <button
+                onClick={() => setScoreModal({ mode: 'new', division: activeDiv })}
+                className="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold"
+                style={{ background: COLORS.gold, color: COLORS.ink }}
+              >
+                <Plus size={13} /> Add Score
+              </button>
+            )}
+          </div>
+        )}
+
         {/* ── Leaderboard ───────────────────────────────────── */}
         {loading ? (
           <p style={{ color: COLORS.mist }}>Loading…</p>
@@ -1216,6 +1270,7 @@ function CompetitionDetail({
             canEdit={canEdit}
             onAddScore={() => setScoreModal({ mode: 'new', division: activeDiv })}
             onEntryAction={handleEntryAction}
+            showLabel={divisions.length === 1}
           />
         )}
       </div>
