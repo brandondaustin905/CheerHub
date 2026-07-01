@@ -280,7 +280,7 @@ function TeamScoreModal({ mode, division, entry, compId, onSubmit, onDelete, onC
   // Simple mode derived values
   const simpleDrumVal  = simpleWhole + simpleDec / 100;
   const simpleFinal    = Math.max(0, Math.round((simpleDrumVal - dedTotal) * 100) / 100);
-  const simpleWholeVals = Array.from({ length: 151 }, (_, i) => i);
+  const simpleWholeVals = Array.from({ length: 101 }, (_, i) => i);
   const simpleDecVals   = Array.from({ length: 100 }, (_, i) => i);
 
   // Group mode derived values
@@ -394,7 +394,7 @@ function TeamScoreModal({ mode, division, entry, compId, onSubmit, onDelete, onC
             <span className="chl-mono" style={{ color: COLORS.gold }}>
               {simpleWhole}.{String(simpleDec).padStart(2, '0')}
             </span>
-            {' '}/ 150 · loops both ways
+            {' '}/ 100 · loops both ways
           </p>
         </>
       ) : (
@@ -463,7 +463,7 @@ function TeamScoreModal({ mode, division, entry, compId, onSubmit, onDelete, onC
 
       {/* Final total */}
       <div className="flex items-center justify-between my-4 px-1">
-        <span className="text-sm font-medium" style={{ color: COLORS.mist }}>Total / 150</span>
+        <span className="text-sm font-medium" style={{ color: COLORS.mist }}>Total / 100</span>
         <span className="chl-display text-3xl" style={{ color: COLORS.gold }}>{formatScore(finalTotal)}</span>
       </div>
 
@@ -680,7 +680,7 @@ function EntryMenu({
    Team row
    ================================================================ */
 
-const MAX_SCORE = 150;
+const MAX_SCORE = 100;
 
 function TeamRow({
   entry, placement, canEdit, onAction,
@@ -782,7 +782,7 @@ function TeamRow({
           >
             {formatScore(total)}
           </div>
-          <div className="text-[10px] mt-0.5" style={{ color: COLORS.mist }}>/150 pts</div>
+          <div className="text-[10px] mt-0.5" style={{ color: COLORS.mist }}>/100 pts</div>
         </div>
 
         <div className="relative shrink-0 flex items-center gap-1">

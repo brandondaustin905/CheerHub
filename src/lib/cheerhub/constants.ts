@@ -16,41 +16,35 @@ export const EDITOR_PASSCODE =
   process.env.NEXT_PUBLIC_EDITOR_PASSCODE ?? 'CHEERHUB2026';
 
 /* ----------------------------------------------------------------
-   20 scored line items, 150 pts total.
-   Based on Cheer Canada / IASF elite judging framework.
+   14 scored line items, 100 pts total.
+   Cheer Canada elite judging framework.
    ---------------------------------------------------------------- */
 export const CRITERIA: Criterion[] = [
-  // BUILDING /60
-  { key: 'stuntDiff',    group: 'building', label: 'Stunt Difficulty',       max: 10, sub: 'Risk vs Reward · Elite Skill Variety · Inversions · Partner Stunts · Skill Distribution' },
-  { key: 'stuntExec',    group: 'building', label: 'Stunt Execution',        max: 10, sub: 'Control · Stability · Body Positions · Completion of Skills · Recovery from Mistakes · Safety' },
-  { key: 'pyramidDiff',  group: 'building', label: 'Pyramid Difficulty',     max: 10, sub: 'Inversions · Innovation · Risk vs Reward · Elite Skill Variety · Partner Stunts' },
-  { key: 'pyramidExec',  group: 'building', label: 'Pyramid Execution',      max: 10, sub: 'Precision · Synchronization · Team Uniformity · Balance · Skill Distribution' },
-  { key: 'tossDiff',     group: 'building', label: 'Basket Toss Difficulty', max: 10, sub: 'Difficulty · Innovation · Risk vs Reward · Basket Toss Execution' },
-  { key: 'tossExec',     group: 'building', label: 'Basket Toss Execution',  max: 10, sub: 'Safety · Control · Stability · Completion of Skills · Endurance' },
-  // TUMBLING & JUMPS /30
-  { key: 'tumbleDiff',   group: 'tumbling', label: 'Tumbling Difficulty',    max: 8,  sub: 'Standing Tumbling · Running Tumbling · Elite Skill Variety · Risk vs Reward' },
-  { key: 'tumbleExec',   group: 'tumbling', label: 'Tumbling Execution',     max: 8,  sub: 'Technique · Body Positions · Control · Recovery from Mistakes · Safety' },
-  { key: 'jumpTech',     group: 'tumbling', label: 'Jump Technique',         max: 7,  sub: 'Flexibility · Timing · Body Positions · Synchronization · Precision' },
-  { key: 'standTumble',  group: 'tumbling', label: 'Standing Tumbling',      max: 4,  sub: 'Difficulty · Balance · Completion of Skills' },
-  { key: 'runTumble',    group: 'tumbling', label: 'Running Tumbling',       max: 3,  sub: 'Difficulty · Endurance · Completion of Skills' },
-  // CHOREOGRAPHY & DANCE /30
-  { key: 'choreo',       group: 'choreo',   label: 'Choreography',           max: 6,  sub: 'Creativity · Innovation · Routine Composition · Visual Effect' },
-  { key: 'routineComp',  group: 'choreo',   label: 'Routine Composition',    max: 6,  sub: 'Flow of Routine · Transitions · Timing · Musical Interpretation' },
-  { key: 'dance',        group: 'choreo',   label: 'Dance Performance',      max: 6,  sub: 'Motion Technique · Energy · Musical Interpretation · Timing' },
-  { key: 'transitions',  group: 'choreo',   label: 'Transitions & Flow',     max: 6,  sub: 'Flow of Routine · Visual Effect · Team Uniformity · Creativity' },
-  { key: 'musicalInterp',group: 'choreo',   label: 'Musical Interpretation', max: 6,  sub: 'Timing · Motion Technique · Energy · Synchronization' },
-  // OVERALL PERFORMANCE /30
-  { key: 'impression',   group: 'overall',  label: 'Overall Impression',     max: 8,  sub: 'Overall Performance · Showmanship · Crowd Appeal · Confidence · Energy' },
-  { key: 'showmanship',  group: 'overall',  label: 'Showmanship & Energy',   max: 8,  sub: 'Energy · Confidence · Crowd Appeal · Visual Effect · Endurance' },
-  { key: 'uniformity',   group: 'overall',  label: 'Team Uniformity',        max: 7,  sub: 'Synchronization · Precision · Timing · Balance · Team Participation' },
-  { key: 'creativity',   group: 'overall',  label: 'Creativity & Visual',    max: 7,  sub: 'Creativity · Innovation · Visual Effect · Risk vs Reward' },
+  // BUILDING /50
+  { key: 'stuntDiff',    group: 'building', label: 'Stunt Difficulty',        max: 10, sub: 'Risk vs Reward · Skill Variety · Inversions · Elite Skills · Distribution' },
+  { key: 'stuntExec',    group: 'building', label: 'Stunt Execution',         max: 10, sub: 'Control · Stability · Body Positions · Completion · Safety' },
+  { key: 'pyramidDiff',  group: 'building', label: 'Pyramid Difficulty',      max: 10, sub: 'Inversions · Innovation · Risk vs Reward · Elite Skill Variety' },
+  { key: 'pyramidExec',  group: 'building', label: 'Pyramid Execution',       max: 10, sub: 'Precision · Synchronization · Team Uniformity · Balance' },
+  { key: 'tosses',       group: 'building', label: 'Basket Tosses',           max: 10, sub: 'Difficulty · Innovation · Control · Safety · Execution' },
+  // TUMBLING & JUMPS /25
+  { key: 'tumbleDiff',   group: 'tumbling', label: 'Tumbling Difficulty',     max: 8,  sub: 'Running Tumbling · Elite Skill Variety · Risk vs Reward · Distribution' },
+  { key: 'tumbleExec',   group: 'tumbling', label: 'Tumbling Execution',      max: 8,  sub: 'Technique · Body Positions · Control · Safety · Recovery' },
+  { key: 'standTumble',  group: 'tumbling', label: 'Standing Tumbling',       max: 5,  sub: 'Difficulty · Execution · Balance · Completion of Skills' },
+  { key: 'jumps',        group: 'tumbling', label: 'Jump Performance',        max: 4,  sub: 'Technique · Flexibility · Timing · Synchronization · Precision' },
+  // CHOREOGRAPHY /15
+  { key: 'routineComp',  group: 'choreo',   label: 'Routine Composition',     max: 5,  sub: 'Flow · Transitions · Use of Space · Timing · Musical Interpretation' },
+  { key: 'creativity',   group: 'choreo',   label: 'Creativity & Innovation', max: 5,  sub: 'Originality · Visual Effect · Wow Factor · Theme Execution' },
+  { key: 'musicalInterp',group: 'choreo',   label: 'Musical Interpretation',  max: 5,  sub: 'Timing · Motion Technique · Energy · Synchronization' },
+  // PERFORMANCE /10
+  { key: 'impression',   group: 'overall',  label: 'Overall Impression',      max: 5,  sub: 'Total Package · Crowd Appeal · Confidence · Energy · Showmanship' },
+  { key: 'showmanship',  group: 'overall',  label: 'Entertainment',           max: 5,  sub: 'Performance Quality · Facial Expressions · Stage Presence · Audience Connection' },
 ];
 
 export const GROUP_META: Record<string, GroupMeta> = {
-  building: { label: 'Building',             max: 60 },
-  tumbling: { label: 'Tumbling & Jumps',     max: 30 },
-  choreo:   { label: 'Choreography & Dance', max: 30 },
-  overall:  { label: 'Overall Performance',  max: 30 },
+  building: { label: 'Building',         max: 50 },
+  tumbling: { label: 'Tumbling & Jumps', max: 25 },
+  choreo:   { label: 'Choreography',     max: 15 },
+  overall:  { label: 'Performance',      max: 10 },
 };
 
 export const GROUP_ORDER = ['building', 'tumbling', 'choreo', 'overall'] as const;
