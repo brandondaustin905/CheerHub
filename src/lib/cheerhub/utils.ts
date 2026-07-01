@@ -1,4 +1,4 @@
-import { CRITERIA } from './constants';
+import { CRITERIA, GROUP_ORDER } from './constants';
 import type { CriteriaMap, Deduction, Entry } from './types';
 
 export function uid(): string {
@@ -63,7 +63,11 @@ export function getGroupTotal(criteria: CriteriaMap, group: string): number {
 }
 
 export function getTotal(entry: Pick<Entry, 'criteria' | 'deductions'>): number {
-  const raw = CRITERIA.reduce((s, c) => s + (entry.criteria?.[c.key] ?? 0), 0);
+  const c = entry.criteria;
+  const hasGroupScores = GROUP_ORDER.some((k) => ((c?.[k] as number | null) ?? 0) > 0);
+  const raw = hasGroupScores
+    ? GROUP_ORDER.reduce((s, k) => s + (((c?.[k] as number | null) ?? 0)), 0)
+    : CRITERIA.reduce((s, cr) => s + (c?.[cr.key] ?? 0), 0);
   return Math.max(0, Math.round((raw - getDeductionTotal(entry.deductions)) * 100) / 100);
 }
 

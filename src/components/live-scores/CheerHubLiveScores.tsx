@@ -21,7 +21,7 @@ import {
 } from '@/lib/cheerhub/storage';
 import {
   uid, formatScore, todayISO, formatDateRange, suggestStatus,
-  emptyCriteria, normalizeEntry, getDeductionTotal,
+  normalizeEntry, getDeductionTotal,
   getGroupTotal, getTotal, computePlacements,
 } from '@/lib/cheerhub/utils';
 import type {
@@ -226,41 +226,40 @@ interface TeamScoreModalProps {
 }
 
 function TeamScoreModal({ mode, division, entry, compId, onSubmit, onClose }: TeamScoreModalProps) {
-  const [teamName, setTeamName]     = useState(entry?.teamName ?? '');
-  const [criteria, setCriteria]     = useState<Record<string, number | null>>(() => {
-    const base = emptyCriteria();
-    if (entry?.criteria) {
-      Object.keys(base).forEach((k) => { if (entry.criteria[k] != null) base[k] = entry.criteria[k]; });
+  const [teamName, setTeamName]       = useState(entry?.teamName ?? '');
+  const [groupScores, setGroupScores] = useState<Record<string, number>>(() => {
+    const c = entry?.criteria ?? {};
+    const hasGroup = GROUP_ORDER.some((k) => ((c[k] as number | null) ?? 0) > 0);
+    if (hasGroup) {
+      return Object.fromEntries(GROUP_ORDER.map((k) => [k, (c[k] as number) ?? 0]));
     }
-    return base;
+    return Object.fromEntries(GROUP_ORDER.map((k) => [k, getGroupTotal(c, k)]));
   });
-  const [deductions, setDeductions] = useState<Deduction[]>(entry?.deductions ?? []);
-  const [selectedKey, setSelectedKey] = useState(CRITERIA[0].key);
+  const [deductions, setDeductions]   = useState<Deduction[]>(entry?.deductions ?? []);
+  const [activeGroup, setActiveGroup] = useState<string>(GROUP_ORDER[0]);
   const [otherEditing, setOtherEditing] = useState(false);
 
-  const criterion   = CRITERIA.find((c) => c.key === selectedKey)!;
-  const currentVal  = criteria[selectedKey] ?? 0;
+  const groupMax    = GROUP_META[activeGroup].max;
+  const activeScore = groupScores[activeGroup] ?? 0;
+  const [whole, setWhole] = useState(Math.floor(activeScore));
+  const [dec,   setDec]   = useState(Math.round((activeScore % 1) * 100));
 
-  const [whole, setWhole] = useState(Math.floor(currentVal));
-  const [dec,   setDec]   = useState(Math.round((currentVal - Math.floor(currentVal)) * 100));
-
-  function switchCriterion(newKey: string) {
-    const drumVal = Number(`${whole}.${String(dec).padStart(2, '0')}`);
-    setCriteria((prev) => ({ ...prev, [selectedKey]: drumVal }));
-    setSelectedKey(newKey);
-    const newVal = criteria[newKey] ?? 0;
-    setWhole(Math.floor(newVal));
-    setDec(Math.round((newVal - Math.floor(newVal)) * 100));
+  function switchGroup(newGroup: string) {
+    const val = whole + dec / 100;
+    setGroupScores((prev) => ({ ...prev, [activeGroup]: val }));
+    setActiveGroup(newGroup);
+    const s = groupScores[newGroup] ?? 0;
+    setWhole(Math.floor(s));
+    setDec(Math.round((s % 1) * 100));
   }
 
-  const dedTotal    = deductions.reduce((s, d) => s + d.amount, 0);
-  const drumVal     = Number(`${whole}.${String(dec).padStart(2, '0')}`);
-  const liveCrit    = { ...criteria, [selectedKey]: drumVal };
-  const rawTotal    = CRITERIA.reduce((s, c) => s + (liveCrit[c.key] ?? 0), 0);
-  const finalTotal  = Math.max(0, Math.round((rawTotal - dedTotal) * 100) / 100);
-  const filledCount = CRITERIA.filter((c) => (liveCrit[c.key] ?? 0) > 0).length;
+  const dedTotal   = getDeductionTotal(deductions);
+  const drumVal    = whole + dec / 100;
+  const liveScores = { ...groupScores, [activeGroup]: drumVal };
+  const rawTotal   = GROUP_ORDER.reduce((s, k) => s + (liveScores[k] ?? 0), 0);
+  const finalTotal = Math.max(0, Math.round((rawTotal - dedTotal) * 100) / 100);
 
-  const wholeValues = Array.from({ length: criterion.max + 1 }, (_, i) => i);
+  const wholeValues = Array.from({ length: groupMax + 1 }, (_, i) => i);
   const decValues   = Array.from({ length: 100 }, (_, i) => i);
 
   // Advisory lock — prevents two editors from simultaneously writing the same entry.
@@ -298,7 +297,7 @@ function TeamScoreModal({ mode, division, entry, compId, onSubmit, onClose }: Te
   }, [mode, entry, compId]);
 
   function handleSubmit() {
-    const finalCriteria = { ...criteria, [selectedKey]: drumVal };
+    const finalCriteria = { ...groupScores, [activeGroup]: drumVal };
     onSubmit({ teamName: teamName.trim(), division, criteria: finalCriteria, deductions });
   }
 
@@ -316,43 +315,46 @@ function TeamScoreModal({ mode, division, entry, compId, onSubmit, onClose }: Te
         </div>
       )}
 
-      {/* Criteria picker */}
-      <label className="block mb-3">
-        <span className="block text-xs uppercase tracking-wide mb-1.5" style={{ color: COLORS.mist }}>
-          Criteria — {filledCount}/{CRITERIA.length} entered
-        </span>
-        <select
-          value={selectedKey}
-          onChange={(e) => switchCriterion(e.target.value)}
-          className="w-full px-3 py-2.5 rounded-lg outline-none"
-          style={{ background: COLORS.ink, color: COLORS.chalk, border: `1px solid ${COLORS.courtLight}` }}
-        >
-          {GROUP_ORDER.map((grp) => (
-            <optgroup key={grp} label={`${GROUP_META[grp].label} (/${GROUP_META[grp].max})`}>
-              {CRITERIA.filter((c) => c.group === grp).map((c) => (
-                <option key={c.key} value={c.key}>
-                  {c.label} (/{c.max}){(liveCrit[c.key] ?? 0) > 0 ? ` · ${formatScore(liveCrit[c.key]!)}` : ''}
-                </option>
-              ))}
-            </optgroup>
-          ))}
-        </select>
-      </label>
+      {/* Group tabs */}
+      <div className="grid grid-cols-4 gap-1.5 mb-5">
+        {GROUP_ORDER.map((grp) => {
+          const score    = liveScores[grp] ?? 0;
+          const isActive = grp === activeGroup;
+          return (
+            <button
+              key={grp}
+              onClick={() => switchGroup(grp)}
+              disabled={otherEditing}
+              className="text-center py-2.5 px-1 rounded-xl transition-all"
+              style={{
+                background: isActive ? COLORS.gold    : COLORS.ink,
+                color:      isActive ? COLORS.ink     : COLORS.mist,
+                border:     `1.5px solid ${isActive ? COLORS.gold : COLORS.courtLight}`,
+              }}
+            >
+              <div className="text-[9px] uppercase tracking-wide leading-tight mb-0.5">
+                {GROUP_META[grp].label.split(' ')[0]}
+              </div>
+              <div className="chl-mono text-sm font-bold">{formatScore(score)}</div>
+              <div className="text-[9px] opacity-70">/{GROUP_META[grp].max}</div>
+            </button>
+          );
+        })}
+      </div>
 
-      <p className="text-[10px] px-1 mb-3" style={{ color: COLORS.mist }}>{criterion.sub}</p>
-
-      {/* Score drum */}
+      {/* Score drums */}
       <div className="flex items-center justify-center gap-2 mb-1">
         <Drum
-          key={`whole-${selectedKey}`}
+          key={`whole-${activeGroup}`}
           values={wholeValues}
           value={whole}
           onChange={setWhole}
           disabled={otherEditing}
+          width={72}
         />
         <span className="chl-display text-3xl pb-1" style={{ color: COLORS.chalk }}>.</span>
         <Drum
-          key={`dec-${selectedKey}`}
+          key={`dec-${activeGroup}`}
           values={decValues}
           value={dec}
           onChange={setDec}
@@ -363,24 +365,8 @@ function TeamScoreModal({ mode, division, entry, compId, onSubmit, onClose }: Te
         <span className="chl-mono" style={{ color: COLORS.gold }}>
           {whole}.{String(dec).padStart(2, '0')}
         </span>
-        {' '}/ {criterion.max} · loops both ways
+        {' '}/ {groupMax} · loops both ways
       </p>
-
-      {/* Running group totals */}
-      <div className="grid grid-cols-4 gap-1.5 mb-4">
-        {GROUP_ORDER.map((grp) => {
-          const gTotal = getGroupTotal(liveCrit as Record<string, number>, grp);
-          return (
-            <div key={grp} className="text-center p-2 rounded-lg" style={{ background: COLORS.ink }}>
-              <div className="text-[9px] uppercase tracking-wide leading-tight mb-1" style={{ color: COLORS.mist }}>
-                {GROUP_META[grp].label.split(' ')[0]}
-              </div>
-              <div className="chl-mono text-sm" style={{ color: COLORS.gold }}>{formatScore(gTotal)}</div>
-              <div className="text-[9px]" style={{ color: COLORS.mist }}>/{GROUP_META[grp].max}</div>
-            </div>
-          );
-        })}
-      </div>
 
       {/* Deduction editor */}
       <DeductionEditor
@@ -610,7 +596,12 @@ function TeamRow({
 
   const total    = getTotal(entry);
   const dedTotal = getDeductionTotal(entry.deductions);
-  const filled   = CRITERIA.filter((c) => (entry.criteria?.[c.key] ?? 0) > 0).length;
+  const hasGroupScores = GROUP_ORDER.some((k) => ((entry.criteria?.[k] as number | null) ?? 0) > 0);
+  const filled   = hasGroupScores
+    ? GROUP_ORDER.filter((k) => ((entry.criteria?.[k] as number | null) ?? 0) > 0).length
+    : CRITERIA.filter((c) => (entry.criteria?.[c.key] ?? 0) > 0).length;
+  const filledOf = hasGroupScores ? GROUP_ORDER.length : CRITERIA.length;
+  const filledLabel = hasGroupScores ? 'groups' : 'criteria';
   const pct      = Math.min(100, (total / MAX_SCORE) * 100);
 
   return (
@@ -644,7 +635,7 @@ function TeamRow({
             {entry.conflictFlag && <AlertTriangle size={12} style={{ color: COLORS.gold }} />}
           </div>
           <div className="flex items-center gap-2 text-xs mt-0.5" style={{ color: COLORS.mist }}>
-            <span>{filled}/{CRITERIA.length} criteria</span>
+            <span>{filled}/{filledOf} {filledLabel}</span>
             {dedTotal > 0 && (
               <span style={{ color: COLORS.coral }}>-{formatScore(dedTotal)} ded.</span>
             )}
