@@ -244,7 +244,7 @@ function TeamScoreModal({ mode, division, entry, compId, onSubmit, onDelete, onC
   const dedTotal   = getDeductionTotal(deductions);
   const drumVal    = scoreWhole + scoreDec / 100;
   const finalTotal = Math.max(0, Math.round((drumVal - dedTotal) * 100) / 100);
-  const wholeVals  = Array.from({ length: 101 }, (_, i) => i);
+  const wholeVals  = Array.from({ length: 151 }, (_, i) => i);
   const decVals    = Array.from({ length: 100 }, (_, i) => i);
 
   // Advisory lock — prevents two editors from simultaneously writing the same entry.
@@ -539,7 +539,7 @@ function EntryMenu({
    Team row
    ================================================================ */
 
-const MAX_SCORE = 100;
+const MAX_SCORE = 150;
 
 function TeamRow({
   entry, placement, canEdit, onAction,
@@ -641,7 +641,7 @@ function TeamRow({
           >
             {formatScore(total)}
           </div>
-          <div className="text-[10px] mt-0.5" style={{ color: COLORS.mist }}>/100 pts</div>
+          <div className="text-[10px] mt-0.5" style={{ color: COLORS.mist }}>/150 pts</div>
         </div>
 
         <div className="relative shrink-0 flex items-center gap-1">
