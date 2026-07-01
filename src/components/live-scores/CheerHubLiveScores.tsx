@@ -205,9 +205,6 @@ function DeductionEditor({
           </button>
         </div>
       </div>
-      <p className="text-[10px] mt-2" style={{ color: COLORS.mist }}>
-        Score − deductions = final score, visible to all viewers.
-      </p>
     </div>
   );
 }
@@ -321,12 +318,6 @@ function TeamScoreModal({ mode, division, entry, compId, onSubmit, onDelete, onC
           disabled={otherEditing}
         />
       </div>
-      <p className="text-center text-sm mb-4" style={{ color: COLORS.mist }}>
-        <span className="chl-mono" style={{ color: COLORS.gold }}>
-          {scoreWhole}.{String(scoreDec).padStart(2, '0')}
-        </span>
-        {' '}/ 100 · loops both ways
-      </p>
 
       {/* Deduction editor */}
       <DeductionEditor
@@ -334,12 +325,6 @@ function TeamScoreModal({ mode, division, entry, compId, onSubmit, onDelete, onC
         onAdd={(amount, reason) => setDeductions([...deductions, { id: uid(), amount, reason }])}
         onRemove={(id) => setDeductions(deductions.filter((d) => d.id !== id))}
       />
-
-      {/* Final total */}
-      <div className="flex items-center justify-between my-4 px-1">
-        <span className="text-sm font-medium" style={{ color: COLORS.mist }}>Total / 100</span>
-        <span className="chl-display text-3xl" style={{ color: COLORS.gold }}>{formatScore(finalTotal)}</span>
-      </div>
 
       {/* Team name — at the bottom so no scrolling required to start scoring */}
       {mode === 'new' && (
