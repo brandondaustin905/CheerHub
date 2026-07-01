@@ -1,0 +1,51 @@
+@import "tailwindcss";
+
+/* ── Font variables from next/font ─────────────────────────── */
+@theme inline {
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-ibm-mono);
+}
+
+/* ── CheerHub utility classes ──────────────────────────────── */
+.chl-root {
+  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+}
+
+.chl-display {
+  font-family: var(--font-bebas), 'Bebas Neue', ui-sans-serif, sans-serif;
+  letter-spacing: 0.03em;
+}
+
+.chl-mono {
+  font-family: var(--font-ibm-mono), ui-monospace, 'Courier New', monospace;
+}
+
+/* Hide scrollbars while preserving scroll functionality */
+.chl-no-scrollbar::-webkit-scrollbar { display: none; }
+.chl-no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Live badge pulse */
+@keyframes chl-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.45; }
+}
+.chl-pulse {
+  animation: chl-pulse 1.6s ease-in-out infinite;
+}
+
+/* Score update flash */
+@keyframes chl-flash {
+  0%   { background: rgba(255, 46, 139, 0.35); }
+  100% { background: transparent; }
+}
+.chl-flash {
+  animation: chl-flash 1.6s ease-out forwards;
+}
+
+/* Neutral date picker icon on dark backgrounds */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(0.6);
+}
