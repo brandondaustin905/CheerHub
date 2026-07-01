@@ -59,37 +59,39 @@ export const GROUP_ORDER = ['building', 'tumbling', 'choreo', 'overall'] as cons
 export const DEDUCTION_STEPS: number[] = Array.from({ length: 41 }, (_, i) => i);
 
 export const CANADIAN_DIVISIONS: Record<string, string[]> = {
-  'U6': [
-    'U6 Initiation', 'U6 Civil',
-  ],
   'U8': [
-    'U8 Initiation', 'U8 Civil', 'U8 Novice', 'U8 Prep',
-    'U8 Level 1', 'U8 Level 2', 'U8 Non-Tumbling',
+    'U8 Novice', 'U8 Prep',
+    'U8 Level 1', 'U8 Level 2', 'U8 Level 3',
   ],
   'U12': [
-    'U12 Initiation', 'U12 Civil', 'U12 Novice', 'U12 Prep',
+    'U12 Novice', 'U12 Prep',
     'U12 Level 1', 'U12 Level 2', 'U12 Level 3', 'U12 Level 4',
     'U12 NT 2', 'U12 NT 3', 'U12 NT 4',
   ],
   'U16': [
-    'U16 Initiation', 'U16 Civil', 'U16 Novice', 'U16 Prep',
-    'U16 Level 1', 'U16 Level 2', 'U16 Level 3', 'U16 Level 4', 'U16 Level 5',
-    'U16 NT 2', 'U16 NT 3', 'U16 NT 4', 'U16 NT 5',
+    'U16 Novice', 'U16 Prep',
+    'U16 Level 1', 'U16 Level 2', 'U16 Level 3', 'U16 Level 4', 'U16 Level 5', 'U16 Level 6',
+    'U16 NT 2', 'U16 NT 3', 'U16 NT 4', 'U16 NT 5', 'U16 NT 6',
   ],
   'U18': [
-    'U18 Initiation', 'U18 Civil', 'U18 Novice', 'U18 Prep',
+    'U18 Novice', 'U18 Prep',
     'U18 Level 1', 'U18 Level 2', 'U18 Level 3', 'U18 Level 4', 'U18 Level 4.2',
-    'U18 NT 2', 'U18 NT 3', 'U18 NT 4',
+    'U18 Level 5', 'U18 Level 6', 'U18 Level 7',
+    'U18 NT 2', 'U18 NT 3', 'U18 NT 4', 'U18 NT 5', 'U18 NT 6', 'U18 NT 7',
   ],
   'U18 AG / Coed': [
-    'U18 AG Level 5', 'U18 AG Level 6', 'U18 AG NT 5', 'U18 AG NT 6',
-    'U18 Coed Level 5', 'U18 Coed Level 6', 'U18 Coed NT 5', 'U18 Coed NT 6',
+    'U18 AG Level 5', 'U18 AG Level 6', 'U18 AG Level 7',
+    'U18 AG NT 5', 'U18 AG NT 6', 'U18 AG NT 7',
+    'U18 Coed Level 5', 'U18 Coed Level 6', 'U18 Coed Level 7',
+    'U18 Coed NT 5', 'U18 Coed NT 6', 'U18 Coed NT 7',
   ],
   'Open': [
-    'Open Level 2', 'Open Level 3', 'Open Level 4', 'Open Level 4.2',
-    'Open NT 2', 'Open NT 3', 'Open NT 4',
+    'Open Novice', 'Open Prep',
+    'Open Level 1', 'Open Level 2', 'Open Level 3', 'Open Level 4', 'Open Level 4.2',
+    'Open Level 5', 'Open Level 6', 'Open Level 7',
+    'Open NT 2', 'Open NT 3', 'Open NT 4', 'Open NT 5', 'Open NT 6', 'Open NT 7',
   ],
   'Open AG / Masters': [
-    'Open AG Level 5', 'Open AG Level 6', "Master's",
+    'Open AG Level 5', 'Open AG Level 6', 'Open AG Level 7', "Master's",
   ],
 };
