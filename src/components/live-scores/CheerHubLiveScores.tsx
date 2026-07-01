@@ -576,6 +576,8 @@ function EntryMenu({
    Team row
    ================================================================ */
 
+const MAX_SCORE = 150;
+
 function TeamRow({
   entry, placement, canEdit, onAction,
 }: {
@@ -584,8 +586,8 @@ function TeamRow({
   canEdit: boolean;
   onAction: (a: EntryAction) => void;
 }) {
-  const [menuOpen,  setMenuOpen]  = useState(false);
-  const [flashing,  setFlashing]  = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [flashing, setFlashing] = useState(false);
   const prevFlash = useRef(entry.flashAt);
 
   useEffect(() => {
@@ -601,50 +603,85 @@ function TeamRow({
     : placement === 3 ? '#D98E5C'
     : COLORS.mist;
 
+  const medalBg = placement === 1 ? 'rgba(242,183,5,0.15)'
+    : placement === 2 ? 'rgba(201,211,224,0.10)'
+    : placement === 3 ? 'rgba(217,142,92,0.10)'
+    : 'transparent';
+
   const total    = getTotal(entry);
   const dedTotal = getDeductionTotal(entry.deductions);
   const filled   = CRITERIA.filter((c) => (entry.criteria?.[c.key] ?? 0) > 0).length;
+  const pct      = Math.min(100, (total / MAX_SCORE) * 100);
 
   return (
     <div
-      className="relative flex items-center gap-3 px-4 py-3 rounded-xl mb-2"
+      className="relative rounded-xl mb-2 overflow-hidden"
       style={{ background: COLORS.court }}
     >
+      {/* Score fill bar */}
+      <div
+        className="absolute left-0 top-0 bottom-0 pointer-events-none transition-all duration-700"
+        style={{ width: `${pct}%`, background: 'rgba(242,183,5,0.055)' }}
+      />
       {flashing && (
-        <div className="absolute inset-0 rounded-xl chl-flash pointer-events-none" />
+        <div className="absolute inset-0 chl-flash pointer-events-none" />
       )}
-      <div className="chl-display text-2xl w-9 text-center shrink-0" style={{ color: medalColor }}>
-        {placement}
-      </div>
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-1.5 flex-wrap">
-          <span className="font-semibold truncate" style={{ color: COLORS.chalk }}>{entry.teamName}</span>
-          {entry.conflictFlag && <AlertTriangle size={13} style={{ color: COLORS.gold }} />}
+
+      <div className="relative flex items-center gap-3 px-4 py-3">
+        {/* Placement circle */}
+        <div
+          className="w-9 h-9 rounded-full shrink-0 flex items-center justify-center"
+          style={{ background: medalBg, border: `1.5px solid ${medalColor}` }}
+        >
+          <span className="chl-display text-base leading-none" style={{ color: medalColor }}>
+            {placement}
+          </span>
         </div>
-        <div className="flex items-center gap-2 text-xs mt-0.5" style={{ color: COLORS.mist }}>
-          <span>{filled}/{CRITERIA.length} criteria</span>
-          {dedTotal > 0 && <span style={{ color: COLORS.coral }}>-{formatScore(dedTotal)} ded.</span>}
-          {entry.division && <span>{entry.division}</span>}
-        </div>
-        {entry.deductions.length > 0 && (
-          <div className="mt-1 space-y-0.5">
-            {entry.deductions.map((d) => (
-              <div key={d.id} className="text-xs flex items-center gap-1.5" style={{ color: COLORS.mist }}>
-                <span className="shrink-0" style={{ color: COLORS.coral }}>-{formatScore(d.amount)}</span>
-                <span className="truncate">{d.reason}</span>
-              </div>
-            ))}
+
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-1.5">
+            <span className="font-semibold truncate" style={{ color: COLORS.chalk }}>{entry.teamName}</span>
+            {entry.conflictFlag && <AlertTriangle size={12} style={{ color: COLORS.gold }} />}
           </div>
-        )}
-      </div>
-      <div className="chl-mono text-lg shrink-0" style={{ color: COLORS.chalk }}>{formatScore(total)}</div>
-      <div className="relative shrink-0">
-        <button onClick={() => setMenuOpen((v) => !v)} className="p-1" style={{ color: COLORS.mist }}>
-          <MoreVertical size={18} />
-        </button>
-        {menuOpen && (
-          <EntryMenu canEdit={canEdit} onAction={onAction} onClose={() => setMenuOpen(false)} />
-        )}
+          <div className="flex items-center gap-2 text-xs mt-0.5" style={{ color: COLORS.mist }}>
+            <span>{filled}/{CRITERIA.length} criteria</span>
+            {dedTotal > 0 && (
+              <span style={{ color: COLORS.coral }}>-{formatScore(dedTotal)} ded.</span>
+            )}
+          </div>
+          {entry.deductions.length > 0 && (
+            <div className="mt-1 space-y-0.5">
+              {entry.deductions.map((d) => (
+                <div key={d.id} className="flex items-center gap-1.5 text-[11px]" style={{ color: COLORS.mist }}>
+                  <span className="shrink-0" style={{ color: COLORS.coral }}>
+                    -{formatScore(d.amount)}
+                  </span>
+                  <span className="truncate">{d.reason}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Score */}
+        <div className="shrink-0 text-right">
+          <div
+            className="chl-mono text-xl leading-none"
+            style={{ color: placement <= 3 ? medalColor : COLORS.chalk }}
+          >
+            {formatScore(total)}
+          </div>
+          <div className="text-[10px] mt-0.5" style={{ color: COLORS.mist }}>/150 pts</div>
+        </div>
+
+        <div className="relative shrink-0">
+          <button onClick={() => setMenuOpen((v) => !v)} className="p-1 ml-1" style={{ color: COLORS.mist }}>
+            <MoreVertical size={18} />
+          </button>
+          {menuOpen && (
+            <EntryMenu canEdit={canEdit} onAction={onAction} onClose={() => setMenuOpen(false)} />
+          )}
+        </div>
       </div>
     </div>
   );
@@ -868,36 +905,58 @@ function PasscodeModal({ onUnlock, onClose }: { onUnlock: () => void; onClose: (
    ================================================================ */
 
 function DivisionSection({
-  name, entries, canEdit, onAddScore, onEntryAction,
+  name, entries, canEdit, onAddScore, onEntryAction, showLabel = true,
 }: {
   name: string;
   entries: Entry[];
   canEdit: boolean;
   onAddScore: () => void;
   onEntryAction: (e: Entry, a: EntryAction) => void;
+  showLabel?: boolean;
 }) {
   const { order, placements } = computePlacements(entries);
   return (
     <div className="mb-6">
-      <div className="flex items-center justify-between mb-2 px-1">
-        <div className="flex items-center gap-2">
-          <h3 className="chl-display text-lg" style={{ color: COLORS.gold }}>{name}</h3>
-          <span className="text-xs flex items-center gap-1" style={{ color: COLORS.mist }}>
-            <Users size={12} /> {entries.length}
-          </span>
+      {/* Header — suppressed when a tab bar already shows the division name */}
+      {showLabel && (
+        <div className="flex items-center justify-between mb-3 px-1">
+          <div className="flex items-center gap-2">
+            <h3 className="chl-display text-lg" style={{ color: COLORS.gold }}>{name}</h3>
+            <span className="text-xs flex items-center gap-1" style={{ color: COLORS.mist }}>
+              <Users size={12} /> {entries.length}
+            </span>
+          </div>
+          {canEdit && (
+            <button
+              onClick={onAddScore}
+              className="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold"
+              style={{ background: COLORS.gold, color: COLORS.ink }}
+            >
+              <Plus size={13} /> Add Score
+            </button>
+          )}
         </div>
-        {canEdit && (
-          <button
-            onClick={onAddScore}
-            className="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold"
-            style={{ background: COLORS.gold, color: COLORS.ink }}
-          >
-            <Plus size={13} /> Add Score
-          </button>
-        )}
-      </div>
+      )}
+
       {order.length === 0 ? (
-        <p className="text-sm px-1" style={{ color: COLORS.mist }}>No teams added yet.</p>
+        <div
+          className="flex flex-col items-center justify-center py-14 rounded-2xl"
+          style={{ background: COLORS.court, border: `1px dashed ${COLORS.courtLight}` }}
+        >
+          <Users size={28} style={{ color: COLORS.courtLight }} />
+          <p className="text-sm mt-3 font-medium" style={{ color: COLORS.mist }}>
+            No teams scored yet
+          </p>
+          {canEdit && (
+            <button
+              onClick={onAddScore}
+              className="mt-4 flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold"
+              style={{ background: COLORS.gold, color: COLORS.ink }}
+            >
+              <Plus size={13} /> Add first score
+            </button>
+          )}
+        </div>
       ) : (
         order.map((entry) => (
           <TeamRow
@@ -926,10 +985,11 @@ function CompetitionDetail({
   onEditComp: (c: Competition) => void;
   showToast: (msg: string, type?: 'ok' | 'error') => void;
 }) {
-  const [entries,    setEntries]    = useState<Entry[]>([]);
-  const [loading,    setLoading]    = useState(true);
-  const [scoreModal, setScoreModal] = useState<ScoreModalState | null>(null);
-  const prevEntriesRef              = useRef<Entry[]>([]);
+  const [entries,      setEntries]      = useState<Entry[]>([]);
+  const [loading,      setLoading]      = useState(true);
+  const [scoreModal,   setScoreModal]   = useState<ScoreModalState | null>(null);
+  const [selectedDiv,  setSelectedDiv]  = useState('');
+  const prevEntriesRef                  = useRef<Entry[]>([]);
 
   const refresh = useCallback(async () => {
     try {
@@ -961,7 +1021,13 @@ function CompetitionDetail({
     return () => clearInterval(interval);
   }, [refresh]);
 
-  const divisions = comp.divisions?.length ? comp.divisions : ['General'];
+  const divisions  = comp.divisions?.length ? comp.divisions : ['General'];
+  const activeDiv  = divisions.includes(selectedDiv) ? selectedDiv : divisions[0];
+
+  // Sync tab selection when divisions change.
+  useEffect(() => {
+    if (!divisions.includes(selectedDiv)) setSelectedDiv(divisions[0]);
+  }, [divisions, selectedDiv]);
 
   async function persist(nextEntries: Entry[]) {
     setEntries(nextEntries);
@@ -1057,58 +1123,155 @@ function CompetitionDetail({
     }
   }
 
+  const isLive     = comp.status === 'live';
+  const totalTeams = entries.length;
+  const divCount   = divisions.length;
+
   return (
     <div className="chl-root min-h-screen pb-28" style={{ background: COLORS.ink }}>
-      <div className="px-4 pt-5 pb-3">
-        <button onClick={onBack} className="flex items-center gap-1 text-sm mb-3" style={{ color: COLORS.mist }}>
-          <ChevronLeft size={16} /> All competitions
-        </button>
-        <div className="flex items-start justify-between">
-          <div>
-            <h1 className="chl-display text-2xl" style={{ color: COLORS.chalk }}>{comp.name}</h1>
-            <div className="flex flex-wrap gap-3 mt-1 text-sm" style={{ color: COLORS.mist }}>
-              <span className="flex items-center gap-1">
-                <Calendar size={13} /> {formatDateRange(comp.startDate, comp.endDate)}
+
+      {/* ── Hero header ───────────────────────────────────────── */}
+      <div style={{ background: `linear-gradient(180deg, ${COLORS.court} 0%, ${COLORS.ink} 100%)` }}>
+        <div className="max-w-2xl mx-auto px-4 pt-5 pb-0">
+
+          {/* Nav row */}
+          <div className="flex items-center justify-between mb-4">
+            <button
+              onClick={onBack}
+              className="flex items-center gap-1 text-sm"
+              style={{ color: COLORS.mist }}
+            >
+              <ChevronLeft size={16} /> All competitions
+            </button>
+            {canEdit && (
+              <button
+                onClick={() => onEditComp(comp)}
+                className="p-2 rounded-lg"
+                style={{ background: 'rgba(255,255,255,0.06)' }}
+              >
+                <Edit3 size={15} style={{ color: COLORS.mist }} />
+              </button>
+            )}
+          </div>
+
+          {/* Status + title */}
+          {isLive && (
+            <div className="flex items-center gap-1.5 mb-2">
+              <span
+                className="w-2 h-2 rounded-full chl-pulse"
+                style={{ background: COLORS.coral }}
+              />
+              <span className="text-xs font-bold tracking-widest" style={{ color: COLORS.coral }}>
+                LIVE
               </span>
-              {(comp.venue || comp.city) && (
-                <span className="flex items-center gap-1">
-                  <MapPin size={13} /> {[comp.venue, comp.city].filter(Boolean).join(', ')}
-                </span>
-              )}
+            </div>
+          )}
+          <h1 className="chl-display text-3xl leading-tight" style={{ color: COLORS.chalk }}>
+            {comp.name}
+          </h1>
+          <div className="flex flex-wrap gap-3 mt-2 text-sm" style={{ color: COLORS.mist }}>
+            <span className="flex items-center gap-1">
+              <Calendar size={13} /> {formatDateRange(comp.startDate, comp.endDate)}
+            </span>
+            {(comp.venue || comp.city) && (
+              <span className="flex items-center gap-1">
+                <MapPin size={13} /> {[comp.venue, comp.city].filter(Boolean).join(', ')}
+              </span>
+            )}
+          </div>
+
+          {/* Stats strip */}
+          <div className="grid grid-cols-3 gap-2 mt-5 mb-5">
+            {[
+              { value: totalTeams, label: 'Teams' },
+              { value: divCount,   label: divCount === 1 ? 'Division' : 'Divisions' },
+              { value: isLive ? 'Live' : comp.status === 'upcoming' ? 'Soon' : 'Final', label: 'Status' },
+            ].map(({ value, label }) => (
+              <div
+                key={label}
+                className="text-center py-2.5 rounded-xl"
+                style={{ background: 'rgba(255,255,255,0.045)' }}
+              >
+                <div className="chl-display text-2xl leading-none" style={{ color: COLORS.gold }}>
+                  {value}
+                </div>
+                <div className="text-[10px] uppercase tracking-wide mt-1" style={{ color: COLORS.mist }}>
+                  {label}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* ── Division tabs ──────────────────────────────────── */}
+        {divisions.length > 1 && (
+          <div
+            className="border-b overflow-x-auto chl-no-scrollbar"
+            style={{ borderColor: COLORS.courtLight }}
+          >
+            <div className="max-w-2xl mx-auto px-4 flex gap-0 min-w-max">
+              {divisions.map((d) => (
+                <button
+                  key={d}
+                  onClick={() => setSelectedDiv(d)}
+                  className="px-4 py-2.5 text-sm font-medium whitespace-nowrap border-b-2 transition-colors"
+                  style={{
+                    color:       d === activeDiv ? COLORS.gold : COLORS.mist,
+                    borderColor: d === activeDiv ? COLORS.gold : 'transparent',
+                  }}
+                >
+                  {d}
+                </button>
+              ))}
             </div>
           </div>
-          {canEdit && (
-            <button onClick={() => onEditComp(comp)} className="p-2 rounded-lg" style={{ background: COLORS.court }}>
-              <Edit3 size={16} style={{ color: COLORS.mist }} />
-            </button>
-          )}
+        )}
+      </div>
+
+      {/* ── Disclaimer ────────────────────────────────────────── */}
+      <div className="max-w-2xl mx-auto px-4 mt-4">
+        <div
+          className="flex items-center gap-2 p-3 rounded-xl mb-4"
+          style={{ background: COLORS.court, border: `1px solid ${COLORS.courtLight}` }}
+        >
+          <AlertTriangle size={14} style={{ color: COLORS.gold }} className="shrink-0" />
+          <p className="text-xs" style={{ color: COLORS.mist }}>
+            Community-reported — educated estimates, not official results.
+          </p>
         </div>
-      </div>
 
-      <div
-        className="mx-4 mb-4 flex items-center gap-2 p-3 rounded-xl"
-        style={{ background: COLORS.court, border: `1px solid ${COLORS.courtLight}` }}
-      >
-        <AlertTriangle size={16} style={{ color: COLORS.gold }} className="shrink-0" />
-        <p className="text-xs" style={{ color: COLORS.mist }}>
-          Community-reported — educated estimates, not official results.
-        </p>
-      </div>
+        {/* ── Action bar (shown when tabs hide the division label) ── */}
+        {divisions.length > 1 && !loading && (
+          <div className="flex items-center justify-between mb-3 px-1">
+            <span className="text-xs flex items-center gap-1.5" style={{ color: COLORS.mist }}>
+              <Users size={12} />
+              {entries.filter((e) => (e.division || 'General') === activeDiv).length} team
+              {entries.filter((e) => (e.division || 'General') === activeDiv).length !== 1 ? 's' : ''}
+            </span>
+            {canEdit && (
+              <button
+                onClick={() => setScoreModal({ mode: 'new', division: activeDiv })}
+                className="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold"
+                style={{ background: COLORS.gold, color: COLORS.ink }}
+              >
+                <Plus size={13} /> Add Score
+              </button>
+            )}
+          </div>
+        )}
 
-      <div className="px-4">
+        {/* ── Leaderboard ───────────────────────────────────── */}
         {loading ? (
           <p style={{ color: COLORS.mist }}>Loading…</p>
         ) : (
-          divisions.map((d) => (
-            <DivisionSection
-              key={d}
-              name={d}
-              entries={entries.filter((e) => (e.division || 'General') === d)}
-              canEdit={canEdit}
-              onAddScore={() => setScoreModal({ mode: 'new', division: d })}
-              onEntryAction={handleEntryAction}
-            />
-          ))
+          <DivisionSection
+            name={activeDiv}
+            entries={entries.filter((e) => (e.division || 'General') === activeDiv)}
+            canEdit={canEdit}
+            onAddScore={() => setScoreModal({ mode: 'new', division: activeDiv })}
+            onEntryAction={handleEntryAction}
+            showLabel={divisions.length === 1}
+          />
         )}
       </div>
 
@@ -1137,35 +1300,71 @@ const STATUS_STYLES: Record<string, { label: string; color: string; pulse: boole
 };
 
 function CompetitionCard({ comp, onOpen }: { comp: Competition; onOpen: () => void }) {
-  const s = STATUS_STYLES[comp.status];
+  const s      = STATUS_STYLES[comp.status];
+  const isLive = comp.status === 'live';
+
   return (
     <button
       onClick={onOpen}
-      className="w-full text-left rounded-xl p-4 mb-3 flex items-center gap-3"
-      style={{ background: COLORS.court, borderLeft: `4px solid ${s.color}` }}
+      className="w-full text-left rounded-2xl overflow-hidden mb-3 block transition-transform active:scale-[0.99]"
+      style={{
+        background:  COLORS.court,
+        border:      `1px solid ${isLive ? 'rgba(255,77,94,0.35)' : COLORS.courtLight}`,
+        boxShadow:   isLive ? '0 0 24px rgba(255,77,94,0.12)' : 'none',
+      }}
     >
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2 mb-1">
-          <span
-            className={`text-[10px] font-bold tracking-wider px-2 py-0.5 rounded-full ${s.pulse ? 'chl-pulse' : ''}`}
-            style={{ background: s.color, color: COLORS.ink }}
-          >
-            {s.label}
-          </span>
-        </div>
-        <h3 className="font-semibold truncate" style={{ color: COLORS.chalk }}>{comp.name}</h3>
-        <div className="flex gap-3 text-xs mt-1 flex-wrap" style={{ color: COLORS.mist }}>
-          <span className="flex items-center gap-1">
-            <Calendar size={11} /> {formatDateRange(comp.startDate, comp.endDate)}
-          </span>
-          {(comp.venue || comp.city) && (
-            <span className="flex items-center gap-1">
-              <MapPin size={11} /> {[comp.venue, comp.city].filter(Boolean).join(', ')}
-            </span>
-          )}
+      {/* Top accent bar */}
+      <div style={{ height: 3, background: s.color, opacity: isLive ? 1 : 0.5 }} />
+
+      <div className="p-4">
+        <div className="flex items-start gap-3">
+          <div className="flex-1 min-w-0">
+            {/* Status badge */}
+            <div className="flex items-center gap-1.5 mb-2">
+              <span
+                className={`inline-flex items-center gap-1.5 text-[10px] font-bold tracking-wider px-2.5 py-1 rounded-full ${isLive ? 'chl-pulse' : ''}`}
+                style={{
+                  background: isLive ? 'rgba(255,77,94,0.12)' : 'rgba(146,162,194,0.1)',
+                  color:      s.color,
+                  border:     `1px solid ${isLive ? 'rgba(255,77,94,0.3)' : 'rgba(146,162,194,0.2)'}`,
+                }}
+              >
+                {isLive && (
+                  <span className="w-1.5 h-1.5 rounded-full" style={{ background: COLORS.coral }} />
+                )}
+                {s.label}
+              </span>
+            </div>
+
+            <h3 className="font-bold text-base leading-snug mb-2 truncate" style={{ color: COLORS.chalk }}>
+              {comp.name}
+            </h3>
+
+            <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs" style={{ color: COLORS.mist }}>
+              <span className="flex items-center gap-1">
+                <Calendar size={11} /> {formatDateRange(comp.startDate, comp.endDate)}
+              </span>
+              {(comp.venue || comp.city) && (
+                <span className="flex items-center gap-1">
+                  <MapPin size={11} /> {[comp.venue, comp.city].filter(Boolean).join(', ')}
+                </span>
+              )}
+            </div>
+          </div>
+
+          <div className="shrink-0 flex flex-col items-end gap-2 pt-0.5">
+            <ChevronDown size={16} className="-rotate-90" style={{ color: COLORS.mist }} />
+            {comp.divisions.length > 0 && (
+              <span
+                className="text-[10px] px-2 py-0.5 rounded-full"
+                style={{ background: COLORS.courtLight, color: COLORS.mist }}
+              >
+                {comp.divisions.length} div{comp.divisions.length !== 1 ? 's' : ''}
+              </span>
+            )}
+          </div>
         </div>
       </div>
-      <ChevronDown size={18} className="-rotate-90 shrink-0" style={{ color: COLORS.mist }} />
     </button>
   );
 }
@@ -1259,68 +1458,136 @@ export default function CheerHubLiveScores() {
     );
   }
 
+  const liveCount = grouped.live.length;
+
   return (
     <div className="chl-root min-h-screen" style={{ background: COLORS.ink }}>
-      <div className="px-4 pt-6 pb-4 flex items-center justify-between">
-        <div>
-          <h1 className="chl-display text-3xl" style={{ color: COLORS.chalk }}>Live Scores</h1>
-          <p className="text-xs" style={{ color: COLORS.mist }}>Cheer Hub · Canadian All-Star results</p>
-        </div>
-        <div className="flex items-center gap-2">
-          {editorUnlocked && (
-            <button
-              onClick={() => setDataPanel(true)}
-              className="p-2.5 rounded-full"
-              style={{ background: COLORS.court }}
-              title="Backup & restore data"
-            >
-              <Download size={16} style={{ color: COLORS.mist }} />
-            </button>
+
+      {/* ── Hero header ─────────────────────────────────────── */}
+      <div style={{ background: `linear-gradient(180deg, ${COLORS.court} 0%, ${COLORS.ink} 140px)` }}>
+        <div className="max-w-2xl mx-auto px-4 pt-7 pb-6">
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              {liveCount > 0 && (
+                <div className="flex items-center gap-1.5 mb-2">
+                  <span className="w-2 h-2 rounded-full chl-pulse" style={{ background: COLORS.coral }} />
+                  <span className="text-xs font-bold tracking-widest chl-pulse" style={{ color: COLORS.coral }}>
+                    {liveCount} LIVE NOW
+                  </span>
+                </div>
+              )}
+              <h1 className="chl-display text-5xl leading-none" style={{ color: COLORS.chalk }}>
+                LIVE SCORES
+              </h1>
+              <p className="text-xs mt-1.5" style={{ color: COLORS.mist }}>
+                Cheer Hub · Canadian All-Star
+              </p>
+            </div>
+
+            <div className="flex items-center gap-2 shrink-0 pt-1">
+              {editorUnlocked && (
+                <button
+                  onClick={() => setDataPanel(true)}
+                  className="p-2.5 rounded-full"
+                  style={{ background: 'rgba(255,255,255,0.07)' }}
+                  title="Backup & restore data"
+                >
+                  <Download size={16} style={{ color: COLORS.mist }} />
+                </button>
+              )}
+              <button
+                onClick={() => editorUnlocked ? setEditorUnlocked(false) : setShowPasscode(true)}
+                className="p-2.5 rounded-full"
+                style={{ background: 'rgba(255,255,255,0.07)' }}
+                aria-label={editorUnlocked ? 'Lock editing' : 'Unlock editing'}
+              >
+                {editorUnlocked
+                  ? <Unlock size={18} style={{ color: COLORS.gold }} />
+                  : <Lock size={18} style={{ color: COLORS.mist }} />}
+              </button>
+            </div>
+          </div>
+
+          {/* Stat pills */}
+          {competitions.length > 0 && (
+            <div className="flex flex-wrap gap-2 mt-4">
+              <span
+                className="text-xs px-3 py-1.5 rounded-full"
+                style={{ background: 'rgba(255,255,255,0.06)', color: COLORS.mist }}
+              >
+                {competitions.length} competition{competitions.length !== 1 ? 's' : ''}
+              </span>
+              {liveCount > 0 && (
+                <span
+                  className="text-xs px-3 py-1.5 rounded-full"
+                  style={{
+                    background: 'rgba(255,77,94,0.12)',
+                    color:      COLORS.coral,
+                    border:     '1px solid rgba(255,77,94,0.25)',
+                  }}
+                >
+                  {liveCount} live now
+                </span>
+              )}
+              {grouped.upcoming.length > 0 && (
+                <span
+                  className="text-xs px-3 py-1.5 rounded-full"
+                  style={{ background: 'rgba(242,183,5,0.08)', color: COLORS.gold }}
+                >
+                  {grouped.upcoming.length} upcoming
+                </span>
+              )}
+            </div>
           )}
-          <button
-            onClick={() => editorUnlocked ? setEditorUnlocked(false) : setShowPasscode(true)}
-            className="p-2.5 rounded-full"
-            style={{ background: COLORS.court }}
-          >
-            {editorUnlocked
-              ? <Unlock size={18} style={{ color: COLORS.gold }} />
-              : <Lock size={18} style={{ color: COLORS.mist }} />}
-          </button>
         </div>
       </div>
 
+      {/* ── Editor backup reminder ───────────────────────────── */}
       {editorUnlocked && (
-        <div
-          className="mx-4 mb-4 px-3 py-2 rounded-xl flex items-center gap-2"
-          style={{ background: COLORS.court, border: `1px solid ${COLORS.courtLight}` }}
-        >
-          <Download size={13} style={{ color: COLORS.mist }} />
-          <p className="text-xs" style={{ color: COLORS.mist }}>
-            Export your data before clearing browser storage (backup icon above).
-          </p>
+        <div className="max-w-2xl mx-auto px-4 mb-2">
+          <div
+            className="flex items-center gap-2 px-3 py-2 rounded-xl"
+            style={{ background: COLORS.court, border: `1px solid ${COLORS.courtLight}` }}
+          >
+            <Download size={12} style={{ color: COLORS.mist }} />
+            <p className="text-xs" style={{ color: COLORS.mist }}>
+              Export your data before clearing browser storage — use the backup icon above.
+            </p>
+          </div>
         </div>
       )}
 
-      <div className="px-4 pb-28">
+      {/* ── Competitions list ────────────────────────────────── */}
+      <div className="max-w-2xl mx-auto px-4 pb-28">
         {loading ? (
-          <p style={{ color: COLORS.mist }}>Loading…</p>
+          <p className="pt-4" style={{ color: COLORS.mist }}>Loading…</p>
         ) : competitions.length === 0 ? (
-          <div className="text-center py-16">
-            <p className="chl-display text-xl mb-1" style={{ color: COLORS.chalk }}>No competitions yet</p>
+          <div className="text-center py-20">
+            <p className="chl-display text-2xl mb-2" style={{ color: COLORS.chalk }}>
+              No competitions yet
+            </p>
             <p className="text-sm" style={{ color: COLORS.mist }}>
-              {editorUnlocked ? 'Tap + to add the first one.' : 'Unlock editing to add a competition.'}
+              {editorUnlocked
+                ? 'Tap + to add the first one.'
+                : 'Unlock editing to add a competition.'}
             </p>
           </div>
         ) : (
           (['live', 'upcoming', 'completed'] as const).map((status) =>
             grouped[status].length === 0 ? null : (
-              <div key={status} className="mb-5">
-                <h2 className="text-xs uppercase tracking-wider mb-2 px-1" style={{ color: COLORS.mist }}>
+              <div key={status} className="mb-6">
+                <h2
+                  className="text-[10px] uppercase tracking-widest mb-3 px-1"
+                  style={{ color: COLORS.mist }}
+                >
                   {status}
                 </h2>
-                {grouped[status].map((c) => (
-                  <CompetitionCard key={c.id} comp={c} onOpen={() => setOpenCompId(c.id)} />
-                ))}
+                {/* 2-column grid on sm+ screens */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-0 sm:gap-3">
+                  {grouped[status].map((c) => (
+                    <CompetitionCard key={c.id} comp={c} onOpen={() => setOpenCompId(c.id)} />
+                  ))}
+                </div>
               </div>
             ),
           )
