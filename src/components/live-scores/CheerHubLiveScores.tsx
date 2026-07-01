@@ -690,8 +690,9 @@ function TeamRow({
   canEdit: boolean;
   onAction: (a: EntryAction) => void;
 }) {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [flashing, setFlashing] = useState(false);
+  const [menuOpen,    setMenuOpen]    = useState(false);
+  const [confirmDel,  setConfirmDel]  = useState(false);
+  const [flashing,    setFlashing]    = useState(false);
   const prevFlash = useRef(entry.flashAt);
 
   useEffect(() => {
@@ -784,8 +785,17 @@ function TeamRow({
           <div className="text-[10px] mt-0.5" style={{ color: COLORS.mist }}>/150 pts</div>
         </div>
 
-        <div className="relative shrink-0">
-          <button onClick={() => setMenuOpen((v) => !v)} className="p-1 ml-1" style={{ color: COLORS.mist }}>
+        <div className="relative shrink-0 flex items-center gap-1">
+          {canEdit && (
+            <button
+              onClick={() => setConfirmDel((v) => !v)}
+              className="p-1"
+              style={{ color: confirmDel ? COLORS.coral : COLORS.mist }}
+            >
+              <Trash2 size={16} />
+            </button>
+          )}
+          <button onClick={() => setMenuOpen((v) => !v)} className="p-1" style={{ color: COLORS.mist }}>
             <MoreVertical size={18} />
           </button>
           {menuOpen && (
@@ -793,6 +803,29 @@ function TeamRow({
           )}
         </div>
       </div>
+
+      {confirmDel && (
+        <div
+          className="flex items-center gap-2 px-4 py-2.5 border-t"
+          style={{ borderColor: COLORS.courtLight }}
+        >
+          <span className="flex-1 text-xs" style={{ color: COLORS.mist }}>Delete {entry.teamName}?</span>
+          <button
+            onClick={() => setConfirmDel(false)}
+            className="px-3 py-1.5 rounded-lg text-xs"
+            style={{ background: COLORS.courtLight, color: COLORS.chalk }}
+          >
+            Cancel
+          </button>
+          <button
+            onClick={() => onAction('delete')}
+            className="px-3 py-1.5 rounded-lg text-xs font-semibold"
+            style={{ background: COLORS.coral, color: COLORS.ink }}
+          >
+            Delete
+          </button>
+        </div>
+      )}
     </div>
   );
 }
@@ -1413,73 +1446,117 @@ const STATUS_STYLES: Record<string, { label: string; color: string; pulse: boole
   completed: { label: 'COMPLETED', color: COLORS.mist,  pulse: false },
 };
 
-function CompetitionCard({ comp, onOpen }: { comp: Competition; onOpen: () => void }) {
+function CompetitionCard({
+  comp, onOpen, canEdit, onDelete,
+}: {
+  comp: Competition;
+  onOpen: () => void;
+  canEdit?: boolean;
+  onDelete?: () => void;
+}) {
+  const [confirmDel, setConfirmDel] = useState(false);
   const s      = STATUS_STYLES[comp.status];
   const isLive = comp.status === 'live';
 
   return (
-    <button
-      onClick={onOpen}
-      className="w-full text-left rounded-2xl overflow-hidden mb-3 block transition-transform active:scale-[0.99]"
+    <div
+      className="rounded-2xl overflow-hidden mb-3"
       style={{
-        background:  COLORS.court,
-        border:      `1px solid ${isLive ? 'rgba(255,77,94,0.35)' : COLORS.courtLight}`,
-        boxShadow:   isLive ? '0 0 24px rgba(255,77,94,0.12)' : 'none',
+        background: COLORS.court,
+        border:     `1px solid ${isLive ? 'rgba(255,77,94,0.35)' : COLORS.courtLight}`,
+        boxShadow:  isLive ? '0 0 24px rgba(255,77,94,0.12)' : 'none',
       }}
     >
       {/* Top accent bar */}
       <div style={{ height: 3, background: s.color, opacity: isLive ? 1 : 0.5 }} />
 
-      <div className="p-4">
-        <div className="flex items-start gap-3">
-          <div className="flex-1 min-w-0">
-            {/* Status badge */}
-            <div className="flex items-center gap-1.5 mb-2">
-              <span
-                className={`inline-flex items-center gap-1.5 text-[10px] font-bold tracking-wider px-2.5 py-1 rounded-full ${isLive ? 'chl-pulse' : ''}`}
-                style={{
-                  background: isLive ? 'rgba(255,77,94,0.12)' : 'rgba(146,162,194,0.1)',
-                  color:      s.color,
-                  border:     `1px solid ${isLive ? 'rgba(255,77,94,0.3)' : 'rgba(146,162,194,0.2)'}`,
-                }}
-              >
-                {isLive && (
-                  <span className="w-1.5 h-1.5 rounded-full" style={{ background: COLORS.coral }} />
+      <button
+        onClick={onOpen}
+        className="w-full text-left transition-transform active:scale-[0.99]"
+      >
+        <div className="p-4">
+          <div className="flex items-start gap-3">
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-1.5 mb-2">
+                <span
+                  className={`inline-flex items-center gap-1.5 text-[10px] font-bold tracking-wider px-2.5 py-1 rounded-full ${isLive ? 'chl-pulse' : ''}`}
+                  style={{
+                    background: isLive ? 'rgba(255,77,94,0.12)' : 'rgba(146,162,194,0.1)',
+                    color:      s.color,
+                    border:     `1px solid ${isLive ? 'rgba(255,77,94,0.3)' : 'rgba(146,162,194,0.2)'}`,
+                  }}
+                >
+                  {isLive && <span className="w-1.5 h-1.5 rounded-full" style={{ background: COLORS.coral }} />}
+                  {s.label}
+                </span>
+              </div>
+
+              <h3 className="font-bold text-base leading-snug mb-2 truncate" style={{ color: COLORS.chalk }}>
+                {comp.name}
+              </h3>
+
+              <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs" style={{ color: COLORS.mist }}>
+                <span className="flex items-center gap-1">
+                  <Calendar size={11} /> {formatDateRange(comp.startDate, comp.endDate)}
+                </span>
+                {(comp.venue || comp.city) && (
+                  <span className="flex items-center gap-1">
+                    <MapPin size={11} /> {[comp.venue, comp.city].filter(Boolean).join(', ')}
+                  </span>
                 )}
-                {s.label}
-              </span>
+              </div>
             </div>
 
-            <h3 className="font-bold text-base leading-snug mb-2 truncate" style={{ color: COLORS.chalk }}>
-              {comp.name}
-            </h3>
-
-            <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs" style={{ color: COLORS.mist }}>
-              <span className="flex items-center gap-1">
-                <Calendar size={11} /> {formatDateRange(comp.startDate, comp.endDate)}
-              </span>
-              {(comp.venue || comp.city) && (
-                <span className="flex items-center gap-1">
-                  <MapPin size={11} /> {[comp.venue, comp.city].filter(Boolean).join(', ')}
+            <div className="shrink-0 flex flex-col items-end gap-2 pt-0.5">
+              <ChevronDown size={16} className="-rotate-90" style={{ color: COLORS.mist }} />
+              {comp.divisions.length > 0 && (
+                <span
+                  className="text-[10px] px-2 py-0.5 rounded-full"
+                  style={{ background: COLORS.courtLight, color: COLORS.mist }}
+                >
+                  {comp.divisions.length} div{comp.divisions.length !== 1 ? 's' : ''}
                 </span>
               )}
             </div>
           </div>
-
-          <div className="shrink-0 flex flex-col items-end gap-2 pt-0.5">
-            <ChevronDown size={16} className="-rotate-90" style={{ color: COLORS.mist }} />
-            {comp.divisions.length > 0 && (
-              <span
-                className="text-[10px] px-2 py-0.5 rounded-full"
-                style={{ background: COLORS.courtLight, color: COLORS.mist }}
-              >
-                {comp.divisions.length} div{comp.divisions.length !== 1 ? 's' : ''}
-              </span>
-            )}
-          </div>
         </div>
-      </div>
-    </button>
+      </button>
+
+      {canEdit && (
+        confirmDel ? (
+          <div
+            className="flex items-center gap-2 px-4 py-2.5 border-t"
+            style={{ borderColor: COLORS.courtLight }}
+          >
+            <span className="flex-1 text-xs" style={{ color: COLORS.mist }}>Delete {comp.name}?</span>
+            <button
+              onClick={() => setConfirmDel(false)}
+              className="px-3 py-1.5 rounded-lg text-xs"
+              style={{ background: COLORS.courtLight, color: COLORS.chalk }}
+            >
+              Cancel
+            </button>
+            <button
+              onClick={onDelete}
+              className="px-3 py-1.5 rounded-lg text-xs font-semibold"
+              style={{ background: COLORS.coral, color: COLORS.ink }}
+            >
+              Delete
+            </button>
+          </div>
+        ) : (
+          <div className="flex justify-end px-4 pb-3">
+            <button
+              onClick={() => setConfirmDel(true)}
+              className="flex items-center gap-1 text-xs py-1 px-2 rounded-lg"
+              style={{ color: COLORS.mist }}
+            >
+              <Trash2 size={13} /> Delete
+            </button>
+          </div>
+        )
+      )}
+    </div>
   );
 }
 
@@ -1699,7 +1776,16 @@ export default function CheerHubLiveScores() {
                 {/* 2-column grid on sm+ screens */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-0 sm:gap-3">
                   {grouped[status].map((c) => (
-                    <CompetitionCard key={c.id} comp={c} onOpen={() => setOpenCompId(c.id)} />
+                    <CompetitionCard
+                      key={c.id}
+                      comp={c}
+                      onOpen={() => setOpenCompId(c.id)}
+                      canEdit={editorUnlocked}
+                      onDelete={async () => {
+                        await persistCompetitions(competitions.filter((x) => x.id !== c.id));
+                        showToast('Competition deleted');
+                      }}
+                    />
                   ))}
                 </div>
               </div>
