@@ -222,10 +222,11 @@ interface TeamScoreModalProps {
   entry?: Entry;
   compId: string;
   onSubmit: (data: { teamName: string; division: string; criteria: Record<string, number | null>; deductions: Deduction[] }) => void;
+  onDelete?: () => void;
   onClose: () => void;
 }
 
-function TeamScoreModal({ mode, division, entry, compId, onSubmit, onClose }: TeamScoreModalProps) {
+function TeamScoreModal({ mode, division, entry, compId, onSubmit, onDelete, onClose }: TeamScoreModalProps) {
   const [teamName, setTeamName]       = useState(entry?.teamName ?? '');
 
   // Detect which scoring mode the entry was saved with (default simple for new entries)
@@ -261,8 +262,9 @@ function TeamScoreModal({ mode, division, entry, compId, onSubmit, onClose }: Te
   const [whole, setWhole]             = useState(() => Math.floor(groupScores[GROUP_ORDER[0]] ?? 0));
   const [dec,   setDec]               = useState(() => Math.round(((groupScores[GROUP_ORDER[0]] ?? 0) % 1) * 100));
 
-  const [deductions, setDeductions]   = useState<Deduction[]>(entry?.deductions ?? []);
+  const [deductions, setDeductions]     = useState<Deduction[]>(entry?.deductions ?? []);
   const [otherEditing, setOtherEditing] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
 
   function switchGroup(newGroup: string) {
     const val = whole + dec / 100;
@@ -497,6 +499,38 @@ function TeamScoreModal({ mode, division, entry, compId, onSubmit, onClose }: Te
         <p className="text-center text-xs mt-2" style={{ color: COLORS.coral }}>
           Enter a team / gym name above to enable saving.
         </p>
+      )}
+
+      {mode === 'edit' && onDelete && (
+        confirmDelete ? (
+          <div className="mt-3 p-3 rounded-xl" style={{ background: COLORS.ink, border: `1px solid ${COLORS.coral}` }}>
+            <p className="text-sm mb-2" style={{ color: COLORS.chalk }}>Delete this entry? Cannot be undone.</p>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setConfirmDelete(false)}
+                className="flex-1 py-2 rounded-lg text-sm"
+                style={{ background: COLORS.courtLight, color: COLORS.chalk }}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={onDelete}
+                className="flex-1 py-2 rounded-lg text-sm font-semibold"
+                style={{ background: COLORS.coral, color: COLORS.ink }}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        ) : (
+          <button
+            onClick={() => setConfirmDelete(true)}
+            className="w-full mt-3 py-2.5 text-sm font-medium"
+            style={{ color: COLORS.coral }}
+          >
+            Delete entry
+          </button>
+        )
       )}
     </ModalShell>
   );
@@ -1358,6 +1392,10 @@ function CompetitionDetail({
           entry={scoreModal.entry}
           compId={comp.id}
           onSubmit={handleScoreSubmit}
+          onDelete={scoreModal.entry ? async () => {
+            await handleEntryAction(scoreModal.entry!, 'delete');
+            setScoreModal(null);
+          } : undefined}
           onClose={() => setScoreModal(null)}
         />
       )}
