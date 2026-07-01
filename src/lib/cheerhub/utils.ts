@@ -64,6 +64,11 @@ export function getGroupTotal(criteria: CriteriaMap, group: string): number {
 
 export function getTotal(entry: Pick<Entry, 'criteria' | 'deductions'>): number {
   const c = entry.criteria;
+  // Simple total score
+  if ((c?.total as number | null) != null && (c!.total as number) > 0) {
+    return Math.max(0, Math.round(((c!.total as number) - getDeductionTotal(entry.deductions)) * 100) / 100);
+  }
+  // Group-based scoring
   const hasGroupScores = GROUP_ORDER.some((k) => ((c?.[k] as number | null) ?? 0) > 0);
   const raw = hasGroupScores
     ? GROUP_ORDER.reduce((s, k) => s + (((c?.[k] as number | null) ?? 0)), 0)

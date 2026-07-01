@@ -227,22 +227,42 @@ interface TeamScoreModalProps {
 
 function TeamScoreModal({ mode, division, entry, compId, onSubmit, onClose }: TeamScoreModalProps) {
   const [teamName, setTeamName]       = useState(entry?.teamName ?? '');
+
+  // Detect which scoring mode the entry was saved with (default simple for new entries)
+  const initialMode = (() => {
+    const c = entry?.criteria ?? {};
+    if ((c.total as number | null) != null) return 'simple';
+    if (GROUP_ORDER.some((k) => ((c[k] as number | null) ?? 0) > 0)) return 'group';
+    return 'simple';
+  })();
+  const [scoreMode, setScoreMode]     = useState<'simple' | 'group'>(initialMode);
+
+  // Simple mode state
+  const initSimple = (() => {
+    const c = entry?.criteria ?? {};
+    if ((c.total as number | null) != null) return c.total as number;
+    if (GROUP_ORDER.some((k) => ((c[k] as number | null) ?? 0) > 0)) {
+      return GROUP_ORDER.reduce((s, k) => s + (((c[k] as number | null) ?? 0)), 0);
+    }
+    return CRITERIA.reduce((s, cr) => s + (c[cr.key] ?? 0), 0);
+  })();
+  const [simpleWhole, setSimpleWhole] = useState(Math.floor(initSimple));
+  const [simpleDec,   setSimpleDec]   = useState(Math.round((initSimple % 1) * 100));
+
+  // Group mode state
   const [groupScores, setGroupScores] = useState<Record<string, number>>(() => {
     const c = entry?.criteria ?? {};
-    const hasGroup = GROUP_ORDER.some((k) => ((c[k] as number | null) ?? 0) > 0);
-    if (hasGroup) {
+    if (GROUP_ORDER.some((k) => ((c[k] as number | null) ?? 0) > 0)) {
       return Object.fromEntries(GROUP_ORDER.map((k) => [k, (c[k] as number) ?? 0]));
     }
     return Object.fromEntries(GROUP_ORDER.map((k) => [k, getGroupTotal(c, k)]));
   });
-  const [deductions, setDeductions]   = useState<Deduction[]>(entry?.deductions ?? []);
   const [activeGroup, setActiveGroup] = useState<string>(GROUP_ORDER[0]);
-  const [otherEditing, setOtherEditing] = useState(false);
+  const [whole, setWhole]             = useState(() => Math.floor(groupScores[GROUP_ORDER[0]] ?? 0));
+  const [dec,   setDec]               = useState(() => Math.round(((groupScores[GROUP_ORDER[0]] ?? 0) % 1) * 100));
 
-  const groupMax    = GROUP_META[activeGroup].max;
-  const activeScore = groupScores[activeGroup] ?? 0;
-  const [whole, setWhole] = useState(Math.floor(activeScore));
-  const [dec,   setDec]   = useState(Math.round((activeScore % 1) * 100));
+  const [deductions, setDeductions]   = useState<Deduction[]>(entry?.deductions ?? []);
+  const [otherEditing, setOtherEditing] = useState(false);
 
   function switchGroup(newGroup: string) {
     const val = whole + dec / 100;
@@ -253,14 +273,24 @@ function TeamScoreModal({ mode, division, entry, compId, onSubmit, onClose }: Te
     setDec(Math.round((s % 1) * 100));
   }
 
-  const dedTotal   = getDeductionTotal(deductions);
-  const drumVal    = whole + dec / 100;
-  const liveScores = { ...groupScores, [activeGroup]: drumVal };
-  const rawTotal   = GROUP_ORDER.reduce((s, k) => s + (liveScores[k] ?? 0), 0);
-  const finalTotal = Math.max(0, Math.round((rawTotal - dedTotal) * 100) / 100);
+  const dedTotal = getDeductionTotal(deductions);
 
+  // Simple mode derived values
+  const simpleDrumVal  = simpleWhole + simpleDec / 100;
+  const simpleFinal    = Math.max(0, Math.round((simpleDrumVal - dedTotal) * 100) / 100);
+  const simpleWholeVals = Array.from({ length: 151 }, (_, i) => i);
+  const simpleDecVals   = Array.from({ length: 100 }, (_, i) => i);
+
+  // Group mode derived values
+  const groupMax    = GROUP_META[activeGroup].max;
+  const drumVal     = whole + dec / 100;
+  const liveScores  = { ...groupScores, [activeGroup]: drumVal };
+  const groupRaw    = GROUP_ORDER.reduce((s, k) => s + (liveScores[k] ?? 0), 0);
+  const groupFinal  = Math.max(0, Math.round((groupRaw - dedTotal) * 100) / 100);
   const wholeValues = Array.from({ length: groupMax + 1 }, (_, i) => i);
   const decValues   = Array.from({ length: 100 }, (_, i) => i);
+
+  const finalTotal = scoreMode === 'simple' ? simpleFinal : groupFinal;
 
   // Advisory lock — prevents two editors from simultaneously writing the same entry.
   useEffect(() => {
@@ -297,7 +327,9 @@ function TeamScoreModal({ mode, division, entry, compId, onSubmit, onClose }: Te
   }, [mode, entry, compId]);
 
   function handleSubmit() {
-    const finalCriteria = { ...groupScores, [activeGroup]: drumVal };
+    const finalCriteria = scoreMode === 'simple'
+      ? { total: simpleDrumVal }
+      : { ...groupScores, [activeGroup]: drumVal };
     onSubmit({ teamName: teamName.trim(), division, criteria: finalCriteria, deductions });
   }
 
@@ -315,58 +347,110 @@ function TeamScoreModal({ mode, division, entry, compId, onSubmit, onClose }: Te
         </div>
       )}
 
-      {/* Group tabs */}
-      <div className="grid grid-cols-4 gap-1.5 mb-5">
-        {GROUP_ORDER.map((grp) => {
-          const score    = liveScores[grp] ?? 0;
-          const isActive = grp === activeGroup;
-          return (
-            <button
-              key={grp}
-              onClick={() => switchGroup(grp)}
-              disabled={otherEditing}
-              className="text-center py-2.5 px-1 rounded-xl transition-all"
-              style={{
-                background: isActive ? COLORS.gold    : COLORS.ink,
-                color:      isActive ? COLORS.ink     : COLORS.mist,
-                border:     `1.5px solid ${isActive ? COLORS.gold : COLORS.courtLight}`,
-              }}
-            >
-              <div className="text-[9px] uppercase tracking-wide leading-tight mb-0.5">
-                {GROUP_META[grp].label.split(' ')[0]}
-              </div>
-              <div className="chl-mono text-sm font-bold">{formatScore(score)}</div>
-              <div className="text-[9px] opacity-70">/{GROUP_META[grp].max}</div>
-            </button>
-          );
-        })}
+      {/* Mode toggle */}
+      <div
+        className="flex gap-1 p-1 rounded-xl mb-5"
+        style={{ background: COLORS.ink, border: `1px solid ${COLORS.courtLight}` }}
+      >
+        {(['simple', 'group'] as const).map((m) => (
+          <button
+            key={m}
+            onClick={() => setScoreMode(m)}
+            className="flex-1 py-2 rounded-lg text-sm font-semibold transition-all"
+            style={{
+              background: scoreMode === m ? COLORS.gold : 'transparent',
+              color:      scoreMode === m ? COLORS.ink  : COLORS.mist,
+            }}
+          >
+            {m === 'simple' ? 'Overall score' : 'By group'}
+          </button>
+        ))}
       </div>
 
-      {/* Score drums */}
-      <div className="flex items-center justify-center gap-2 mb-1">
-        <Drum
-          key={`whole-${activeGroup}`}
-          values={wholeValues}
-          value={whole}
-          onChange={setWhole}
-          disabled={otherEditing}
-          width={72}
-        />
-        <span className="chl-display text-3xl pb-1" style={{ color: COLORS.chalk }}>.</span>
-        <Drum
-          key={`dec-${activeGroup}`}
-          values={decValues}
-          value={dec}
-          onChange={setDec}
-          disabled={otherEditing}
-        />
-      </div>
-      <p className="text-center text-sm mb-4" style={{ color: COLORS.mist }}>
-        <span className="chl-mono" style={{ color: COLORS.gold }}>
-          {whole}.{String(dec).padStart(2, '0')}
-        </span>
-        {' '}/ {groupMax} · loops both ways
-      </p>
+      {scoreMode === 'simple' ? (
+        <>
+          {/* Simple 0–150 drum */}
+          <div className="flex items-center justify-center gap-2 mb-1">
+            <Drum
+              key="simple-whole"
+              values={simpleWholeVals}
+              value={simpleWhole}
+              onChange={setSimpleWhole}
+              disabled={otherEditing}
+              width={80}
+            />
+            <span className="chl-display text-3xl pb-1" style={{ color: COLORS.chalk }}>.</span>
+            <Drum
+              key="simple-dec"
+              values={simpleDecVals}
+              value={simpleDec}
+              onChange={setSimpleDec}
+              disabled={otherEditing}
+            />
+          </div>
+          <p className="text-center text-sm mb-4" style={{ color: COLORS.mist }}>
+            <span className="chl-mono" style={{ color: COLORS.gold }}>
+              {simpleWhole}.{String(simpleDec).padStart(2, '0')}
+            </span>
+            {' '}/ 150 · loops both ways
+          </p>
+        </>
+      ) : (
+        <>
+          {/* Group tabs */}
+          <div className="grid grid-cols-4 gap-1.5 mb-5">
+            {GROUP_ORDER.map((grp) => {
+              const score    = liveScores[grp] ?? 0;
+              const isActive = grp === activeGroup;
+              return (
+                <button
+                  key={grp}
+                  onClick={() => switchGroup(grp)}
+                  disabled={otherEditing}
+                  className="text-center py-2.5 px-1 rounded-xl transition-all"
+                  style={{
+                    background: isActive ? COLORS.gold : COLORS.ink,
+                    color:      isActive ? COLORS.ink  : COLORS.mist,
+                    border:     `1.5px solid ${isActive ? COLORS.gold : COLORS.courtLight}`,
+                  }}
+                >
+                  <div className="text-[9px] uppercase tracking-wide leading-tight mb-0.5">
+                    {GROUP_META[grp].label.split(' ')[0]}
+                  </div>
+                  <div className="chl-mono text-sm font-bold">{formatScore(score)}</div>
+                  <div className="text-[9px] opacity-70">/{GROUP_META[grp].max}</div>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Group drums */}
+          <div className="flex items-center justify-center gap-2 mb-1">
+            <Drum
+              key={`whole-${activeGroup}`}
+              values={wholeValues}
+              value={whole}
+              onChange={setWhole}
+              disabled={otherEditing}
+              width={72}
+            />
+            <span className="chl-display text-3xl pb-1" style={{ color: COLORS.chalk }}>.</span>
+            <Drum
+              key={`dec-${activeGroup}`}
+              values={decValues}
+              value={dec}
+              onChange={setDec}
+              disabled={otherEditing}
+            />
+          </div>
+          <p className="text-center text-sm mb-4" style={{ color: COLORS.mist }}>
+            <span className="chl-mono" style={{ color: COLORS.gold }}>
+              {whole}.{String(dec).padStart(2, '0')}
+            </span>
+            {' '}/ {groupMax} · loops both ways
+          </p>
+        </>
+      )}
 
       {/* Deduction editor */}
       <DeductionEditor
@@ -596,12 +680,13 @@ function TeamRow({
 
   const total    = getTotal(entry);
   const dedTotal = getDeductionTotal(entry.deductions);
-  const hasGroupScores = GROUP_ORDER.some((k) => ((entry.criteria?.[k] as number | null) ?? 0) > 0);
-  const filled   = hasGroupScores
-    ? GROUP_ORDER.filter((k) => ((entry.criteria?.[k] as number | null) ?? 0) > 0).length
+  const isSimple = (entry.criteria?.total as number | null) != null;
+  const hasGroupScores = !isSimple && GROUP_ORDER.some((k) => ((entry.criteria?.[k] as number | null) ?? 0) > 0);
+  const filled      = isSimple ? 1
+    : hasGroupScores ? GROUP_ORDER.filter((k) => ((entry.criteria?.[k] as number | null) ?? 0) > 0).length
     : CRITERIA.filter((c) => (entry.criteria?.[c.key] ?? 0) > 0).length;
-  const filledOf = hasGroupScores ? GROUP_ORDER.length : CRITERIA.length;
-  const filledLabel = hasGroupScores ? 'groups' : 'criteria';
+  const filledOf    = isSimple ? 1 : hasGroupScores ? GROUP_ORDER.length : CRITERIA.length;
+  const filledLabel = isSimple ? 'score' : hasGroupScores ? 'groups' : 'criteria';
   const pct      = Math.min(100, (total / MAX_SCORE) * 100);
 
   return (
