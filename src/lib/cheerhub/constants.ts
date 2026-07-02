@@ -52,6 +52,66 @@ export const GROUP_ORDER = ['building', 'tumbling', 'choreo', 'overall'] as cons
 // 0–10 in 0.25 steps (41 steps: indices 0–40)
 export const DEDUCTION_STEPS: number[] = Array.from({ length: 41 }, (_, i) => i);
 
+export const CANADIAN_GYMS: string[] = [
+  // Ontario
+  'Cheer Sport Sharks Kitchener',
+  'Cheer Sport Sharks Toronto',
+  'Cheer Sport Sharks Ottawa',
+  'Cheer Sport Sharks Ancaster',
+  'Cheer Sport Sharks Vancouver',
+  'Cheer Sport Sharks Edmonton',
+  'CheerForce Ontario',
+  'Alpha All Stars',
+  'Wolfpack Allstars',
+  'Prodigy Athletics',
+  'Zodiak Elite',
+  'ACE Athletics',
+  'Outlaws Cheer Athletics',
+  'Beach Cheer Athletics',
+  'ChromeAthletics',
+  'CheerStrike Royals',
+  'Gems Athletics',
+  'Perfect Storm Athletics',
+  'Legacy Athletics',
+  'Niagara Royalty',
+  'Royalty Cheer Athletics',
+  'Empire Athletics',
+  'Storm Athletics',
+  'Kingston Elite Cheerleading',
+  'Seismic Cheer',
+  'Bombora Cheer',
+  'Icon Allstars',
+  'TNT Athletics',
+  'Prestige Allstars',
+  'Eclipse Athletics',
+  'Adrenaline Allstars',
+  'Apex Athletics',
+  'Force Athletics',
+  'Revolution Athletics',
+  'Elite Force Athletics',
+  // Quebec
+  'Smoke Cheer Athletics',
+  'Scandalous Athletics',
+  'Alliance Cheerleading',
+  'Exo Cheer',
+  'Envol Athletics',
+  // Alberta
+  'Peak Elite Cheerleading',
+  'Calgary Stars',
+  'CheerForce Calgary',
+  'Rage Athletics Calgary',
+  'Envy Athletics',
+  // BC
+  'Vancouver AllStars',
+  'Pacific Cheer Athletics',
+  // Atlantic Canada
+  'Olympia Allstar Cheerleading',
+  'East Coast Allstars',
+  'Pride Allstars',
+  'Fury Athletics',
+  'Maritime Cheer Academy',
+];
+
 export const CANADIAN_DIVISIONS: Record<string, string[]> = {
   'U8': [
     'U8 Novice', 'U8 Prep',

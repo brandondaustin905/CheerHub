@@ -13,7 +13,7 @@ import DivisionsTab from './DivisionsTab';
 import LearnTab from './LearnTab';
 import {
   COLORS, CRITERIA, GROUP_ORDER,
-  DEDUCTION_STEPS, CANADIAN_DIVISIONS, EDITOR_PASSCODE,
+  DEDUCTION_STEPS, CANADIAN_DIVISIONS, CANADIAN_GYMS, EDITOR_PASSCODE,
 } from '@/lib/cheerhub/constants';
 import {
   loadCompetitions, saveCompetitions,
@@ -348,10 +348,29 @@ function TeamScoreModal({ mode, division, entry, compId, onSubmit, onDelete, onC
           <input
             value={teamName}
             onChange={(e) => setTeamName(e.target.value)}
-            placeholder="e.g. Aubree's All-Stars Senior 5"
+            placeholder="Type gym name…"
             className="w-full px-3 py-2.5 rounded-lg outline-none"
             style={{ background: COLORS.court, color: COLORS.chalk, border: `1px solid ${COLORS.courtLight}` }}
           />
+          {/* Gym suggestions */}
+          {teamName.trim().length >= 2 && (() => {
+            const q = teamName.trim().toLowerCase();
+            const hits = CANADIAN_GYMS.filter((g) => g.toLowerCase().includes(q)).slice(0, 5);
+            return hits.length > 0 ? (
+              <div className="mt-1.5 rounded-lg overflow-hidden" style={{ border: `1px solid ${COLORS.courtLight}` }}>
+                {hits.map((gym) => (
+                  <button
+                    key={gym}
+                    onMouseDown={(e) => { e.preventDefault(); setTeamName(gym); }}
+                    className="w-full text-left px-3 py-2 text-sm"
+                    style={{ background: COLORS.courtLight, color: COLORS.chalk, borderBottom: `1px solid ${COLORS.court}` }}
+                  >
+                    {gym}
+                  </button>
+                ))}
+              </div>
+            ) : null;
+          })()}
         </div>
       )}
 
