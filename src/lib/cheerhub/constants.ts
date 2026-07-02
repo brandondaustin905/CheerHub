@@ -68,6 +68,7 @@ export const CANADIAN_GYMS: string[] = [
   'Cheer Sport Sharks – Toronto',
   'Cheer Strike Royals',
   'Cheer Strong Inc',
+  'Kingston Elite Cheerleading',
   'NorthStar Cheer',
   'PCT Cheer & Tumble',
   'Scorpions Niagara',
