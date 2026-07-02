@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en-CA">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Canadian All-Star Gym Directory — The Cheer Hub</title>
+  <meta name="description" content="Verified directory of Canadian All-Star cheerleading gyms across every province. 2026–2027 season." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink:        #10151F;
+      --court:      #1B2A48;
+      --courtLight: #243A63;
+      --gold:       #F2B705;
+      --coral:      #FF4D5E;
+      --magenta:    #FF2E8B;
+      --mist:       #92A2C2;
+      --chalk:      #F5F3EC;
+      --green:      #3FCB8C;
+      --blue:       #4A9EFF;
+      --purple:     #9B59B6;
+      --orange:     #E67E22;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      min-height: 100vh;
+      background: var(--ink);
+      color: var(--chalk);
+      font-family: 'Inter', system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Header ── */
+    .header {
+      background: linear-gradient(160deg, var(--court) 0%, var(--ink) 100%);
+      padding: 48px 24px 36px;
+      text-align: center;
+      border-bottom: 1px solid var(--courtLight);
+    }
+    .header-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      color: var(--gold);
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .header h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(32px, 7vw, 52px);
+      letter-spacing: 0.02em;
+      line-height: 1;
+      color: var(--chalk);
+    }
+    .header-sub {
+      margin-top: 12px;
+      font-size: 14px;
+      color: var(--mist);
+    }
+    .header-count {
+      display: inline-block;
+      margin-top: 14px;
+      padding: 5px 14px;
+      background: rgba(242,183,5,0.12);
+      border: 1px solid rgba(242,183,5,0.3);
+      border-radius: 20px;
+      font-size: 12px;
+      color: var(--gold);
+      font-weight: 600;
+      font-family: 'IBM Plex Mono', monospace;
+    }
+
+    /* ── Controls ── */
+    .controls {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 24px 16px 0;
+    }
+
+    .search-wrap {
+      position: relative;
+      margin-bottom: 16px;
+    }
+    .search-icon {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--mist);
+      font-size: 15px;
+      pointer-events: none;
+    }
+    .search-input {
+      width: 100%;
+      padding: 13px 42px 13px 42px;
+      background: var(--court);
+      border: 1px solid var(--courtLight);
+      border-radius: 12px;
+      color: var(--chalk);
+      font-size: 15px;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .search-input:focus { border-color: var(--gold); }
+    .search-input::placeholder { color: var(--mist); }
+    .search-clear {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--mist);
+      font-size: 20px;
+      cursor: pointer;
+      padding: 4px;
+      line-height: 1;
+      display: none;
+    }
+
+    /* ── Province tabs ── */
+    .tabs {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      margin-bottom: 24px;
+    }
+    .tabs::-webkit-scrollbar { display: none; }
+    .tab {
+      flex-shrink: 0;
+      padding: 7px 14px;
+      border-radius: 20px;
+      border: 1px solid var(--courtLight);
+      background: transparent;
+      color: var(--mist);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+      font-family: 'Inter', sans-serif;
+    }
+    .tab .count { margin-left: 5px; opacity: 0.65; font-size: 11px; }
+
+    /* ── Content area ── */
+    .content {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 16px 80px;
+    }
+
+    .results-label {
+      font-size: 13px;
+      color: var(--mist);
+      margin-bottom: 16px;
+    }
+
+    /* ── Province section ── */
+    .province-section { margin-bottom: 32px; }
+    .province-heading {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .province-bar {
+      height: 2px;
+      width: 20px;
+      border-radius: 1px;
+    }
+    .province-title {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .province-gym-count {
+      font-size: 11px;
+      color: var(--mist);
+    }
+    .gym-list { display: flex; flex-direction: column; gap: 8px; }
+
+    /* ── Gym card ── */
+    .gym-card {
+      background: var(--court);
+      border: 1px solid var(--courtLight);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: border-color 0.18s, background 0.18s;
+      cursor: pointer;
+    }
+    .gym-card:hover { border-color: rgba(146,162,194,0.4); }
+    .gym-card.open { background: var(--courtLight); }
+
+    .gym-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 16px 18px;
+    }
+    .gym-badge {
+      flex-shrink: 0;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      border-radius: 6px;
+      padding: 3px 7px;
+      margin-top: 2px;
+    }
+    .gym-info { flex: 1; min-width: 0; }
+    .gym-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--chalk);
+      line-height: 1.3;
+    }
+    .gym-city {
+      font-size: 12px;
+      color: var(--mist);
+      margin-top: 3px;
+    }
+    .gym-chevron {
+      flex-shrink: 0;
+      color: var(--mist);
+      font-size: 14px;
+      margin-top: 2px;
+      transition: transform 0.18s ease;
+    }
+    .gym-card.open .gym-chevron { transform: rotate(180deg); }
+
+    /* ── Expanded detail ── */
+    .gym-detail {
+      display: none;
+      padding: 0 18px 16px;
+    }
+    .gym-card.open .gym-detail { display: block; }
+    .gym-detail-inner {
+      border-top: 1px solid rgba(36,58,99,0.8);
+      padding-top: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .detail-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .detail-label {
+      font-size: 10px;
+      font-family: 'IBM Plex Mono', monospace;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--mist);
+      width: 72px;
+      flex-shrink: 0;
+      padding-top: 1px;
+    }
+    .detail-value {
+      font-size: 13px;
+      color: var(--chalk);
+      line-height: 1.5;
+    }
+    .website-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 14px;
+      background: rgba(242,183,5,0.12);
+      border: 1px solid rgba(242,183,5,0.4);
+      border-radius: 8px;
+      color: var(--gold);
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      font-family: 'Inter', sans-serif;
+      transition: background 0.15s;
+    }
+    .website-btn:hover { background: rgba(242,183,5,0.22); }
+    .detail-muted { color: var(--mist); font-size: 13px; }
+
+    /* ── No results ── */
+    .no-results {
+      text-align: center;
+      padding: 60px 0;
+      color: var(--mist);
+      font-size: 14px;
+    }
+
+    /* ── Footer ── */
+    .footer {
+      text-align: center;
+      padding: 24px 24px 44px;
+      border-top: 1px solid var(--courtLight);
+      color: var(--mist);
+      font-size: 12px;
+      line-height: 1.8;
+    }
+    .footer a { color: var(--gold); text-decoration: none; font-weight: 600; }
+  </style>
+</head>
+<body>
+
+<!-- ── Header ── -->
+<div class="header">
+  <p class="header-label">The Cheer Hub</p>
+  <h1>Canadian All-Star<br>Gym Directory</h1>
+  <p class="header-sub">Verified all-star cheerleading gyms across Canada · 2026–2027 season</p>
+  <span class="header-count" id="total-count"></span>
+</div>
+
+<!-- ── Controls ── -->
+<div class="controls">
+  <div class="search-wrap">
+    <span class="search-icon">⌕</span>
+    <input
+      id="search"
+      class="search-input"
+      type="search"
+      placeholder="Search gyms, cities, or provinces…"
+      autocomplete="off"
+    />
+    <button class="search-clear" id="search-clear" aria-label="Clear search">×</button>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+</div>
+
+<!-- ── Content ── -->
+<div class="content">
+  <p class="results-label" id="results-label" style="display:none"></p>
+  <div id="gym-list"></div>
+</div>
+
+<!-- ── Footer ── -->
+<div class="footer">
+  <p>Data sourced from the Cheer Hub Canadian All-Star Gym Directory</p>
+  <p>Updated for the 2026–2027 competitive season</p>
+  <p style="margin-top:10px">
+    <a href="https://cheerhub.ca/live-scores" target="_blank" rel="noopener">Visit Cheer Hub Live Scores ↗</a>
+  </p>
+</div>
+
+<script>
+/* ── Province config ──────────────────────────────────── */
+const PROVINCES = [
+  { code: 'ALL', name: 'All Provinces',            color: '#F2B705' },
+  { code: 'ON',  name: 'Ontario',                  color: '#FF4D5E' },
+  { code: 'QC',  name: 'Quebec',                   color: '#FF2E8B' },
+  { code: 'AB',  name: 'Alberta',                  color: '#E67E22' },
+  { code: 'BC',  name: 'British Columbia',          color: '#3FCB8C' },
+  { code: 'SK',  name: 'Saskatchewan',             color: '#4A9EFF' },
+  { code: 'MB',  name: 'Manitoba',                 color: '#9B59B6' },
+  { code: 'NB',  name: 'New Brunswick',            color: '#3FCB8C' },
+  { code: 'NS',  name: 'Nova Scotia',              color: '#FF4D5E' },
+  { code: 'PE',  name: 'Prince Edward Island',     color: '#FF2E8B' },
+  { code: 'NL',  name: 'Newfoundland & Labrador',  color: '#4A9EFF' },
+];
+
+const pColor = (code) => PROVINCES.find(p => p.code === code)?.color ?? '#92A2C2';
+const pName  = (code) => PROVINCES.find(p => p.code === code)?.name ?? code;
+
+/* ── Gym data ─────────────────────────────────────────── */
+const GYMS = [
+  // Ontario
+  { name: 'Alpha Cheer & Tumbling',             province: 'ON', city: 'Ontario',            website: '' },
+  { name: 'Beach Cheer Athletics',              province: 'ON', city: 'Ontario',            website: '' },
+  { name: 'Black Widow Cheer Gym',              province: 'ON', city: 'Ontario',            website: '' },
+  { name: 'Champion Cheer Academy',             province: 'ON', city: 'Ontario',            website: '' },
+  { name: 'Cheer Fuzion All-Stars (CFA)',       province: 'ON', city: 'Ontario',            website: '' },
+  { name: 'CheerForce AllStars',                province: 'ON', city: 'Ontario',            website: '' },
+  { name: 'CheerPride All-Stars',               province: 'ON', city: 'Ontario',            website: '' },
+  { name: 'Cheer Sport Sharks – Ancaster',      province: 'ON', city: 'Ancaster',           website: 'https://cheersportsharks.com' },
+  { name: 'Cheer Sport Sharks – Kitchener',     province: 'ON', city: 'Kitchener',          website: 'https://cheersportsharks.com' },
+  { name: 'Cheer Sport Sharks – Milton',        province: 'ON', city: 'Milton',             website: 'https://cheersportsharks.com' },
+  { name: 'Cheer Sport Sharks – Ottawa',        province: 'ON', city: 'Ottawa',             website: 'https://cheersportsharks.com' },
+  { name: 'Cheer Sport Sharks – Toronto',       province: 'ON', city: 'Toronto',            website: 'https://cheersportsharks.com' },
+  { name: 'Cheer Strike Royals',                province: 'ON', city: 'Ontario',            website: '' },
+  { name: 'Cheer Strong Inc',                   province: 'ON', city: 'Ontario',            website: '' },
+  { name: 'Kingston Elite Cheerleading',        province: 'ON', city: 'Kingston',           website: '' },
+  { name: 'NorthStar Cheer',                    province: 'ON', city: 'Ontario',            website: '' },
+  { name: 'PCT Cheer & Tumble',                 province: 'ON', city: 'Ontario',            website: '' },
+  { name: 'Scorpions Niagara',                  province: 'ON', city: 'Niagara Region',     website: '' },
+  { name: 'Solar Cheerleading Club',            province: 'ON', city: 'Ontario',            website: '' },
+  { name: 'Supreme Cheerleading',               province: 'ON', city: 'Ontario',            website: '' },
+  { name: 'Tigers Athletics',                   province: 'ON', city: 'Ontario',            website: '' },
+  // Quebec
+  { name: 'Centre Coyotes',                     province: 'QC', city: 'Quebec',             website: '' },
+  { name: 'Cheer Sport Sharks – Laval',         province: 'QC', city: 'Laval',              website: 'https://cheersportsharks.com' },
+  { name: 'Cheer Sport Sharks – Québec City',   province: 'QC', city: 'Québec City',        website: 'https://cheersportsharks.com' },
+  { name: 'Club Gymini (G-Force)',               province: 'QC', city: 'Quebec',             website: '' },
+  { name: 'Flyers Cheerleading',                province: 'QC', city: 'Quebec',             website: '' },
+  { name: 'Spirit Cheer 07',                    province: 'QC', city: 'Quebec',             website: '' },
+  { name: 'Zodiak Elite',                       province: 'QC', city: 'Quebec',             website: '' },
+  // Alberta
+  { name: 'Alberta Cheer Empire',               province: 'AB', city: 'Alberta',            website: '' },
+  { name: 'Calgary Stars All-Star Cheer',       province: 'AB', city: 'Calgary',            website: '' },
+  { name: 'Cheer Sport Sharks – Edmonton',      province: 'AB', city: 'Edmonton',           website: 'https://cheersportsharks.com' },
+  { name: 'Gymniks All-Stars',                  province: 'AB', city: 'Alberta',            website: '' },
+  { name: 'Peak Elite Cheerleading',            province: 'AB', city: 'Alberta',            website: '' },
+  { name: 'Perfect Storm Athletics – Edmonton', province: 'AB', city: 'Edmonton',           website: '' },
+  { name: 'Perfect Storm – Sherwood Park',      province: 'AB', city: 'Sherwood Park',      website: '' },
+  { name: 'Premier Academy – Bonnyville',       province: 'AB', city: 'Bonnyville',         website: '' },
+  { name: 'Premier Academy – Fort McMurray',    province: 'AB', city: 'Fort McMurray',      website: '' },
+  { name: 'Premier Academy – Red Deer',         province: 'AB', city: 'Red Deer',           website: '' },
+  // British Columbia
+  { name: 'Cheer Sport Sharks – Vancouver',     province: 'BC', city: 'Vancouver',          website: 'https://cheersportsharks.com' },
+  { name: 'Freeze Athletics',                   province: 'BC', city: 'British Columbia',   website: '' },
+  { name: 'Kelowna Cheer Athletics (KCA)',      province: 'BC', city: 'Kelowna',            website: '' },
+  { name: 'Okanagan Firestorm Cheer',           province: 'BC', city: 'Okanagan',           website: '' },
+  { name: 'Vancouver All Stars (G Force Gym)',  province: 'BC', city: 'Vancouver',          website: '' },
+  // Saskatchewan
+  { name: 'Aerial Cheer Athletics',             province: 'SK', city: 'Saskatchewan',       website: '' },
+  { name: 'Airbourne Cheer Athletics',          province: 'SK', city: 'Saskatchewan',       website: '' },
+  { name: 'Biggar Cheerleading',                province: 'SK', city: 'Biggar',             website: '' },
+  { name: 'Boss Athletics',                     province: 'SK', city: 'Saskatchewan',       website: '' },
+  { name: 'Bravo Dance Company',                province: 'SK', city: 'Saskatchewan',       website: '' },
+  { name: 'Channel Performance',                province: 'SK', city: 'Saskatchewan',       website: '' },
+  { name: 'Gridders Cheerleading',              province: 'SK', city: 'Saskatchewan',       website: '' },
+  { name: 'Infinity Athletics',                 province: 'SK', city: 'Saskatchewan',       website: '' },
+  { name: 'Prairie Fire Cheerleading',          province: 'SK', city: 'Saskatchewan',       website: '' },
+  { name: 'Prince Albert Cheer Explosion',      province: 'SK', city: 'Prince Albert',      website: '' },
+  { name: 'Rebels Cheerleading Athletics',      province: 'SK', city: 'Saskatchewan',       website: '' },
+  { name: 'Warman Ultimate Cheerleading',       province: 'SK', city: 'Warman',             website: '' },
+  { name: 'Western Cheer',                      province: 'SK', city: 'Saskatchewan',       website: '' },
+  // Manitoba
+  { name: 'Central Cheer',                      province: 'MB', city: 'Winnipeg',           website: '' },
+  { name: 'Phoenix Cheer Athletics',            province: 'MB', city: 'Manitoba',           website: '' },
+  { name: 'Vision Cheer Company',               province: 'MB', city: 'Manitoba',           website: '' },
+  // New Brunswick
+  { name: 'Olympia Allstar Cheerleading',       province: 'NB', city: 'Moncton',            website: '' },
+  { name: 'Sky Athletics Cheerleading',         province: 'NB', city: 'Saint John',         website: '' },
+  // Nova Scotia
+  { name: 'Empire Athletics South Shore',       province: 'NS', city: 'South Shore',        website: '' },
+  { name: 'Extreme Athletics',                  province: 'NS', city: 'Dartmouth',          website: '' },
+  { name: 'Halifax Cheer Elite',                province: 'NS', city: 'Halifax',            website: '' },
+  { name: 'Integrity Cheer Empire',             province: 'NS', city: 'Windsor & Kentville',website: '' },
+  { name: 'Legacy Cheer Atlantic',              province: 'NS', city: 'Dartmouth',          website: '' },
+  { name: 'Premier Cheer All-Stars',            province: 'NS', city: 'Sydney',             website: '' },
+  // Prince Edward Island
+  { name: 'Passion Elite Cheer',                province: 'PE', city: 'Charlottetown',      website: '' },
+  // Newfoundland & Labrador
+  { name: 'Cheer Sport Sharks – NL',            province: 'NL', city: 'Mount Pearl',        website: 'https://cheersportsharks.com' },
+];
+
+/* ── State ────────────────────────────────────────────── */
+let activeProvince = 'ALL';
+let searchQuery    = '';
+
+/* ── Counts ───────────────────────────────────────────── */
+const counts = { ALL: GYMS.length };
+GYMS.forEach(g => { counts[g.province] = (counts[g.province] || 0) + 1; });
+
+/* ── Render province order ────────────────────────────── */
+const PROVINCE_ORDER = PROVINCES.filter(p => p.code !== 'ALL').map(p => p.code);
+
+/* ── Build tabs ───────────────────────────────────────── */
+function buildTabs() {
+  const container = document.getElementById('tabs');
+  PROVINCES.forEach(p => {
+    const btn = document.createElement('button');
+    btn.className = 'tab';
+    btn.dataset.code = p.code;
+    btn.style.setProperty('--accent', p.color);
+    btn.innerHTML = `${p.code === 'ALL' ? 'All' : p.code}<span class="count">${counts[p.code] ?? 0}</span>`;
+    btn.addEventListener('click', () => { activeProvince = p.code; render(); });
+    container.appendChild(btn);
+  });
+}
+
+function updateTabs() {
+  document.querySelectorAll('.tab').forEach(btn => {
+    const p    = PROVINCES.find(x => x.code === btn.dataset.code);
+    const active = btn.dataset.code === activeProvince;
+    btn.style.borderColor  = active ? p.color : 'var(--courtLight)';
+    btn.style.background   = active ? `${p.color}22` : 'transparent';
+    btn.style.color        = active ? p.color : 'var(--mist)';
+    btn.style.fontWeight   = active ? '700' : '500';
+  });
+}
+
+/* ── Filter gyms ──────────────────────────────────────── */
+function filterGyms() {
+  const q = searchQuery.toLowerCase().trim();
+  return GYMS.filter(g => {
+    const matchP = activeProvince === 'ALL' || g.province === activeProvince;
+    const matchQ = !q ||
+      g.name.toLowerCase().includes(q) ||
+      g.city.toLowerCase().includes(q) ||
+      pName(g.province).toLowerCase().includes(q) ||
+      g.province.toLowerCase().includes(q);
+    return matchP && matchQ;
+  });
+}
+
+/* ── Build gym card ───────────────────────────────────── */
+function buildCard(gym) {
+  const accent = pColor(gym.province);
+  const card   = document.createElement('div');
+  card.className = 'gym-card';
+
+  card.innerHTML = `
+    <div class="gym-header">
+      <span class="gym-badge" style="color:${accent};background:${accent}22;">${gym.province}</span>
+      <div class="gym-info">
+        <div class="gym-name">${gym.name}</div>
+        <div class="gym-city">${gym.city}</div>
+      </div>
+      <span class="gym-chevron">▾</span>
+    </div>
+    <div class="gym-detail">
+      <div class="gym-detail-inner">
+        <div class="detail-row">
+          <span class="detail-label">Province</span>
+          <span class="detail-value">${pName(gym.province)}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Location</span>
+          <span class="detail-value">${gym.city}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Contact</span>
+          <span class="detail-value detail-muted">Search gym on Instagram / Facebook</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Website</span>
+          <span class="detail-value">
+            ${gym.website
+              ? `<a class="website-btn" href="${gym.website}" target="_blank" rel="noopener noreferrer">Visit Website ↗</a>`
+              : `<span class="detail-muted">Search gym on Google</span>`}
+          </span>
+        </div>
+      </div>
+    </div>
+  `;
+
+  card.querySelector('.gym-header').addEventListener('click', () => {
+    const wasOpen = card.classList.contains('open');
+    card.classList.toggle('open', !wasOpen);
+  });
+
+  return card;
+}
+
+/* ── Main render ──────────────────────────────────────── */
+function render() {
+  updateTabs();
+
+  const filtered   = filterGyms();
+  const listEl     = document.getElementById('gym-list');
+  const labelEl    = document.getElementById('results-label');
+  listEl.innerHTML = '';
+
+  if (searchQuery) {
+    labelEl.style.display = 'block';
+    labelEl.textContent   = `${filtered.length} result${filtered.length !== 1 ? 's' : ''} for "${searchQuery}"`;
+  } else {
+    labelEl.style.display = 'none';
+  }
+
+  if (filtered.length === 0) {
+    listEl.innerHTML = '<div class="no-results">No gyms found. Try a different search.</div>';
+    return;
+  }
+
+  if (activeProvince !== 'ALL' || searchQuery) {
+    const ul = document.createElement('div');
+    ul.className = 'gym-list';
+    filtered.forEach(g => ul.appendChild(buildCard(g)));
+    listEl.appendChild(ul);
+    return;
+  }
+
+  /* Grouped by province */
+  PROVINCE_ORDER.forEach(code => {
+    const gyms = filtered.filter(g => g.province === code);
+    if (!gyms.length) return;
+
+    const color   = pColor(code);
+    const section = document.createElement('div');
+    section.className = 'province-section';
+
+    const heading = document.createElement('div');
+    heading.className = 'province-heading';
+    heading.innerHTML = `
+      <div class="province-bar" style="background:${color};"></div>
+      <span class="province-title" style="color:${color};">${pName(code)}</span>
+      <span class="province-gym-count">${gyms.length} gym${gyms.length !== 1 ? 's' : ''}</span>
+    `;
+
+    const ul = document.createElement('div');
+    ul.className = 'gym-list';
+    gyms.forEach(g => ul.appendChild(buildCard(g)));
+
+    section.appendChild(heading);
+    section.appendChild(ul);
+    listEl.appendChild(section);
+  });
+}
+
+/* ── Init ─────────────────────────────────────────────── */
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('total-count').textContent = `${GYMS.length} verified gyms across 10 provinces`;
+
+  buildTabs();
+  render();
+
+  const searchEl = document.getElementById('search');
+  const clearBtn = document.getElementById('search-clear');
+
+  searchEl.addEventListener('input', () => {
+    searchQuery = searchEl.value;
+    clearBtn.style.display = searchQuery ? 'block' : 'none';
+    render();
+  });
+
+  clearBtn.addEventListener('click', () => {
+    searchEl.value = '';
+    searchQuery    = '';
+    clearBtn.style.display = 'none';
+    render();
+  });
+});
+</script>
+</body>
+</html>
