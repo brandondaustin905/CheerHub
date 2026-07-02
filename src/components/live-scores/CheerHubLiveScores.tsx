@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   Lock, Unlock, Plus, X, MoreVertical, Edit3, Trash2,
   Share2, Calendar, MapPin, ChevronLeft, ChevronDown,
-  Users, AlertTriangle, Bell, Eye, Download, Upload,
+  Users, AlertTriangle, Eye, Download, Upload,
 } from 'lucide-react';
 
 import Drum from './Drum';
@@ -523,7 +523,6 @@ function EntryMenu({
     >
       {canEdit && item('edit', Edit3, 'Edit score')}
       {item('share', Share2, 'Share result')}
-      {item('watch', Bell, 'Watch this team')}
       {item('discrepancy', AlertTriangle, 'Flag discrepancy')}
       {canEdit && (
         <>
