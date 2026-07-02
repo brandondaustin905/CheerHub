@@ -85,10 +85,6 @@ export const CANADIAN_GYMS: string[] = [
   'Force Athletics',
   'Revolution Athletics',
   'Elite Force Athletics',
-  'Altitude Athletics',
-  'Inspire Athletics',
-  'Spirit Athletics',
-  'North Star Athletics',
   // Quebec
   'Smoke Cheer Athletics',
   'Scandalous Athletics',
