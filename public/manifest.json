@@ -1,0 +1,26 @@
+{
+  "name": "Cheer Hub",
+  "short_name": "Cheer Hub",
+  "description": "Live scores for Canadian All-Star cheerleading — community-reported, updated in real time.",
+  "start_url": "/live-scores",
+  "display": "standalone",
+  "background_color": "#10151F",
+  "theme_color": "#10151F",
+  "orientation": "portrait-primary",
+  "categories": ["sports"],
+  "lang": "en-CA",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
