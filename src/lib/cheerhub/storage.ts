@@ -28,15 +28,33 @@ function safeWrite(key: string, value: unknown): void {
   }
 }
 
-// Seed pre-populated competitions on first install (once per seed version)
+// Seed pre-populated competitions on first install (once per seed version).
+// On re-seeds (version bump) we UPDATE factual fields on existing seeded
+// competitions so venue/date corrections reach users who already have data.
+// User-set fields (status, divisions, bannerUrl) are preserved.
 export function maybeSeeed(): void {
   try {
     if (localStorage.getItem(SEED_VERSION_KEY)) return;
     const existing = safeRead<Competition[]>(STORAGE_KEYS.competitions, []);
-    // Merge seeds that aren't already present
-    const ids = new Set(existing.map((c) => c.id));
-    const merged = [...existing, ...SEEDED_COMPETITIONS.filter((s) => !ids.has(s.id))];
-    safeWrite(STORAGE_KEYS.competitions, merged);
+    const seedMap  = new Map(SEEDED_COMPETITIONS.map((s) => [s.id, s]));
+
+    // Keep user-created competitions; update factual data for seeded ones.
+    const userCreated = existing.filter((c) => !seedMap.has(c.id));
+    const seeded = SEEDED_COMPETITIONS.map((seed) => {
+      const prev = existing.find((c) => c.id === seed.id);
+      if (!prev) return seed;
+      return {
+        ...prev,
+        name:        seed.name,
+        venue:       seed.venue,
+        city:        seed.city,
+        startDate:   seed.startDate,
+        endDate:     seed.endDate,
+        accentColor: seed.accentColor,
+      };
+    });
+
+    safeWrite(STORAGE_KEYS.competitions, [...userCreated, ...seeded]);
     localStorage.setItem(SEED_VERSION_KEY, '1');
   } catch { /* best-effort */ }
 }

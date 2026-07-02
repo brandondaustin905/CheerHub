@@ -208,4 +208,4 @@ export const SEEDED_COMPETITIONS: Competition[] = [
   },
 ];
 
-export const SEED_VERSION_KEY = 'cheerhub:seeded:v3';
+export const SEED_VERSION_KEY = 'cheerhub:seeded:v4';

@@ -67,6 +67,7 @@ export const CANADIAN_GYMS: string[] = [
   'CheerPride All-Stars',
   'Chrome Athletics',
   'CheerStrike Royals',
+  'Cheer Strong Inc.',
   'Gems Athletics',
   'Perfect Storm Athletics',
   'Legacy Athletics',
@@ -84,6 +85,10 @@ export const CANADIAN_GYMS: string[] = [
   'Force Athletics',
   'Revolution Athletics',
   'Elite Force Athletics',
+  'Altitude Athletics',
+  'Inspire Athletics',
+  'Spirit Athletics',
+  'North Star Athletics',
   // Quebec
   'Smoke Cheer Athletics',
   'Scandalous Athletics',
