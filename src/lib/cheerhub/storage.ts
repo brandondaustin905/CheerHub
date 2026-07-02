@@ -1,4 +1,5 @@
 import type { Competition, Entry, Lock, WatchItem } from './types';
+import { SEEDED_COMPETITIONS, SEED_VERSION_KEY } from './seeds';
 
 // All keys in one place so they're easy to audit / migrate.
 export const STORAGE_KEYS = {
@@ -25,6 +26,19 @@ function safeWrite(key: string, value: unknown): void {
     console.error('cheerhub: storage write failed', key, err);
     throw err;
   }
+}
+
+// Seed pre-populated competitions on first install (once per seed version)
+export function maybeSeeed(): void {
+  try {
+    if (localStorage.getItem(SEED_VERSION_KEY)) return;
+    const existing = safeRead<Competition[]>(STORAGE_KEYS.competitions, []);
+    // Merge seeds that aren't already present
+    const ids = new Set(existing.map((c) => c.id));
+    const merged = [...existing, ...SEEDED_COMPETITIONS.filter((s) => !ids.has(s.id))];
+    safeWrite(STORAGE_KEYS.competitions, merged);
+    localStorage.setItem(SEED_VERSION_KEY, '1');
+  } catch { /* best-effort */ }
 }
 
 // Competitions

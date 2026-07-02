@@ -5,9 +5,12 @@ import {
   Lock, Unlock, Plus, X, MoreVertical, Edit3, Trash2,
   Share2, Calendar, MapPin, ChevronLeft, ChevronDown,
   Users, AlertTriangle, Eye, Download, Upload,
+  Trophy, Layers, BookOpen,
 } from 'lucide-react';
 
 import Drum from './Drum';
+import DivisionsTab from './DivisionsTab';
+import LearnTab from './LearnTab';
 import {
   COLORS, CRITERIA, GROUP_ORDER,
   DEDUCTION_STEPS, CANADIAN_DIVISIONS, EDITOR_PASSCODE,
@@ -18,6 +21,7 @@ import {
   loadLocks, saveLocks,
   loadWatched, saveWatched,
   exportSnapshot, importSnapshot,
+  maybeSeeed,
 } from '@/lib/cheerhub/storage';
 import {
   uid, formatScore, todayISO, formatDateRange, suggestStatus,
@@ -1423,6 +1427,7 @@ function CompetitionCard({
    ================================================================ */
 
 export default function CheerHubLiveScores() {
+  const [tab,             setTab]             = useState<'scores' | 'divisions' | 'learn'>('scores');
   const [competitions,    setCompetitions]    = useState<Competition[]>([]);
   const [loading,         setLoading]         = useState(true);
   const [openCompId,      setOpenCompId]      = useState<string | null>(null);
@@ -1445,6 +1450,7 @@ export default function CheerHubLiveScores() {
   }, []);
 
   useEffect(() => {
+    maybeSeeed();
     refresh();
     const interval = setInterval(refresh, 5_000);
     return () => clearInterval(interval);
@@ -1509,8 +1515,60 @@ export default function CheerHubLiveScores() {
 
   const liveCount = grouped.live.length;
 
+  // Bottom nav definition
+  const NAV = [
+    { id: 'scores'    as const, label: 'Scores',    Icon: Trophy    },
+    { id: 'divisions' as const, label: 'Divisions', Icon: Layers    },
+    { id: 'learn'     as const, label: 'Learn',     Icon: BookOpen  },
+  ];
+
+  const BottomNav = (
+    <div
+      className="fixed bottom-0 left-0 right-0 z-30 flex"
+      style={{ background: COLORS.court, borderTop: `1px solid ${COLORS.courtLight}` }}
+    >
+      {NAV.map(({ id, label, Icon }) => {
+        const active = tab === id;
+        return (
+          <button
+            key={id}
+            onClick={() => setTab(id)}
+            className="flex-1 flex flex-col items-center justify-center py-2.5 gap-0.5"
+            style={{ color: active ? COLORS.gold : COLORS.mist }}
+          >
+            <Icon size={20} />
+            <span className="text-[10px] font-medium tracking-wide">{label}</span>
+            {active && (
+              <span className="absolute bottom-0 w-8 h-0.5 rounded-t" style={{ background: COLORS.gold }} />
+            )}
+          </button>
+        );
+      })}
+    </div>
+  );
+
+  // Non-scores tabs rendered directly
+  if (tab === 'divisions') {
+    return (
+      <div className="chl-root min-h-screen relative" style={{ background: COLORS.ink }}>
+        <DivisionsTab />
+        {BottomNav}
+        <Toast toast={toast} onDismiss={() => setToast(null)} />
+      </div>
+    );
+  }
+  if (tab === 'learn') {
+    return (
+      <div className="chl-root min-h-screen relative" style={{ background: COLORS.ink }}>
+        <LearnTab />
+        {BottomNav}
+        <Toast toast={toast} onDismiss={() => setToast(null)} />
+      </div>
+    );
+  }
+
   return (
-    <div className="chl-root min-h-screen" style={{ background: COLORS.ink }}>
+    <div className="chl-root min-h-screen relative" style={{ background: COLORS.ink }}>
 
       {/* ── Hero header ─────────────────────────────────────── */}
       <div style={{ background: `linear-gradient(180deg, ${COLORS.court} 0%, ${COLORS.ink} 140px)` }}>
@@ -1655,7 +1713,7 @@ export default function CheerHubLiveScores() {
       {editorUnlocked && (
         <button
           onClick={() => { setEditingComp(undefined); setFormOpen(true); }}
-          className="fixed bottom-6 right-6 w-14 h-14 rounded-full flex items-center justify-center shadow-xl"
+          className="fixed bottom-20 right-6 w-14 h-14 rounded-full flex items-center justify-center shadow-xl"
           style={{ background: COLORS.gold, color: COLORS.ink }}
           aria-label="Add competition"
         >
@@ -1678,6 +1736,7 @@ export default function CheerHubLiveScores() {
         />
       )}
       {dataPanel && <DataPanel onClose={() => setDataPanel(false)} showToast={showToast} />}
+      {BottomNav}
       <Toast toast={toast} onDismiss={() => setToast(null)} />
     </div>
   );
