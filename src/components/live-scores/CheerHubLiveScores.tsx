@@ -585,17 +585,17 @@ function TeamRow({
 
   return (
     <div
-      className="relative rounded-xl mb-2 overflow-hidden"
+      className="relative rounded-xl mb-2"
       style={{ background: COLORS.court }}
     >
-      {/* Score fill bar */}
-      <div
-        className="absolute left-0 top-0 bottom-0 pointer-events-none transition-all duration-700"
-        style={{ width: `${pct}%`, background: 'rgba(242,183,5,0.055)' }}
-      />
-      {flashing && (
-        <div className="absolute inset-0 chl-flash pointer-events-none" />
-      )}
+      {/* Score fill bar + flash — clipped to card corners without clipping the menu */}
+      <div className="absolute inset-0 rounded-xl overflow-hidden pointer-events-none">
+        <div
+          className="absolute left-0 top-0 bottom-0 transition-all duration-700"
+          style={{ width: `${pct}%`, background: 'rgba(242,183,5,0.055)' }}
+        />
+        {flashing && <div className="absolute inset-0 chl-flash" />}
+      </div>
 
       <div className="relative flex items-center gap-3 px-4 py-3">
         {/* Placement circle */}
