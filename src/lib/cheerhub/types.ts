@@ -27,6 +27,8 @@ export interface Competition {
   divisions: string[];
   status: CompetitionStatus;
   createdAt: number;
+  bannerUrl?: string;
+  accentColor?: string;
 }
 
 export type CompetitionStatus = 'upcoming' | 'live' | 'completed';

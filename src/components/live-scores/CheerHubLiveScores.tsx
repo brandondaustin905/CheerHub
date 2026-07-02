@@ -776,6 +776,7 @@ function CompetitionFormModal({ initial, onSave, onClose, onDelete }: Competitio
   const [city,      setCity]      = useState(initial?.city ?? '');
   const [startDate, setStartDate] = useState(initial?.startDate ?? todayISO());
   const [endDate,   setEndDate]   = useState(initial?.endDate ?? '');
+  const [bannerUrl, setBannerUrl] = useState(initial?.bannerUrl ?? '');
   const [divisions, setDivisions] = useState<string[]>(initial?.divisions ?? []);
   const [customDiv, setCustomDiv] = useState('');
   const [status,    setStatus]    = useState(initial?.status ?? suggestStatus(startDate, endDate));
@@ -799,6 +800,7 @@ function CompetitionFormModal({ initial, onSave, onClose, onDelete }: Competitio
         <TextField label="Venue / facility" value={venue} onChange={(e) => setVenue(e.target.value)} placeholder="e.g. Scotiabank Arena" />
         <TextField label="City / province" value={city} onChange={(e) => setCity(e.target.value)} placeholder="e.g. Toronto, ON" />
       </div>
+      <TextField label="Banner image URL (opt.)" value={bannerUrl} onChange={(e) => setBannerUrl(e.target.value)} placeholder="https://canadiancheer.com/…/event-banner.jpg" />
       <div className="grid grid-cols-2 gap-3">
         <TextField label="Start date" type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
         <TextField label="End date (opt.)" type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
@@ -864,7 +866,7 @@ function CompetitionFormModal({ initial, onSave, onClose, onDelete }: Competitio
 
       <PrimaryButton
         disabled={!name.trim()}
-        onClick={() => onSave({ name: name.trim(), venue: venue.trim(), city: city.trim(), startDate, endDate: endDate || startDate, divisions, status })}
+        onClick={() => onSave({ name: name.trim(), venue: venue.trim(), city: city.trim(), startDate, endDate: endDate || startDate, divisions, status, bannerUrl: bannerUrl.trim() || undefined })}
       >
         {initial ? 'Save changes' : 'Create competition'}
       </PrimaryButton>
@@ -1156,6 +1158,22 @@ function CompetitionDetail({
 
       {/* ── Hero header ───────────────────────────────────────── */}
       <div style={{ background: `linear-gradient(180deg, ${COLORS.court} 0%, ${COLORS.ink} 100%)` }}>
+
+        {/* Banner image */}
+        {comp.bannerUrl && (
+          <div className="relative w-full" style={{ height: 180 }}>
+            <img
+              src={comp.bannerUrl}
+              alt={comp.name}
+              className="w-full h-full object-cover"
+            />
+            <div
+              className="absolute inset-0"
+              style={{ background: 'linear-gradient(to bottom, rgba(27,42,72,0.2) 0%, rgba(27,42,72,0.95) 100%)' }}
+            />
+          </div>
+        )}
+
         <div className="max-w-2xl mx-auto px-4 pt-5 pb-0">
 
           {/* Nav row */}
@@ -1348,8 +1366,25 @@ function CompetitionCard({
         boxShadow:  isLive ? '0 0 24px rgba(255,77,94,0.12)' : 'none',
       }}
     >
-      {/* Top accent bar */}
-      <div style={{ height: 3, background: s.color, opacity: isLive ? 1 : 0.5 }} />
+      {/* Banner image or accent bar */}
+      {comp.bannerUrl ? (
+        <div className="relative" style={{ height: 90 }}>
+          <img
+            src={comp.bannerUrl}
+            alt={comp.name}
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, transparent 40%, rgba(27,42,72,0.85) 100%)' }} />
+          {isLive && (
+            <div className="absolute top-2 left-2 flex items-center gap-1.5 px-2 py-1 rounded-full" style={{ background: 'rgba(0,0,0,0.6)' }}>
+              <span className="w-1.5 h-1.5 rounded-full chl-pulse" style={{ background: COLORS.coral }} />
+              <span className="text-[10px] font-bold tracking-wider" style={{ color: COLORS.coral }}>LIVE</span>
+            </div>
+          )}
+        </div>
+      ) : (
+        <div style={{ height: 3, background: comp.accentColor ?? s.color, opacity: isLive ? 1 : 0.5 }} />
+      )}
 
       <button
         onClick={onOpen}

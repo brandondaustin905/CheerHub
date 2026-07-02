@@ -2,19 +2,19 @@ import type { Competition } from './types';
 
 // 2026-2027 Canadian All-Star cheer season.
 // Dates based on confirmed announcements + historical patterns.
-// Marked with seeded: true so the app can distinguish them from user-created events.
 export const SEEDED_COMPETITIONS: Competition[] = [
   // ── FALL 2026 ──────────────────────────────────────────────────
   {
     id: 'seed-cheer-for-cure-2026',
     name: 'Cheer for the Cure',
-    venue: 'Paramount Fine Foods Centre',
+    venue: 'International Centre',
     city: 'Mississauga, ON',
     startDate: '2026-11-27',
     endDate: '2026-11-29',
     divisions: [],
     status: 'upcoming',
     createdAt: 0,
+    accentColor: '#FF2E8B',
   },
   // ── JANUARY 2027 ───────────────────────────────────────────────
   {
@@ -27,6 +27,7 @@ export const SEEDED_COMPETITIONS: Competition[] = [
     divisions: [],
     status: 'upcoming',
     createdAt: 0,
+    accentColor: '#4A9EFF',
   },
   {
     id: 'seed-big-east-blast-2027',
@@ -38,6 +39,7 @@ export const SEEDED_COMPETITIONS: Competition[] = [
     divisions: [],
     status: 'upcoming',
     createdAt: 0,
+    accentColor: '#3FCB8C',
   },
   {
     id: 'seed-cheer-fest-2027',
@@ -49,6 +51,7 @@ export const SEEDED_COMPETITIONS: Competition[] = [
     divisions: [],
     status: 'upcoming',
     createdAt: 0,
+    accentColor: '#9B59B6',
   },
   // ── FEBRUARY 2027 ──────────────────────────────────────────────
   {
@@ -61,6 +64,7 @@ export const SEEDED_COMPETITIONS: Competition[] = [
     divisions: [],
     status: 'upcoming',
     createdAt: 0,
+    accentColor: '#E67E22',
   },
   {
     id: 'seed-spirit-sports-clash-2027',
@@ -72,28 +76,31 @@ export const SEEDED_COMPETITIONS: Competition[] = [
     divisions: [],
     status: 'upcoming',
     createdAt: 0,
+    accentColor: '#4A9EFF',
   },
   {
     id: 'seed-battle-border-2027',
     name: 'Battle at the Border',
-    venue: 'Scotiabank Convention Centre',
+    venue: 'Niagara Falls Convention Centre',
     city: 'Niagara Falls, ON',
     startDate: '2027-02-20',
     endDate: '2027-02-21',
     divisions: [],
     status: 'upcoming',
     createdAt: 0,
+    accentColor: '#FF4D5E',
   },
   {
     id: 'seed-big-east-showdown-2027',
     name: 'Big East Showdown',
-    venue: 'CAA Centre',
-    city: 'Brampton, ON',
+    venue: 'EY Centre',
+    city: 'Ottawa, ON',
     startDate: '2027-02-27',
     endDate: '2027-02-28',
     divisions: [],
     status: 'upcoming',
     createdAt: 0,
+    accentColor: '#3FCB8C',
   },
   {
     id: 'seed-quebec-champs-2027',
@@ -105,6 +112,7 @@ export const SEEDED_COMPETITIONS: Competition[] = [
     divisions: [],
     status: 'upcoming',
     createdAt: 0,
+    accentColor: '#4A9EFF',
   },
   // ── MARCH 2027 ─────────────────────────────────────────────────
   {
@@ -117,6 +125,7 @@ export const SEEDED_COMPETITIONS: Competition[] = [
     divisions: [],
     status: 'upcoming',
     createdAt: 0,
+    accentColor: '#4A9EFF',
   },
   {
     id: 'seed-ontario-provs-2027',
@@ -128,40 +137,44 @@ export const SEEDED_COMPETITIONS: Competition[] = [
     divisions: [],
     status: 'upcoming',
     createdAt: 0,
+    accentColor: '#FF4D5E',
   },
-  // ── APRIL 2027 (Nationals Weekend — Mississauga) ───────────────
+  // ── APRIL 2027 (Nationals Weekend — International Centre) ──────
   {
     id: 'seed-worlds-faceoff-2027',
     name: 'Canadian Worlds Face-Off',
-    venue: 'Paramount Fine Foods Centre',
+    venue: 'International Centre',
     city: 'Mississauga, ON',
     startDate: '2027-04-09',
     endDate: '2027-04-09',
     divisions: [],
     status: 'upcoming',
     createdAt: 0,
+    accentColor: '#F2B705',
   },
   {
     id: 'seed-canadian-finals-2027',
     name: 'Canadian Cheer Finals',
-    venue: 'Paramount Fine Foods Centre',
+    venue: 'International Centre',
     city: 'Mississauga, ON',
     startDate: '2027-04-10',
     endDate: '2027-04-10',
     divisions: [],
     status: 'upcoming',
     createdAt: 0,
+    accentColor: '#F2B705',
   },
   {
     id: 'seed-allstar-nationals-2027',
     name: 'Canadian All-Star Nationals',
-    venue: 'Paramount Fine Foods Centre',
+    venue: 'International Centre',
     city: 'Mississauga, ON',
     startDate: '2027-04-09',
     endDate: '2027-04-12',
     divisions: [],
     status: 'upcoming',
     createdAt: 0,
+    accentColor: '#F2B705',
   },
   // ── MAY 2027 ───────────────────────────────────────────────────
   {
@@ -174,7 +187,8 @@ export const SEEDED_COMPETITIONS: Competition[] = [
     divisions: [],
     status: 'upcoming',
     createdAt: 0,
+    accentColor: '#3FCB8C',
   },
 ];
 
-export const SEED_VERSION_KEY = 'cheerhub:seeded:v1';
+export const SEED_VERSION_KEY = 'cheerhub:seeded:v2';

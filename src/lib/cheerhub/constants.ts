@@ -61,7 +61,7 @@ export const CANADIAN_GYMS: string[] = [
   'Cheer Sport Sharks Vancouver',
   'Cheer Sport Sharks Edmonton',
   'CheerForce Ontario',
-  'Alpha All Stars',
+  'Alpha Cheer',
   'Wolfpack Allstars',
   'Prodigy Athletics',
   'Zodiak Elite',
