@@ -3,6 +3,7 @@ name: Deploy Gym Directory
 on:
   push:
     branches:
+      - main
       - gh-pages
   workflow_dispatch:
 
