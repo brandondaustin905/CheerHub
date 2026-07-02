@@ -82,6 +82,7 @@ export const CANADIAN_GYMS: string[] = [
   'Club Gymini (G-Force)',
   'Flyers Cheerleading',
   'Spirit Cheer 07',
+  'Zodiak Elite',
   // Alberta
   'Alberta Cheer Empire',
   'Calgary Stars All-Star Cheer',
