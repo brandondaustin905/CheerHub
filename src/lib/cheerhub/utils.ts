@@ -1,4 +1,4 @@
-import { CRITERIA } from './constants';
+import { CRITERIA, GROUP_ORDER } from './constants';
 import type { CriteriaMap, Deduction, Entry } from './types';
 
 export function uid(): string {
@@ -18,6 +18,13 @@ export function formatDateRange(start: string, end?: string): string {
   const s = new Date(start + 'T00:00:00').toLocaleDateString('en-CA', opts);
   if (!end || end === start) return s;
   return `${s} – ${new Date(end + 'T00:00:00').toLocaleDateString('en-CA', opts)}`;
+}
+
+export function daysUntil(dateStr: string): number {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const target = new Date(dateStr + 'T00:00:00');
+  return Math.ceil((target.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
 }
 
 export function suggestStatus(start: string, end?: string): 'upcoming' | 'live' | 'completed' {
@@ -63,7 +70,16 @@ export function getGroupTotal(criteria: CriteriaMap, group: string): number {
 }
 
 export function getTotal(entry: Pick<Entry, 'criteria' | 'deductions'>): number {
-  const raw = CRITERIA.reduce((s, c) => s + (entry.criteria?.[c.key] ?? 0), 0);
+  const c = entry.criteria;
+  // Simple total score
+  if ((c?.total as number | null) != null && (c!.total as number) > 0) {
+    return Math.max(0, Math.round(((c!.total as number) - getDeductionTotal(entry.deductions)) * 100) / 100);
+  }
+  // Group-based scoring
+  const hasGroupScores = GROUP_ORDER.some((k) => ((c?.[k] as number | null) ?? 0) > 0);
+  const raw = hasGroupScores
+    ? GROUP_ORDER.reduce((s, k) => s + (((c?.[k] as number | null) ?? 0)), 0)
+    : CRITERIA.reduce((s, cr) => s + (c?.[cr.key] ?? 0), 0);
   return Math.max(0, Math.round((raw - getDeductionTotal(entry.deductions)) * 100) / 100);
 }
 

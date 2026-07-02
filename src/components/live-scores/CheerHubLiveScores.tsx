@@ -1,16 +1,18 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import {
   Lock, Unlock, Plus, X, MoreVertical, Edit3, Trash2,
   Share2, Calendar, MapPin, ChevronLeft, ChevronDown,
-  Users, AlertTriangle, Bell, Eye, Download, Upload,
+  Users, AlertTriangle, Eye, Download, Upload,
+  Trophy, BookOpen, Layers,
 } from 'lucide-react';
 
 import Drum from './Drum';
+import LearnTab from './LearnTab';
 import {
-  COLORS, CRITERIA, GROUP_META, GROUP_ORDER,
-  DEDUCTION_STEPS, CANADIAN_DIVISIONS, EDITOR_PASSCODE,
+  COLORS, CRITERIA, GROUP_ORDER,
+  DEDUCTION_STEPS, CANADIAN_DIVISIONS, CANADIAN_GYMS, EDITOR_PASSCODE,
 } from '@/lib/cheerhub/constants';
 import {
   loadCompetitions, saveCompetitions,
@@ -18,14 +20,15 @@ import {
   loadLocks, saveLocks,
   loadWatched, saveWatched,
   exportSnapshot, importSnapshot,
+  maybeSeeed,
 } from '@/lib/cheerhub/storage';
 import {
   uid, formatScore, todayISO, formatDateRange, suggestStatus,
-  emptyCriteria, normalizeEntry, getDeductionTotal,
-  getGroupTotal, getTotal, computePlacements,
+  normalizeEntry, getDeductionTotal, daysUntil,
+  getTotal, computePlacements,
 } from '@/lib/cheerhub/utils';
 import type {
-  Entry, Competition, Deduction, ToastState, ScoreModalState,
+  Entry, Competition, CompetitionStatus, Deduction, ToastState, ScoreModalState,
 } from '@/lib/cheerhub/types';
 
 // Unique session ID — used for advisory edit locks.
@@ -205,9 +208,6 @@ function DeductionEditor({
           </button>
         </div>
       </div>
-      <p className="text-[10px] mt-2" style={{ color: COLORS.mist }}>
-        Score − deductions = final score, visible to all viewers.
-      </p>
     </div>
   );
 }
@@ -222,46 +222,33 @@ interface TeamScoreModalProps {
   entry?: Entry;
   compId: string;
   onSubmit: (data: { teamName: string; division: string; criteria: Record<string, number | null>; deductions: Deduction[] }) => void;
+  onDelete?: () => void;
   onClose: () => void;
 }
 
-function TeamScoreModal({ mode, division, entry, compId, onSubmit, onClose }: TeamScoreModalProps) {
-  const [teamName, setTeamName]     = useState(entry?.teamName ?? '');
-  const [criteria, setCriteria]     = useState<Record<string, number | null>>(() => {
-    const base = emptyCriteria();
-    if (entry?.criteria) {
-      Object.keys(base).forEach((k) => { if (entry.criteria[k] != null) base[k] = entry.criteria[k]; });
+function TeamScoreModal({ mode, division, entry, compId, onSubmit, onDelete, onClose }: TeamScoreModalProps) {
+  const [teamName, setTeamName] = useState(entry?.teamName ?? '');
+
+  const initScore = (() => {
+    const c = entry?.criteria ?? {};
+    if ((c.total as number | null) != null) return c.total as number;
+    if (GROUP_ORDER.some((k) => ((c[k] as number | null) ?? 0) > 0)) {
+      return GROUP_ORDER.reduce((s, k) => s + (((c[k] as number | null) ?? 0)), 0);
     }
-    return base;
-  });
-  const [deductions, setDeductions] = useState<Deduction[]>(entry?.deductions ?? []);
-  const [selectedKey, setSelectedKey] = useState(CRITERIA[0].key);
-  const [otherEditing, setOtherEditing] = useState(false);
+    return CRITERIA.reduce((s, cr) => s + (c[cr.key] ?? 0), 0);
+  })();
+  const [scoreWhole, setScoreWhole] = useState(Math.floor(initScore));
+  const [scoreDec,   setScoreDec]   = useState(Math.round((initScore % 1) * 100));
 
-  const criterion   = CRITERIA.find((c) => c.key === selectedKey)!;
-  const currentVal  = criteria[selectedKey] ?? 0;
+  const [deductions,     setDeductions]     = useState<Deduction[]>(entry?.deductions ?? []);
+  const [otherEditing,   setOtherEditing]   = useState(false);
+  const [confirmDelete,  setConfirmDelete]  = useState(false);
 
-  const [whole, setWhole] = useState(Math.floor(currentVal));
-  const [dec,   setDec]   = useState(Math.round((currentVal - Math.floor(currentVal)) * 100));
-
-  function switchCriterion(newKey: string) {
-    const drumVal = Number(`${whole}.${String(dec).padStart(2, '0')}`);
-    setCriteria((prev) => ({ ...prev, [selectedKey]: drumVal }));
-    setSelectedKey(newKey);
-    const newVal = criteria[newKey] ?? 0;
-    setWhole(Math.floor(newVal));
-    setDec(Math.round((newVal - Math.floor(newVal)) * 100));
-  }
-
-  const dedTotal    = deductions.reduce((s, d) => s + d.amount, 0);
-  const drumVal     = Number(`${whole}.${String(dec).padStart(2, '0')}`);
-  const liveCrit    = { ...criteria, [selectedKey]: drumVal };
-  const rawTotal    = CRITERIA.reduce((s, c) => s + (liveCrit[c.key] ?? 0), 0);
-  const finalTotal  = Math.max(0, Math.round((rawTotal - dedTotal) * 100) / 100);
-  const filledCount = CRITERIA.filter((c) => (liveCrit[c.key] ?? 0) > 0).length;
-
-  const wholeValues = Array.from({ length: criterion.max + 1 }, (_, i) => i);
-  const decValues   = Array.from({ length: 100 }, (_, i) => i);
+  const dedTotal   = getDeductionTotal(deductions);
+  const drumVal    = scoreWhole + scoreDec / 100;
+  const finalTotal = Math.max(0, Math.round((drumVal - dedTotal) * 100) / 100);
+  const wholeVals  = Array.from({ length: 151 }, (_, i) => i);
+  const decVals    = Array.from({ length: 100 }, (_, i) => i);
 
   // Advisory lock — prevents two editors from simultaneously writing the same entry.
   useEffect(() => {
@@ -298,8 +285,7 @@ function TeamScoreModal({ mode, division, entry, compId, onSubmit, onClose }: Te
   }, [mode, entry, compId]);
 
   function handleSubmit() {
-    const finalCriteria = { ...criteria, [selectedKey]: drumVal };
-    onSubmit({ teamName: teamName.trim(), division, criteria: finalCriteria, deductions });
+    onSubmit({ teamName: teamName.trim(), division, criteria: { total: drumVal }, deductions });
   }
 
   return (
@@ -316,70 +302,24 @@ function TeamScoreModal({ mode, division, entry, compId, onSubmit, onClose }: Te
         </div>
       )}
 
-      {/* Criteria picker */}
-      <label className="block mb-3">
-        <span className="block text-xs uppercase tracking-wide mb-1.5" style={{ color: COLORS.mist }}>
-          Criteria — {filledCount}/{CRITERIA.length} entered
-        </span>
-        <select
-          value={selectedKey}
-          onChange={(e) => switchCriterion(e.target.value)}
-          className="w-full px-3 py-2.5 rounded-lg outline-none"
-          style={{ background: COLORS.ink, color: COLORS.chalk, border: `1px solid ${COLORS.courtLight}` }}
-        >
-          {GROUP_ORDER.map((grp) => (
-            <optgroup key={grp} label={`${GROUP_META[grp].label} (/${GROUP_META[grp].max})`}>
-              {CRITERIA.filter((c) => c.group === grp).map((c) => (
-                <option key={c.key} value={c.key}>
-                  {c.label} (/{c.max}){(liveCrit[c.key] ?? 0) > 0 ? ` · ${formatScore(liveCrit[c.key]!)}` : ''}
-                </option>
-              ))}
-            </optgroup>
-          ))}
-        </select>
-      </label>
-
-      <p className="text-[10px] px-1 mb-3" style={{ color: COLORS.mist }}>{criterion.sub}</p>
-
       {/* Score drum */}
       <div className="flex items-center justify-center gap-2 mb-1">
         <Drum
-          key={`whole-${selectedKey}`}
-          values={wholeValues}
-          value={whole}
-          onChange={setWhole}
+          key="score-whole"
+          values={wholeVals}
+          value={scoreWhole}
+          onChange={setScoreWhole}
           disabled={otherEditing}
+          width={80}
         />
         <span className="chl-display text-3xl pb-1" style={{ color: COLORS.chalk }}>.</span>
         <Drum
-          key={`dec-${selectedKey}`}
-          values={decValues}
-          value={dec}
-          onChange={setDec}
+          key="score-dec"
+          values={decVals}
+          value={scoreDec}
+          onChange={setScoreDec}
           disabled={otherEditing}
         />
-      </div>
-      <p className="text-center text-sm mb-4" style={{ color: COLORS.mist }}>
-        <span className="chl-mono" style={{ color: COLORS.gold }}>
-          {whole}.{String(dec).padStart(2, '0')}
-        </span>
-        {' '}/ {criterion.max} · loops both ways
-      </p>
-
-      {/* Running group totals */}
-      <div className="grid grid-cols-4 gap-1.5 mb-4">
-        {GROUP_ORDER.map((grp) => {
-          const gTotal = getGroupTotal(liveCrit as Record<string, number>, grp);
-          return (
-            <div key={grp} className="text-center p-2 rounded-lg" style={{ background: COLORS.ink }}>
-              <div className="text-[9px] uppercase tracking-wide leading-tight mb-1" style={{ color: COLORS.mist }}>
-                {GROUP_META[grp].label.split(' ')[0]}
-              </div>
-              <div className="chl-mono text-sm" style={{ color: COLORS.gold }}>{formatScore(gTotal)}</div>
-              <div className="text-[9px]" style={{ color: COLORS.mist }}>/{GROUP_META[grp].max}</div>
-            </div>
-          );
-        })}
       </div>
 
       {/* Deduction editor */}
@@ -388,12 +328,6 @@ function TeamScoreModal({ mode, division, entry, compId, onSubmit, onClose }: Te
         onAdd={(amount, reason) => setDeductions([...deductions, { id: uid(), amount, reason }])}
         onRemove={(id) => setDeductions(deductions.filter((d) => d.id !== id))}
       />
-
-      {/* Final total */}
-      <div className="flex items-center justify-between my-4 px-1">
-        <span className="text-sm font-medium" style={{ color: COLORS.mist }}>Total / 150</span>
-        <span className="chl-display text-3xl" style={{ color: COLORS.gold }}>{formatScore(finalTotal)}</span>
-      </div>
 
       {/* Team name — at the bottom so no scrolling required to start scoring */}
       {mode === 'new' && (
@@ -413,10 +347,29 @@ function TeamScoreModal({ mode, division, entry, compId, onSubmit, onClose }: Te
           <input
             value={teamName}
             onChange={(e) => setTeamName(e.target.value)}
-            placeholder="e.g. Aubree's All-Stars Senior 5"
+            placeholder="Type gym name…"
             className="w-full px-3 py-2.5 rounded-lg outline-none"
             style={{ background: COLORS.court, color: COLORS.chalk, border: `1px solid ${COLORS.courtLight}` }}
           />
+          {/* Gym suggestions */}
+          {teamName.trim().length >= 2 && (() => {
+            const q = teamName.trim().toLowerCase();
+            const hits = CANADIAN_GYMS.filter((g) => g.toLowerCase().includes(q)).slice(0, 5);
+            return hits.length > 0 ? (
+              <div className="mt-1.5 rounded-lg overflow-hidden" style={{ border: `1px solid ${COLORS.courtLight}` }}>
+                {hits.map((gym) => (
+                  <button
+                    key={gym}
+                    onMouseDown={(e) => { e.preventDefault(); setTeamName(gym); }}
+                    className="w-full text-left px-3 py-2 text-sm"
+                    style={{ background: COLORS.courtLight, color: COLORS.chalk, borderBottom: `1px solid ${COLORS.court}` }}
+                  >
+                    {gym}
+                  </button>
+                ))}
+              </div>
+            ) : null;
+          })()}
         </div>
       )}
 
@@ -427,6 +380,38 @@ function TeamScoreModal({ mode, division, entry, compId, onSubmit, onClose }: Te
         <p className="text-center text-xs mt-2" style={{ color: COLORS.coral }}>
           Enter a team / gym name above to enable saving.
         </p>
+      )}
+
+      {mode === 'edit' && onDelete && (
+        confirmDelete ? (
+          <div className="mt-3 p-3 rounded-xl" style={{ background: COLORS.ink, border: `1px solid ${COLORS.coral}` }}>
+            <p className="text-sm mb-2" style={{ color: COLORS.chalk }}>Delete this entry? Cannot be undone.</p>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setConfirmDelete(false)}
+                className="flex-1 py-2 rounded-lg text-sm"
+                style={{ background: COLORS.courtLight, color: COLORS.chalk }}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={onDelete}
+                className="flex-1 py-2 rounded-lg text-sm font-semibold"
+                style={{ background: COLORS.coral, color: COLORS.ink }}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        ) : (
+          <button
+            onClick={() => setConfirmDelete(true)}
+            className="w-full mt-3 py-2.5 text-sm font-medium"
+            style={{ color: COLORS.coral }}
+          >
+            Delete entry
+          </button>
+        )
       )}
     </ModalShell>
   );
@@ -560,7 +545,6 @@ function EntryMenu({
     >
       {canEdit && item('edit', Edit3, 'Edit score')}
       {item('share', Share2, 'Share result')}
-      {item('watch', Bell, 'Watch this team')}
       {item('discrepancy', AlertTriangle, 'Flag discrepancy')}
       {canEdit && (
         <>
@@ -579,15 +563,17 @@ function EntryMenu({
 const MAX_SCORE = 150;
 
 function TeamRow({
-  entry, placement, canEdit, onAction,
+  entry, placement, canEdit, onAction, onTap,
 }: {
   entry: Entry;
   placement: number;
   canEdit: boolean;
   onAction: (a: EntryAction) => void;
+  onTap?: () => void;
 }) {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [flashing, setFlashing] = useState(false);
+  const [menuOpen,    setMenuOpen]    = useState(false);
+  const [confirmDel,  setConfirmDel]  = useState(false);
+  const [flashing,    setFlashing]    = useState(false);
   const prevFlash = useRef(entry.flashAt);
 
   useEffect(() => {
@@ -610,24 +596,34 @@ function TeamRow({
 
   const total    = getTotal(entry);
   const dedTotal = getDeductionTotal(entry.deductions);
-  const filled   = CRITERIA.filter((c) => (entry.criteria?.[c.key] ?? 0) > 0).length;
+  const isSimple = (entry.criteria?.total as number | null) != null;
+  const hasGroupScores = !isSimple && GROUP_ORDER.some((k) => ((entry.criteria?.[k] as number | null) ?? 0) > 0);
+  const filled      = isSimple ? 1
+    : hasGroupScores ? GROUP_ORDER.filter((k) => ((entry.criteria?.[k] as number | null) ?? 0) > 0).length
+    : CRITERIA.filter((c) => (entry.criteria?.[c.key] ?? 0) > 0).length;
+  const filledOf    = isSimple ? 1 : hasGroupScores ? GROUP_ORDER.length : CRITERIA.length;
+  const filledLabel = isSimple ? 'score' : hasGroupScores ? 'groups' : 'criteria';
   const pct      = Math.min(100, (total / MAX_SCORE) * 100);
 
   return (
     <div
-      className="relative rounded-xl mb-2 overflow-hidden"
+      className="relative rounded-xl mb-2"
       style={{ background: COLORS.court }}
     >
-      {/* Score fill bar */}
-      <div
-        className="absolute left-0 top-0 bottom-0 pointer-events-none transition-all duration-700"
-        style={{ width: `${pct}%`, background: 'rgba(242,183,5,0.055)' }}
-      />
-      {flashing && (
-        <div className="absolute inset-0 chl-flash pointer-events-none" />
-      )}
+      {/* Score fill bar + flash — clipped to card corners without clipping the menu */}
+      <div className="absolute inset-0 rounded-xl overflow-hidden pointer-events-none">
+        <div
+          className="absolute left-0 top-0 bottom-0 transition-all duration-700"
+          style={{ width: `${pct}%`, background: 'rgba(242,183,5,0.055)' }}
+        />
+        {flashing && <div className="absolute inset-0 chl-flash" />}
+      </div>
 
-      <div className="relative flex items-center gap-3 px-4 py-3">
+      <div
+        className="relative flex items-center gap-3 px-4 py-3"
+        onClick={onTap}
+        style={{ cursor: onTap ? 'pointer' : 'default' }}
+      >
         {/* Placement circle */}
         <div
           className="w-9 h-9 rounded-full shrink-0 flex items-center justify-center"
@@ -644,7 +640,7 @@ function TeamRow({
             {entry.conflictFlag && <AlertTriangle size={12} style={{ color: COLORS.gold }} />}
           </div>
           <div className="flex items-center gap-2 text-xs mt-0.5" style={{ color: COLORS.mist }}>
-            <span>{filled}/{CRITERIA.length} criteria</span>
+            <span>{filled}/{filledOf} {filledLabel}</span>
             {dedTotal > 0 && (
               <span style={{ color: COLORS.coral }}>-{formatScore(dedTotal)} ded.</span>
             )}
@@ -674,8 +670,17 @@ function TeamRow({
           <div className="text-[10px] mt-0.5" style={{ color: COLORS.mist }}>/150 pts</div>
         </div>
 
-        <div className="relative shrink-0">
-          <button onClick={() => setMenuOpen((v) => !v)} className="p-1 ml-1" style={{ color: COLORS.mist }}>
+        <div className="relative shrink-0 flex items-center gap-1">
+          {canEdit && (
+            <button
+              onClick={() => setConfirmDel((v) => !v)}
+              className="p-1"
+              style={{ color: confirmDel ? COLORS.coral : COLORS.mist }}
+            >
+              <Trash2 size={16} />
+            </button>
+          )}
+          <button onClick={() => setMenuOpen((v) => !v)} className="p-1" style={{ color: COLORS.mist }}>
             <MoreVertical size={18} />
           </button>
           {menuOpen && (
@@ -683,6 +688,29 @@ function TeamRow({
           )}
         </div>
       </div>
+
+      {confirmDel && (
+        <div
+          className="flex items-center gap-2 px-4 py-2.5 border-t"
+          style={{ borderColor: COLORS.courtLight }}
+        >
+          <span className="flex-1 text-xs" style={{ color: COLORS.mist }}>Delete {entry.teamName}?</span>
+          <button
+            onClick={() => setConfirmDel(false)}
+            className="px-3 py-1.5 rounded-lg text-xs"
+            style={{ background: COLORS.courtLight, color: COLORS.chalk }}
+          >
+            Cancel
+          </button>
+          <button
+            onClick={() => onAction('delete')}
+            className="px-3 py-1.5 rounded-lg text-xs font-semibold"
+            style={{ background: COLORS.coral, color: COLORS.ink }}
+          >
+            Delete
+          </button>
+        </div>
+      )}
     </div>
   );
 }
@@ -752,6 +780,7 @@ function CompetitionFormModal({ initial, onSave, onClose, onDelete }: Competitio
   const [city,      setCity]      = useState(initial?.city ?? '');
   const [startDate, setStartDate] = useState(initial?.startDate ?? todayISO());
   const [endDate,   setEndDate]   = useState(initial?.endDate ?? '');
+  const [bannerUrl, setBannerUrl] = useState(initial?.bannerUrl ?? '');
   const [divisions, setDivisions] = useState<string[]>(initial?.divisions ?? []);
   const [customDiv, setCustomDiv] = useState('');
   const [status,    setStatus]    = useState(initial?.status ?? suggestStatus(startDate, endDate));
@@ -775,6 +804,7 @@ function CompetitionFormModal({ initial, onSave, onClose, onDelete }: Competitio
         <TextField label="Venue / facility" value={venue} onChange={(e) => setVenue(e.target.value)} placeholder="e.g. Scotiabank Arena" />
         <TextField label="City / province" value={city} onChange={(e) => setCity(e.target.value)} placeholder="e.g. Toronto, ON" />
       </div>
+      <TextField label="Banner image URL (opt.)" value={bannerUrl} onChange={(e) => setBannerUrl(e.target.value)} placeholder="https://canadiancheer.com/…/event-banner.jpg" />
       <div className="grid grid-cols-2 gap-3">
         <TextField label="Start date" type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
         <TextField label="End date (opt.)" type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
@@ -840,7 +870,7 @@ function CompetitionFormModal({ initial, onSave, onClose, onDelete }: Competitio
 
       <PrimaryButton
         disabled={!name.trim()}
-        onClick={() => onSave({ name: name.trim(), venue: venue.trim(), city: city.trim(), startDate, endDate: endDate || startDate, divisions, status })}
+        onClick={() => onSave({ name: name.trim(), venue: venue.trim(), city: city.trim(), startDate, endDate: endDate || startDate, divisions, status, bannerUrl: bannerUrl.trim() || undefined })}
       >
         {initial ? 'Save changes' : 'Create competition'}
       </PrimaryButton>
@@ -973,6 +1003,36 @@ function DivisionSection({
 }
 
 /* ================================================================
+   Division grouping helpers
+   ================================================================ */
+
+const DIV_GROUP_ORDER = ['U8', 'U12', 'U16', 'U18', 'U18 AG / Coed', 'Open', 'Open AG / Masters', 'General', 'Other'] as const;
+
+const DIV_GROUP_COLORS: Record<string, string> = {
+  'U8':                '#3FCB8C',
+  'U12':               '#4A9EFF',
+  'U16':               COLORS.gold,
+  'U18':               COLORS.coral,
+  'U18 AG / Coed':     COLORS.magenta,
+  'Open':              COLORS.magenta,
+  'Open AG / Masters': '#9B59B6',
+  'General':           COLORS.mist,
+  'Other':             COLORS.mist,
+};
+
+function divGroup(div: string): string {
+  if (div === 'General') return 'General';
+  if (div.startsWith('U8')) return 'U8';
+  if (div.startsWith('U12')) return 'U12';
+  if (div.startsWith('U16')) return 'U16';
+  if (div.startsWith('U18 AG') || div.startsWith('U18 Coed')) return 'U18 AG / Coed';
+  if (div.startsWith('U18')) return 'U18';
+  if (div.startsWith('Open AG') || div === "Master's") return 'Open AG / Masters';
+  if (div.startsWith('Open')) return 'Open';
+  return 'Other';
+}
+
+/* ================================================================
    Competition detail screen
    ================================================================ */
 
@@ -985,17 +1045,15 @@ function CompetitionDetail({
   onEditComp: (c: Competition) => void;
   showToast: (msg: string, type?: 'ok' | 'error') => void;
 }) {
-  const [entries,      setEntries]      = useState<Entry[]>([]);
-  const [loading,      setLoading]      = useState(true);
-  const [scoreModal,   setScoreModal]   = useState<ScoreModalState | null>(null);
-  const [selectedDiv,  setSelectedDiv]  = useState('');
-  const prevEntriesRef                  = useRef<Entry[]>([]);
+  const [entries,     setEntries]     = useState<Entry[]>([]);
+  const [loading,     setLoading]     = useState(true);
+  const [scoreModal,  setScoreModal]  = useState<ScoreModalState | null>(null);
+  const [selectedDiv, setSelectedDiv] = useState<string | null>(null);
+  const prevEntriesRef                = useRef<Entry[]>([]);
 
   const refresh = useCallback(async () => {
     try {
       const fresh = (await loadEntries(comp.id)).map(normalizeEntry);
-
-      // Notify watched teams on score change.
       if (prevEntriesRef.current.length > 0) {
         const watched = await loadWatched();
         watched
@@ -1008,7 +1066,6 @@ function CompetitionDetail({
             }
           });
       }
-
       prevEntriesRef.current = fresh;
       setEntries(fresh);
     } catch { /* keep current list */ }
@@ -1021,12 +1078,11 @@ function CompetitionDetail({
     return () => clearInterval(interval);
   }, [refresh]);
 
-  const divisions  = comp.divisions?.length ? comp.divisions : ['General'];
-  const activeDiv  = divisions.includes(selectedDiv) ? selectedDiv : divisions[0];
+  const divisions = comp.divisions?.length ? comp.divisions : ['General'];
 
-  // Sync tab selection when divisions change.
+  // Skip the picker for single-division competitions.
   useEffect(() => {
-    if (!divisions.includes(selectedDiv)) setSelectedDiv(divisions[0]);
+    if (divisions.length === 1 && selectedDiv === null) setSelectedDiv(divisions[0]);
   }, [divisions, selectedDiv]);
 
   async function persist(nextEntries: Entry[]) {
@@ -1043,7 +1099,6 @@ function CompetitionDetail({
     teamName, division, criteria, deductions,
   }: { teamName: string; division: string; criteria: Record<string, number | null>; deductions: Deduction[] }) {
     const latest = (await loadEntries(comp.id)).map(normalizeEntry);
-
     if (scoreModal?.mode === 'new') {
       const newEntry: Entry = {
         id: uid(), teamName, division,
@@ -1060,8 +1115,8 @@ function CompetitionDetail({
         setScoreModal(null);
         return;
       }
-      const prevEntry  = latest[idx];
-      const oldTotal   = getTotal(prevEntry);
+      const prevEntry = latest[idx];
+      const oldTotal  = getTotal(prevEntry);
       const updated: Entry = {
         ...prevEntry,
         criteria: criteria as Record<string, number | null>,
@@ -1094,7 +1149,7 @@ function CompetitionDetail({
       return;
     }
     if (action === 'share') {
-      const total = getTotal(entry);
+      const total      = getTotal(entry);
       const divEntries = entries.filter((e) => (e.division || 'General') === (entry.division || 'General'));
       const place      = computePlacements(divEntries).placements[entry.id];
       const placeStr   = place === 1 ? '1st 🥇' : place === 2 ? '2nd 🥈' : place === 3 ? '3rd 🥉' : `${place}th`;
@@ -1123,155 +1178,214 @@ function CompetitionDetail({
     }
   }
 
-  const isLive     = comp.status === 'live';
-  const totalTeams = entries.length;
-  const divCount   = divisions.length;
+  const isLive = comp.status === 'live';
+
+  // ── Division picker ─────────────────────────────────────────────
+  if (selectedDiv === null) {
+    const grouped: Record<string, string[]> = {};
+    for (const div of divisions) {
+      const g = divGroup(div);
+      if (!grouped[g]) grouped[g] = [];
+      grouped[g].push(div);
+    }
+    const groupKeys = (DIV_GROUP_ORDER as readonly string[]).filter((k) => grouped[k]?.length > 0);
+    Object.keys(grouped).forEach((k) => { if (!groupKeys.includes(k)) groupKeys.push(k); });
+
+    return (
+      <div className="chl-root min-h-screen pb-28" style={{ background: COLORS.ink }}>
+        <div style={{ background: `linear-gradient(180deg, ${COLORS.court} 0%, ${COLORS.ink} 100%)` }}>
+          {comp.bannerUrl && (
+            <div className="relative w-full" style={{ height: 140 }}>
+              <img src={comp.bannerUrl} alt={comp.name} className="w-full h-full object-cover" />
+              <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(27,42,72,0.2) 0%, rgba(27,42,72,0.95) 100%)' }} />
+            </div>
+          )}
+          <div className="max-w-2xl mx-auto px-4 pt-5 pb-6">
+            <div className="flex items-center justify-between mb-4">
+              <button onClick={onBack} className="flex items-center gap-1 text-sm" style={{ color: COLORS.mist }}>
+                <ChevronLeft size={16} /> All competitions
+              </button>
+              {canEdit && (
+                <button onClick={() => onEditComp(comp)} className="p-2 rounded-lg" style={{ background: 'rgba(255,255,255,0.06)' }}>
+                  <Edit3 size={15} style={{ color: COLORS.mist }} />
+                </button>
+              )}
+            </div>
+            {isLive && (
+              <div className="flex items-center gap-1.5 mb-2">
+                <span className="w-2 h-2 rounded-full chl-pulse" style={{ background: COLORS.coral }} />
+                <span className="text-xs font-bold tracking-widest" style={{ color: COLORS.coral }}>LIVE</span>
+              </div>
+            )}
+            <h1 className="chl-display text-3xl leading-tight" style={{ color: COLORS.chalk }}>{comp.name}</h1>
+            <div className="flex flex-wrap gap-3 mt-2 text-sm" style={{ color: COLORS.mist }}>
+              <span className="flex items-center gap-1"><Calendar size={13} /> {formatDateRange(comp.startDate, comp.endDate)}</span>
+              {(comp.venue || comp.city) && (
+                <span className="flex items-center gap-1"><MapPin size={13} /> {[comp.venue, comp.city].filter(Boolean).join(', ')}</span>
+              )}
+            </div>
+          </div>
+        </div>
+
+        <div className="max-w-2xl mx-auto px-4 pt-3">
+          <p className="text-[10px] uppercase tracking-widest font-semibold mb-4" style={{ color: COLORS.mist }}>
+            Select a division
+          </p>
+
+          {/* Editor hint when no divisions have been set yet */}
+          {canEdit && !comp.divisions?.length && (
+            <div
+              className="flex items-start gap-3 p-3.5 rounded-xl mb-4"
+              style={{ background: 'rgba(242,183,5,0.07)', border: `1px solid rgba(242,183,5,0.2)` }}
+            >
+              <Layers size={14} style={{ color: COLORS.gold }} className="shrink-0 mt-0.5" />
+              <div>
+                <p className="text-xs font-semibold mb-0.5" style={{ color: COLORS.gold }}>Add divisions to this competition</p>
+                <p className="text-xs leading-relaxed" style={{ color: COLORS.mist }}>
+                  Tap the edit icon above → Divisions to add U8, U12, U16, U18, and Open divisions so teams are organized by category.
+                </p>
+              </div>
+            </div>
+          )}
+
+          {loading ? (
+            <p style={{ color: COLORS.mist }}>Loading…</p>
+          ) : (
+            groupKeys.map((groupKey) => {
+              const color = DIV_GROUP_COLORS[groupKey] ?? COLORS.mist;
+              return (
+                <div key={groupKey} className="mb-5">
+                  <div className="flex items-center gap-2 mb-2.5">
+                    <span className="w-2 h-2 rounded-full shrink-0" style={{ background: color }} />
+                    <span className="text-[11px] font-bold uppercase tracking-widest" style={{ color }}>{groupKey}</span>
+                  </div>
+                  <div className="space-y-2">
+                    {grouped[groupKey].map((div) => {
+                      const teamCount = entries.filter((e) => (e.division || 'General') === div).length;
+                      return (
+                        <button
+                          key={div}
+                          onClick={() => setSelectedDiv(div)}
+                          className="w-full flex items-center justify-between px-4 py-3.5 rounded-xl text-left transition-all active:scale-[0.98]"
+                          style={{ background: COLORS.court, border: `1px solid ${COLORS.courtLight}` }}
+                        >
+                          <div>
+                            <div className="font-semibold text-sm" style={{ color: COLORS.chalk }}>{div}</div>
+                            <div className="text-xs mt-0.5" style={{ color: COLORS.mist }}>
+                              {teamCount > 0 ? `${teamCount} team${teamCount !== 1 ? 's' : ''} scored` : 'No scores yet'}
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2 shrink-0">
+                            {teamCount > 0 && (
+                              <span className="text-xs font-bold px-2 py-0.5 rounded-full" style={{ background: `${color}22`, color }}>
+                                {teamCount}
+                              </span>
+                            )}
+                            <ChevronLeft size={16} className="rotate-180" style={{ color: COLORS.mist }} />
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  // ── Team list for selected division ─────────────────────────────
+  const divEntries = entries.filter((e) => (e.division || 'General') === selectedDiv);
+  const { order, placements } = computePlacements(divEntries);
 
   return (
     <div className="chl-root min-h-screen pb-28" style={{ background: COLORS.ink }}>
-
-      {/* ── Hero header ───────────────────────────────────────── */}
       <div style={{ background: `linear-gradient(180deg, ${COLORS.court} 0%, ${COLORS.ink} 100%)` }}>
-        <div className="max-w-2xl mx-auto px-4 pt-5 pb-0">
-
-          {/* Nav row */}
-          <div className="flex items-center justify-between mb-4">
+        {comp.bannerUrl && (
+          <div className="relative w-full" style={{ height: 100 }}>
+            <img src={comp.bannerUrl} alt={comp.name} className="w-full h-full object-cover" />
+            <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(27,42,72,0.2) 0%, rgba(27,42,72,0.95) 100%)' }} />
+          </div>
+        )}
+        <div className="max-w-2xl mx-auto px-4 pt-5 pb-4">
+          <div className="flex items-center justify-between mb-3">
             <button
-              onClick={onBack}
+              onClick={() => divisions.length > 1 ? setSelectedDiv(null) : onBack()}
               className="flex items-center gap-1 text-sm"
               style={{ color: COLORS.mist }}
             >
-              <ChevronLeft size={16} /> All competitions
+              <ChevronLeft size={16} />
+              {divisions.length > 1 ? comp.name : 'All competitions'}
             </button>
             {canEdit && (
-              <button
-                onClick={() => onEditComp(comp)}
-                className="p-2 rounded-lg"
-                style={{ background: 'rgba(255,255,255,0.06)' }}
-              >
+              <button onClick={() => onEditComp(comp)} className="p-2 rounded-lg" style={{ background: 'rgba(255,255,255,0.06)' }}>
                 <Edit3 size={15} style={{ color: COLORS.mist }} />
               </button>
             )}
           </div>
 
-          {/* Status + title */}
-          {isLive && (
-            <div className="flex items-center gap-1.5 mb-2">
-              <span
-                className="w-2 h-2 rounded-full chl-pulse"
-                style={{ background: COLORS.coral }}
-              />
-              <span className="text-xs font-bold tracking-widest" style={{ color: COLORS.coral }}>
-                LIVE
-              </span>
-            </div>
-          )}
-          <h1 className="chl-display text-3xl leading-tight" style={{ color: COLORS.chalk }}>
-            {comp.name}
-          </h1>
-          <div className="flex flex-wrap gap-3 mt-2 text-sm" style={{ color: COLORS.mist }}>
-            <span className="flex items-center gap-1">
-              <Calendar size={13} /> {formatDateRange(comp.startDate, comp.endDate)}
-            </span>
-            {(comp.venue || comp.city) && (
-              <span className="flex items-center gap-1">
-                <MapPin size={13} /> {[comp.venue, comp.city].filter(Boolean).join(', ')}
-              </span>
-            )}
-          </div>
-
-          {/* Stats strip */}
-          <div className="grid grid-cols-3 gap-2 mt-5 mb-5">
-            {[
-              { value: totalTeams, label: 'Teams' },
-              { value: divCount,   label: divCount === 1 ? 'Division' : 'Divisions' },
-              { value: isLive ? 'Live' : comp.status === 'upcoming' ? 'Soon' : 'Final', label: 'Status' },
-            ].map(({ value, label }) => (
-              <div
-                key={label}
-                className="text-center py-2.5 rounded-xl"
-                style={{ background: 'rgba(255,255,255,0.045)' }}
-              >
-                <div className="chl-display text-2xl leading-none" style={{ color: COLORS.gold }}>
-                  {value}
-                </div>
-                <div className="text-[10px] uppercase tracking-wide mt-1" style={{ color: COLORS.mist }}>
-                  {label}
-                </div>
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <p className="text-xs mb-1" style={{ color: COLORS.mist }}>{comp.name}</p>
+              <h1 className="chl-display text-2xl leading-tight" style={{ color: COLORS.chalk }}>{selectedDiv}</h1>
+              <div className="flex items-center gap-3 mt-1 text-xs" style={{ color: COLORS.mist }}>
+                <span className="flex items-center gap-1"><Users size={11} /> {divEntries.length} team{divEntries.length !== 1 ? 's' : ''}</span>
+                {isLive && (
+                  <span className="flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full chl-pulse" style={{ background: COLORS.coral }} />
+                    <span style={{ color: COLORS.coral }}>LIVE</span>
+                  </span>
+                )}
               </div>
-            ))}
-          </div>
-        </div>
-
-        {/* ── Division tabs ──────────────────────────────────── */}
-        {divisions.length > 1 && (
-          <div
-            className="border-b overflow-x-auto chl-no-scrollbar"
-            style={{ borderColor: COLORS.courtLight }}
-          >
-            <div className="max-w-2xl mx-auto px-4 flex gap-0 min-w-max">
-              {divisions.map((d) => (
-                <button
-                  key={d}
-                  onClick={() => setSelectedDiv(d)}
-                  className="px-4 py-2.5 text-sm font-medium whitespace-nowrap border-b-2 transition-colors"
-                  style={{
-                    color:       d === activeDiv ? COLORS.gold : COLORS.mist,
-                    borderColor: d === activeDiv ? COLORS.gold : 'transparent',
-                  }}
-                >
-                  {d}
-                </button>
-              ))}
             </div>
-          </div>
-        )}
-      </div>
-
-      {/* ── Disclaimer ────────────────────────────────────────── */}
-      <div className="max-w-2xl mx-auto px-4 mt-4">
-        <div
-          className="flex items-center gap-2 p-3 rounded-xl mb-4"
-          style={{ background: COLORS.court, border: `1px solid ${COLORS.courtLight}` }}
-        >
-          <AlertTriangle size={14} style={{ color: COLORS.gold }} className="shrink-0" />
-          <p className="text-xs" style={{ color: COLORS.mist }}>
-            Community-reported — educated estimates, not official results.
-          </p>
-        </div>
-
-        {/* ── Action bar (shown when tabs hide the division label) ── */}
-        {divisions.length > 1 && !loading && (
-          <div className="flex items-center justify-between mb-3 px-1">
-            <span className="text-xs flex items-center gap-1.5" style={{ color: COLORS.mist }}>
-              <Users size={12} />
-              {entries.filter((e) => (e.division || 'General') === activeDiv).length} team
-              {entries.filter((e) => (e.division || 'General') === activeDiv).length !== 1 ? 's' : ''}
-            </span>
             {canEdit && (
               <button
-                onClick={() => setScoreModal({ mode: 'new', division: activeDiv })}
-                className="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold"
+                onClick={() => setScoreModal({ mode: 'new', division: selectedDiv })}
+                className="flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-semibold shrink-0 mt-1"
                 style={{ background: COLORS.gold, color: COLORS.ink }}
               >
                 <Plus size={13} /> Add Score
               </button>
             )}
           </div>
-        )}
+        </div>
+      </div>
 
-        {/* ── Leaderboard ───────────────────────────────────── */}
+      <div className="max-w-2xl mx-auto px-4 pt-4">
+        <div className="flex items-center gap-2 p-3 rounded-xl mb-4" style={{ background: COLORS.court, border: `1px solid ${COLORS.courtLight}` }}>
+          <AlertTriangle size={14} style={{ color: COLORS.gold }} className="shrink-0" />
+          <p className="text-xs" style={{ color: COLORS.mist }}>Community-reported — educated estimates, not official results.</p>
+        </div>
+
         {loading ? (
           <p style={{ color: COLORS.mist }}>Loading…</p>
+        ) : order.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-14 rounded-2xl" style={{ background: COLORS.court, border: `1px dashed ${COLORS.courtLight}` }}>
+            <Users size={28} style={{ color: COLORS.courtLight }} />
+            <p className="text-sm mt-3 font-medium" style={{ color: COLORS.mist }}>No teams scored yet</p>
+            {canEdit && (
+              <button
+                onClick={() => setScoreModal({ mode: 'new', division: selectedDiv })}
+                className="mt-4 flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold"
+                style={{ background: COLORS.gold, color: COLORS.ink }}
+              >
+                <Plus size={13} /> Add first score
+              </button>
+            )}
+          </div>
         ) : (
-          <DivisionSection
-            name={activeDiv}
-            entries={entries.filter((e) => (e.division || 'General') === activeDiv)}
-            canEdit={canEdit}
-            onAddScore={() => setScoreModal({ mode: 'new', division: activeDiv })}
-            onEntryAction={handleEntryAction}
-            showLabel={divisions.length === 1}
-          />
+          order.map((entry) => (
+            <TeamRow
+              key={entry.id}
+              entry={entry}
+              placement={placements[entry.id]}
+              canEdit={canEdit}
+              onAction={(action) => handleEntryAction(entry, action)}
+              onTap={canEdit ? () => setScoreModal({ mode: 'edit', division: entry.division, entry }) : undefined}
+            />
+          ))
         )}
       </div>
 
@@ -1282,6 +1396,10 @@ function CompetitionDetail({
           entry={scoreModal.entry}
           compId={comp.id}
           onSubmit={handleScoreSubmit}
+          onDelete={scoreModal.entry ? async () => {
+            await handleEntryAction(scoreModal.entry!, 'delete');
+            setScoreModal(null);
+          } : undefined}
           onClose={() => setScoreModal(null)}
         />
       )}
@@ -1299,73 +1417,144 @@ const STATUS_STYLES: Record<string, { label: string; color: string; pulse: boole
   completed: { label: 'COMPLETED', color: COLORS.mist,  pulse: false },
 };
 
-function CompetitionCard({ comp, onOpen }: { comp: Competition; onOpen: () => void }) {
+function CompetitionCard({
+  comp, onOpen, canEdit, onDelete, onStatusChange,
+}: {
+  comp: Competition;
+  onOpen: () => void;
+  canEdit?: boolean;
+  onDelete?: () => void;
+  onStatusChange?: (status: CompetitionStatus) => void;
+}) {
+  const [confirmDel, setConfirmDel] = useState(false);
   const s      = STATUS_STYLES[comp.status];
   const isLive = comp.status === 'live';
+  const days   = comp.status === 'upcoming' ? daysUntil(comp.startDate) : null;
 
   return (
-    <button
-      onClick={onOpen}
-      className="w-full text-left rounded-2xl overflow-hidden mb-3 block transition-transform active:scale-[0.99]"
+    <div
+      className="rounded-2xl overflow-hidden mb-3"
       style={{
-        background:  COLORS.court,
-        border:      `1px solid ${isLive ? 'rgba(255,77,94,0.35)' : COLORS.courtLight}`,
-        boxShadow:   isLive ? '0 0 24px rgba(255,77,94,0.12)' : 'none',
+        background: COLORS.court,
+        border:     `1px solid ${isLive ? 'rgba(255,77,94,0.35)' : COLORS.courtLight}`,
+        boxShadow:  isLive ? '0 0 20px rgba(255,77,94,0.10)' : 'none',
       }}
     >
-      {/* Top accent bar */}
-      <div style={{ height: 3, background: s.color, opacity: isLive ? 1 : 0.5 }} />
+      {/* Banner image or accent bar */}
+      {comp.bannerUrl ? (
+        <div className="relative" style={{ height: 90 }}>
+          <img src={comp.bannerUrl} alt={comp.name} className="w-full h-full object-cover" />
+          <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, transparent 40%, rgba(27,42,72,0.85) 100%)' }} />
+          {isLive && (
+            <div className="absolute top-2 left-2 flex items-center gap-1.5 px-2 py-1 rounded-full" style={{ background: 'rgba(0,0,0,0.6)' }}>
+              <span className="w-1.5 h-1.5 rounded-full chl-pulse" style={{ background: COLORS.coral }} />
+              <span className="text-[10px] font-bold tracking-wider" style={{ color: COLORS.coral }}>LIVE</span>
+            </div>
+          )}
+        </div>
+      ) : (
+        <div style={{ height: 3, background: comp.accentColor ?? s.color, opacity: isLive ? 1 : 0.5 }} />
+      )}
 
-      <div className="p-4">
-        <div className="flex items-start gap-3">
-          <div className="flex-1 min-w-0">
-            {/* Status badge */}
-            <div className="flex items-center gap-1.5 mb-2">
-              <span
-                className={`inline-flex items-center gap-1.5 text-[10px] font-bold tracking-wider px-2.5 py-1 rounded-full ${isLive ? 'chl-pulse' : ''}`}
-                style={{
-                  background: isLive ? 'rgba(255,77,94,0.12)' : 'rgba(146,162,194,0.1)',
-                  color:      s.color,
-                  border:     `1px solid ${isLive ? 'rgba(255,77,94,0.3)' : 'rgba(146,162,194,0.2)'}`,
-                }}
-              >
-                {isLive && (
-                  <span className="w-1.5 h-1.5 rounded-full" style={{ background: COLORS.coral }} />
+      <button onClick={onOpen} className="w-full text-left transition-transform active:scale-[0.99]">
+        <div className="p-4">
+          <div className="flex items-start gap-3">
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-1.5 mb-2 flex-wrap">
+                <span
+                  className={`inline-flex items-center gap-1.5 text-[10px] font-bold tracking-wider px-2.5 py-1 rounded-full ${isLive ? 'chl-pulse' : ''}`}
+                  style={{
+                    background: isLive ? 'rgba(255,77,94,0.12)' : 'rgba(146,162,194,0.1)',
+                    color:      s.color,
+                    border:     `1px solid ${isLive ? 'rgba(255,77,94,0.3)' : 'rgba(146,162,194,0.2)'}`,
+                  }}
+                >
+                  {isLive && <span className="w-1.5 h-1.5 rounded-full" style={{ background: COLORS.coral }} />}
+                  {s.label}
+                </span>
+                {days !== null && days >= 0 && (
+                  <span className="text-[10px] px-2 py-1 rounded-full font-medium" style={{ background: 'rgba(242,183,5,0.10)', color: COLORS.gold }}>
+                    {days === 0 ? 'Today' : days === 1 ? 'Tomorrow' : `${days} days`}
+                  </span>
                 )}
-                {s.label}
-              </span>
+              </div>
+
+              <h3 className="font-bold text-base leading-snug mb-2 truncate" style={{ color: COLORS.chalk }}>
+                {comp.name}
+              </h3>
+
+              <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs" style={{ color: COLORS.mist }}>
+                <span className="flex items-center gap-1">
+                  <Calendar size={11} /> {formatDateRange(comp.startDate, comp.endDate)}
+                </span>
+                {(comp.venue || comp.city) && (
+                  <span className="flex items-center gap-1">
+                    <MapPin size={11} /> {[comp.venue, comp.city].filter(Boolean).join(', ')}
+                  </span>
+                )}
+              </div>
             </div>
 
-            <h3 className="font-bold text-base leading-snug mb-2 truncate" style={{ color: COLORS.chalk }}>
-              {comp.name}
-            </h3>
-
-            <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs" style={{ color: COLORS.mist }}>
-              <span className="flex items-center gap-1">
-                <Calendar size={11} /> {formatDateRange(comp.startDate, comp.endDate)}
-              </span>
-              {(comp.venue || comp.city) && (
-                <span className="flex items-center gap-1">
-                  <MapPin size={11} /> {[comp.venue, comp.city].filter(Boolean).join(', ')}
+            <div className="shrink-0 flex flex-col items-end gap-2 pt-0.5">
+              <ChevronDown size={16} className="-rotate-90" style={{ color: COLORS.mist }} />
+              {comp.divisions.length > 0 && (
+                <span className="text-[10px] px-2 py-0.5 rounded-full" style={{ background: COLORS.courtLight, color: COLORS.mist }}>
+                  {comp.divisions.length} div{comp.divisions.length !== 1 ? 's' : ''}
                 </span>
               )}
             </div>
           </div>
-
-          <div className="shrink-0 flex flex-col items-end gap-2 pt-0.5">
-            <ChevronDown size={16} className="-rotate-90" style={{ color: COLORS.mist }} />
-            {comp.divisions.length > 0 && (
-              <span
-                className="text-[10px] px-2 py-0.5 rounded-full"
-                style={{ background: COLORS.courtLight, color: COLORS.mist }}
-              >
-                {comp.divisions.length} div{comp.divisions.length !== 1 ? 's' : ''}
-              </span>
-            )}
-          </div>
         </div>
-      </div>
-    </button>
+      </button>
+
+      {/* Editor actions bar */}
+      {canEdit && (
+        confirmDel ? (
+          <div className="flex items-center gap-2 px-4 py-2.5 border-t" style={{ borderColor: COLORS.courtLight }}>
+            <span className="flex-1 text-xs" style={{ color: COLORS.mist }}>Delete {comp.name}?</span>
+            <button onClick={() => setConfirmDel(false)} className="px-3 py-1.5 rounded-lg text-xs" style={{ background: COLORS.courtLight, color: COLORS.chalk }}>
+              Cancel
+            </button>
+            <button onClick={onDelete} className="px-3 py-1.5 rounded-lg text-xs font-semibold" style={{ background: COLORS.coral, color: COLORS.ink }}>
+              Delete
+            </button>
+          </div>
+        ) : (
+          <div className="flex items-center justify-between px-4 pb-3 pt-0.5">
+            {/* Quick status toggle */}
+            {onStatusChange && comp.status !== 'completed' && (
+              <button
+                onClick={() => onStatusChange(comp.status === 'upcoming' ? 'live' : 'upcoming')}
+                className="flex items-center gap-1.5 text-xs py-1.5 px-3 rounded-full font-semibold"
+                style={{
+                  background: comp.status === 'upcoming' ? 'rgba(255,77,94,0.12)' : 'rgba(146,162,194,0.1)',
+                  color:      comp.status === 'upcoming' ? COLORS.coral : COLORS.mist,
+                  border:     `1px solid ${comp.status === 'upcoming' ? 'rgba(255,77,94,0.3)' : 'rgba(146,162,194,0.2)'}`,
+                }}
+              >
+                {comp.status === 'upcoming' ? '▶ Go Live' : '■ End Event'}
+              </button>
+            )}
+            {onStatusChange && comp.status === 'completed' && (
+              <button
+                onClick={() => onStatusChange('upcoming')}
+                className="flex items-center gap-1.5 text-xs py-1.5 px-3 rounded-full"
+                style={{ color: COLORS.mist }}
+              >
+                Reopen
+              </button>
+            )}
+            <button
+              onClick={() => setConfirmDel(true)}
+              className="flex items-center gap-1 text-xs py-1 px-2 rounded-lg ml-auto"
+              style={{ color: COLORS.mist }}
+            >
+              <Trash2 size={13} /> Delete
+            </button>
+          </div>
+        )
+      )}
+    </div>
   );
 }
 
@@ -1374,6 +1563,7 @@ function CompetitionCard({ comp, onOpen }: { comp: Competition; onOpen: () => vo
    ================================================================ */
 
 export default function CheerHubLiveScores() {
+  const [tab,             setTab]             = useState<'scores' | 'learn'>('scores');
   const [competitions,    setCompetitions]    = useState<Competition[]>([]);
   const [loading,         setLoading]         = useState(true);
   const [openCompId,      setOpenCompId]      = useState<string | null>(null);
@@ -1396,6 +1586,7 @@ export default function CheerHubLiveScores() {
   }, []);
 
   useEffect(() => {
+    maybeSeeed();
     refresh();
     const interval = setInterval(refresh, 5_000);
     return () => clearInterval(interval);
@@ -1435,6 +1626,13 @@ export default function CheerHubLiveScores() {
   const grouped: Record<string, Competition[]> = { live: [], upcoming: [], completed: [] };
   competitions.forEach((c) => grouped[c.status]?.push(c));
 
+  const nextComp = useMemo(() => {
+    const today = todayISO();
+    return grouped.upcoming
+      .filter((c) => c.startDate >= today)
+      .sort((a, b) => a.startDate.localeCompare(b.startDate))[0] ?? null;
+  }, [grouped.upcoming]);
+
   if (openComp) {
     return (
       <>
@@ -1460,27 +1658,75 @@ export default function CheerHubLiveScores() {
 
   const liveCount = grouped.live.length;
 
+  // Bottom nav definition
+  const NAV = [
+    { id: 'scores' as const, label: 'Scores', Icon: Trophy   },
+    { id: 'learn'  as const, label: 'Learn',  Icon: BookOpen },
+  ];
+
+  const BottomNav = (
+    <div
+      className="fixed bottom-0 left-0 right-0 z-30 flex"
+      style={{ background: COLORS.court, borderTop: `1px solid ${COLORS.courtLight}` }}
+    >
+      {NAV.map(({ id, label, Icon }) => {
+        const active = tab === id;
+        return (
+          <button
+            key={id}
+            onClick={() => setTab(id)}
+            className="relative flex-1 flex flex-col items-center justify-center py-2.5 gap-0.5"
+            style={{ color: active ? COLORS.gold : COLORS.mist }}
+          >
+            {active && (
+              <span
+                className="absolute top-0 left-1/2 -translate-x-1/2 w-10 h-0.5 rounded-b"
+                style={{ background: COLORS.gold }}
+              />
+            )}
+            <Icon size={20} strokeWidth={active ? 2.5 : 1.8} />
+            <span className="text-[10px] font-medium tracking-wide">{label}</span>
+          </button>
+        );
+      })}
+    </div>
+  );
+
+  if (tab === 'learn') {
+    return (
+      <div className="chl-root min-h-screen relative" style={{ background: COLORS.ink }}>
+        <LearnTab />
+        {BottomNav}
+        <Toast toast={toast} onDismiss={() => setToast(null)} />
+      </div>
+    );
+  }
+
   return (
-    <div className="chl-root min-h-screen" style={{ background: COLORS.ink }}>
+    <div className="chl-root min-h-screen relative" style={{ background: COLORS.ink }}>
 
       {/* ── Hero header ─────────────────────────────────────── */}
       <div style={{ background: `linear-gradient(180deg, ${COLORS.court} 0%, ${COLORS.ink} 140px)` }}>
-        <div className="max-w-2xl mx-auto px-4 pt-7 pb-6">
+        <div className="max-w-2xl mx-auto px-4 pt-7 pb-5">
           <div className="flex items-start justify-between gap-4">
-            <div>
-              {liveCount > 0 && (
+            <div className="flex-1 min-w-0">
+              {liveCount > 0 ? (
                 <div className="flex items-center gap-1.5 mb-2">
                   <span className="w-2 h-2 rounded-full chl-pulse" style={{ background: COLORS.coral }} />
                   <span className="text-xs font-bold tracking-widest chl-pulse" style={{ color: COLORS.coral }}>
                     {liveCount} LIVE NOW
                   </span>
                 </div>
+              ) : (
+                <p className="text-[10px] font-semibold uppercase tracking-widest mb-1" style={{ color: COLORS.gold }}>
+                  Canadian All-Star · 2026–2027
+                </p>
               )}
               <h1 className="chl-display text-5xl leading-none" style={{ color: COLORS.chalk }}>
-                LIVE SCORES
+                CHEER HUB
               </h1>
-              <p className="text-xs mt-1.5" style={{ color: COLORS.mist }}>
-                Cheer Hub · Canadian All-Star
+              <p className="text-sm mt-1" style={{ color: COLORS.mist }}>
+                Live scores, every competition
               </p>
             </div>
 
@@ -1508,50 +1754,66 @@ export default function CheerHubLiveScores() {
             </div>
           </div>
 
-          {/* Stat pills */}
-          {competitions.length > 0 && (
-            <div className="flex flex-wrap gap-2 mt-4">
-              <span
-                className="text-xs px-3 py-1.5 rounded-full"
-                style={{ background: 'rgba(255,255,255,0.06)', color: COLORS.mist }}
+          {/* Next event countdown */}
+          {nextComp && liveCount === 0 && (() => {
+            const d = daysUntil(nextComp.startDate);
+            return (
+              <div
+                className="mt-4 flex items-center gap-3 px-4 py-3 rounded-2xl"
+                style={{ background: 'rgba(255,255,255,0.045)', border: `1px solid ${COLORS.courtLight}` }}
               >
-                {competitions.length} competition{competitions.length !== 1 ? 's' : ''}
+                <div
+                  className="w-10 h-10 rounded-xl shrink-0 flex items-center justify-center"
+                  style={{ background: `${nextComp.accentColor ?? COLORS.gold}18` }}
+                >
+                  <span className="chl-display text-lg leading-none" style={{ color: nextComp.accentColor ?? COLORS.gold }}>
+                    {d <= 0 ? 'NOW' : d}
+                  </span>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[10px] uppercase tracking-widest font-semibold mb-0.5" style={{ color: COLORS.mist }}>
+                    {d <= 0 ? 'Happening now' : d === 1 ? 'Tomorrow' : `${d} days away`}
+                  </p>
+                  <p className="text-sm font-semibold truncate" style={{ color: COLORS.chalk }}>{nextComp.name}</p>
+                  <p className="text-xs mt-0.5 truncate" style={{ color: COLORS.mist }}>
+                    {formatDateRange(nextComp.startDate, nextComp.endDate)}
+                    {nextComp.city ? ` · ${nextComp.city}` : ''}
+                  </p>
+                </div>
+                <ChevronDown size={14} className="-rotate-90 shrink-0" style={{ color: COLORS.mist }} />
+              </div>
+            );
+          })()}
+
+          {/* Stat pills */}
+          <div className="flex flex-wrap gap-2 mt-4">
+            {liveCount > 0 && (
+              <span className="text-xs px-3 py-1.5 rounded-full" style={{ background: 'rgba(255,77,94,0.12)', color: COLORS.coral, border: '1px solid rgba(255,77,94,0.25)' }}>
+                {liveCount} live now
               </span>
-              {liveCount > 0 && (
-                <span
-                  className="text-xs px-3 py-1.5 rounded-full"
-                  style={{
-                    background: 'rgba(255,77,94,0.12)',
-                    color:      COLORS.coral,
-                    border:     '1px solid rgba(255,77,94,0.25)',
-                  }}
-                >
-                  {liveCount} live now
-                </span>
-              )}
-              {grouped.upcoming.length > 0 && (
-                <span
-                  className="text-xs px-3 py-1.5 rounded-full"
-                  style={{ background: 'rgba(242,183,5,0.08)', color: COLORS.gold }}
-                >
-                  {grouped.upcoming.length} upcoming
-                </span>
-              )}
-            </div>
-          )}
+            )}
+            {grouped.upcoming.length > 0 && (
+              <span className="text-xs px-3 py-1.5 rounded-full" style={{ background: 'rgba(242,183,5,0.08)', color: COLORS.gold }}>
+                {grouped.upcoming.length} upcoming
+              </span>
+            )}
+            <span className="text-xs px-3 py-1.5 rounded-full" style={{ background: 'rgba(255,255,255,0.06)', color: COLORS.mist }}>
+              {competitions.length} season event{competitions.length !== 1 ? 's' : ''}
+            </span>
+          </div>
         </div>
       </div>
 
-      {/* ── Editor backup reminder ───────────────────────────── */}
+      {/* ── Editor mode banner ──────────────────────────────── */}
       {editorUnlocked && (
         <div className="max-w-2xl mx-auto px-4 mb-2">
           <div
-            className="flex items-center gap-2 px-3 py-2 rounded-xl"
-            style={{ background: COLORS.court, border: `1px solid ${COLORS.courtLight}` }}
+            className="flex items-center gap-2 px-3 py-2.5 rounded-xl"
+            style={{ background: 'rgba(242,183,5,0.08)', border: `1px solid rgba(242,183,5,0.2)` }}
           >
-            <Download size={12} style={{ color: COLORS.mist }} />
-            <p className="text-xs" style={{ color: COLORS.mist }}>
-              Export your data before clearing browser storage — use the backup icon above.
+            <Unlock size={13} style={{ color: COLORS.gold }} className="shrink-0" />
+            <p className="text-xs flex-1" style={{ color: COLORS.gold }}>
+              Editor mode — tap <strong>▶ Go Live</strong> on a card or open a competition to add scores.
             </p>
           </div>
         </div>
@@ -1585,7 +1847,20 @@ export default function CheerHubLiveScores() {
                 {/* 2-column grid on sm+ screens */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-0 sm:gap-3">
                   {grouped[status].map((c) => (
-                    <CompetitionCard key={c.id} comp={c} onOpen={() => setOpenCompId(c.id)} />
+                    <CompetitionCard
+                      key={c.id}
+                      comp={c}
+                      onOpen={() => setOpenCompId(c.id)}
+                      canEdit={editorUnlocked}
+                      onDelete={async () => {
+                        await persistCompetitions(competitions.filter((x) => x.id !== c.id));
+                        showToast('Competition deleted');
+                      }}
+                      onStatusChange={editorUnlocked ? async (newStatus) => {
+                        await persistCompetitions(competitions.map((x) => x.id === c.id ? { ...x, status: newStatus } : x));
+                        showToast(newStatus === 'live' ? `${c.name} is now LIVE` : newStatus === 'completed' ? 'Competition marked complete' : 'Status updated');
+                      } : undefined}
+                    />
                   ))}
                 </div>
               </div>
@@ -1597,7 +1872,7 @@ export default function CheerHubLiveScores() {
       {editorUnlocked && (
         <button
           onClick={() => { setEditingComp(undefined); setFormOpen(true); }}
-          className="fixed bottom-6 right-6 w-14 h-14 rounded-full flex items-center justify-center shadow-xl"
+          className="fixed bottom-20 right-6 w-14 h-14 rounded-full flex items-center justify-center shadow-xl"
           style={{ background: COLORS.gold, color: COLORS.ink }}
           aria-label="Add competition"
         >
@@ -1620,6 +1895,7 @@ export default function CheerHubLiveScores() {
         />
       )}
       {dataPanel && <DataPanel onClose={() => setDataPanel(false)} showToast={showToast} />}
+      {BottomNav}
       <Toast toast={toast} onDismiss={() => setToast(null)} />
     </div>
   );

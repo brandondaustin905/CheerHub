@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en-CA">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Canadian All-Star Gym Directory — The Cheer Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: #10151F;
+  color: #F5F3EC;
+  font-family: 'Inter', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  padding-bottom: 60px;
+}
+.header {
+  background: linear-gradient(160deg, #1B2A48 0%, #10151F 100%);
+  padding: 44px 20px 32px;
+  text-align: center;
+  border-bottom: 1px solid #243A63;
+}
+.header-label {
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: #F2B705;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.header h1 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(34px, 8vw, 54px);
+  letter-spacing: 0.03em;
+  line-height: 1;
+  color: #F5F3EC;
+}
+.header-sub { margin-top: 10px; font-size: 14px; color: #92A2C2; }
+.header-count {
+  display: inline-block;
+  margin-top: 14px;
+  padding: 5px 16px;
+  background: rgba(242,183,5,0.12);
+  border: 1px solid rgba(242,183,5,0.3);
+  border-radius: 20px;
+  font-size: 12px;
+  color: #F2B705;
+  font-weight: 600;
+}
+.search-wrap {
+  max-width: 700px;
+  margin: 24px auto 0;
+  padding: 0 16px;
+  position: relative;
+}
+.search-icon {
+  position: absolute;
+  left: 30px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #92A2C2;
+  font-size: 16px;
+  pointer-events: none;
+}
+.search-input {
+  width: 100%;
+  padding: 13px 16px 13px 44px;
+  background: #1B2A48;
+  border: 1px solid #243A63;
+  border-radius: 12px;
+  color: #F5F3EC;
+  font-size: 15px;
+  font-family: 'Inter', sans-serif;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.search-input:focus { border-color: #F2B705; }
+.search-input::placeholder { color: #92A2C2; }
+.content { max-width: 900px; margin: 32px auto 0; padding: 0 16px; }
+.results-count { font-size: 13px; color: #92A2C2; margin-bottom: 20px; display: none; }
+.province-section { margin-bottom: 40px; }
+.province-heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid;
+}
+.province-name { font-size: 13px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+.province-gym-count { font-size: 12px; color: #92A2C2; margin-left: auto; }
+table { width: 100%; border-collapse: collapse; }
+thead th {
+  text-align: left;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #92A2C2;
+  font-weight: 600;
+  padding: 8px 12px;
+  background: #1B2A48;
+  border-bottom: 1px solid #243A63;
+}
+thead th:first-child { border-radius: 8px 0 0 0; }
+thead th:last-child  { border-radius: 0 8px 0 0; }
+tbody tr { border-bottom: 1px solid rgba(36,58,99,0.5); transition: background 0.12s; }
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover { background: rgba(36,58,99,0.5); }
+td { padding: 13px 12px; font-size: 14px; color: #F5F3EC; vertical-align: middle; }
+td.gym-name { font-weight: 600; }
+td.gym-city { color: #92A2C2; font-size: 13px; }
+td.gym-website { text-align: right; }
+.website-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 12px;
+  background: rgba(242,183,5,0.1);
+  border: 1px solid rgba(242,183,5,0.35);
+  border-radius: 8px;
+  color: #F2B705;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+.website-btn:hover { background: rgba(242,183,5,0.22); }
+.no-website { font-size: 12px; color: #92A2C2; }
+.no-results { text-align: center; padding: 60px 0; color: #92A2C2; font-size: 15px; }
+.footer {
+  text-align: center;
+  padding: 32px 20px;
+  border-top: 1px solid #243A63;
+  color: #92A2C2;
+  font-size: 12px;
+  line-height: 2;
+  margin-top: 20px;
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <p class="header-label">The Cheer Hub</p>
+  <h1>Canadian All-Star<br>Gym Directory</h1>
+  <p class="header-sub">Verified all-star cheerleading gyms across Canada &middot; 2026&ndash;2027 season</p>
+  <span class="header-count">68 verified gyms across 10 provinces</span>
+</div>
+
+<div class="search-wrap">
+  <span class="search-icon">&#9906;</span>
+  <input class="search-input" type="search" id="search" placeholder="Search gyms or cities&hellip;" autocomplete="off" />
+</div>
+
+<div class="content">
+  <p class="results-count" id="results-count"></p>
+
+  <!-- ONTARIO -->
+  <div class="province-section" id="sec-on">
+    <div class="province-heading" style="border-color:#FF4D5E;">
+      <span class="province-name" style="color:#FF4D5E;">Ontario</span>
+      <span class="province-gym-count">21 gyms</span>
+    </div>
+    <table>
+      <thead><tr><th>Gym Name</th><th>City</th><th>Website</th></tr></thead>
+      <tbody>
+        <tr><td class="gym-name">Alpha Cheer &amp; Tumbling</td><td class="gym-city">Ontario</td><td class="gym-website"><a class="website-btn" href="https://www.alphacheer.ca" target="_blank" rel="noopener">Visit &#8599;</a></td></tr>
+        <tr><td class="gym-name">Beach Cheer Athletics</td><td class="gym-city">Ontario</td><td class="gym-website"><a class="website-btn" href="https://www.beachcheerathletics.com" target="_blank" rel="noopener">Visit &#8599;</a></td></tr>
+        <tr><td class="gym-name">Black Widow Cheer Gym</td><td class="gym-city">Ontario</td><td class="gym-website"><a class="website-btn" href="https://www.blackwidowcheergym.com" target="_blank" rel="noopener">Visit &#8599;</a></td></tr>
+        <tr><td class="gym-name">Champion Cheer Academy</td><td class="gym-city">Ontario</td><td class="gym-website"><a class="website-btn" href="https://championcheer.ca" target="_blank" rel="noopener">Visit &#8599;</a></td></tr>
+        <tr><td class="gym-name">Cheer Fuzion All-Stars (CFA)</td><td class="gym-city">Ontario</td><td class="gym-website"><a class="website-btn" href="https://cfacheer.com" target="_blank" rel="noopener">Visit &#8599;</a></td></tr>
+        <tr><td class="gym-name">CheerForce AllStars</td><td class="gym-city">Ontario</td><td class="gym-website"><a class="website-btn" href="https://cheerforceallstars.ca" target="_blank" rel="noopener">Visit &#8599;</a></td></tr>
+        <tr><td class="gym-name">CheerPride All-Stars</td><td class="gym-city">Ontario</td><td class="gym-website"><a class="website-btn" href="https://cheerprideallstars.com" target="_blank" rel="noopener">Visit &#8599;</a></td></tr>
+        <tr><td class="gym-name">Cheer Sport Sharks &ndash; Ancaster</td><td class="gym-city">Ancaster</td><td class="gym-website"><a class="website-btn" href="https://cheersportsharks.com" target="_blank" rel="noopener">Visit &#8599;</a></td></tr>
+        <tr><td class="gym-name">Cheer Sport Sharks &ndash; Kitchener</td><td class="gym-city">Kitchener</td><td class="gym-website"><a class="website-btn" href="https://cheersportsharks.com" target="_blank" rel="noopener">Visit &#8599;</a></td></tr>
+        <tr><td class="gym-name">Cheer Sport Sharks &ndash; Milton</td><td class="gym-city">Milton</td><td class="gym-website"><a class="website-btn" href="https://cheersportsharks.com" target="_blank" rel="noopener">Visit &#8599;</a></td></tr>
+        <tr><td class="gym-name">Cheer Sport Sharks &ndash; Ottawa</td><td class="gym-city">Ottawa</td><td class="gym-website"><a class="website-btn" href="https://cheersportsharks.com" target="_blank" rel="noopener">Visit &#8599;</a></td></tr>
+        <tr><td class="gym-name">Cheer Sport Sharks &ndash; Toronto</td><td class="gym-city">Toronto</td><td class="gym-website"><a class="website-btn" href="https://cheersportsharks.com" target="_blank" rel="noopener">Visit &#8599;</a></td></tr>
+        <tr><td class="gym-name">Cheer Strike Royals</td><td class="gym-city">Ontario</td><td class="gym-website"><a class="website-btn" href="https://cheerstrikeroyals.com" target="_blank" rel="noopener">Visit &#8599;</a></td></tr>
+        <tr><td class="gym-name">Cheer Strong Inc</td><td class="gym-city">Ontario</td><td class="gym-website"><a class="website-btn" href="https://cheerstronginc.ca" target="_blank" rel="noopener">Visit &#8599;</a></td></tr>
+        <tr><td class="gym-name">Kingston Elite Cheerleading</td><td class="gym-city">Kingston</td><td class="gym-website"><a class="website-btn" href="https://www.kingstonelitecheer.com" target="_blank" rel="noopener">Visit &#8599;</a></td></tr>
+        <tr><td class="gym-name">NorthStar Cheer</td><td class="gym-city">Ontario</td><td class="gym-website"><a class="website-btn" href="https://www.northstarcheer.ca" target="_blank" rel="noopener">Visit &#8599;</a></td></tr>
+        <tr><td class="gym-name">PCT Cheer &amp; Tumble</td><td class="gym-city">Ontario</td><td class="gym-website"><a class="website-btn" href="https://pctcheerandtumble.com" target="_blank" rel="noopener">Visit &#8599;</a></td></tr>
+        <tr><td class="gym-name">Scorpions Niagara</td><td class="gym-city">Niagara Region</td><td class="gym-website"><a class="website-btn" href="http://scorpionsniagara.ca" target="_blank" rel="noopener">Visit &#8599;</a></td></tr>
+        <tr><td class="gym-name">Solar Cheerleading Club</td><td class="gym-city">Ontario</td><td class="gym-website"><a class="website-btn" href="https://www.solarcheerleading.ca" target="_blank" rel="noopener">Visit &#8599;</a></td></tr>
+        <tr><td class="gym-name">Supreme Cheerleading</td><td class="gym-city">Ontario</td><td class="gym-website"><a class="website-btn" href="https://supremecheerleading.com" target="_blank" rel="noopener">Visit &#8599;</a></td></tr>
+        <tr><td class="gym-name">Tigers Athletics</td><td class="gym-city">Ontario</td><td class="gym-website"><a class="website-btn" href="https://www.tigersathletics.com" target="_blank" rel="noopener">Visit &#8599;</a></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- QUEBEC -->
+  <div class="province-section" id="sec-qc">
+    <div class="province-heading" style="border-color:#FF2E8B;">
+      <span class="province-name" style="color:#FF2E8B;">Quebec</span>
+      <span class="province-gym-count">7 gyms</span>
+    </div>
+    <table>
+      <thead><tr><th>Gym Name</th><th>City</th><th>Website</th></tr></thead>
+      <tbody>
+        <tr><td class="gym-name">Centre Coyotes</td><td class="gym-city">Quebec</td><td class="gym-website"><a class="website-btn" href="https://centrecoyotes.com" target="_blank" rel="noopener">Visit &#8599;</a></td></tr>
+        <tr><td class="gym-name">Cheer Sport Sharks &ndash; Laval</td><td class="gym-city">Laval</td><td class="gym-website"><a class="website-btn" href="https://cheersportsharks.com" target="_blank" rel="noopener">Visit &#8599;</a></td></tr>
+        <tr><td class="gym-name">Cheer Sport Sharks &ndash; Qu&eacute;bec City</td><td class="gym-city">Qu&eacute;bec City</td><td class="gym-website"><a class="website-btn" href="https://cheersportsharks.com" target="_blank" rel="noopener">Visit &#8599;</a></td></tr>
+        <tr><td class="gym-name">Club Gymini (G-Force)</td><td class="gym-city">Quebec</td><td class="gym-website"><a class="website-btn" href="https://www.clubgymini.org" target="_blank" rel="noopener">Visit &#8599;</a></td></tr>
+        <tr><td class="gym-name">Flyers Cheerleading</td><td class="gym-city">Quebec</td><td class="gym-website"><a class="website-btn" href="https://www.flyerscheerleading.net" target="_blank" rel="noopener">Visit &#8599;</a></td></tr>
+        <tr><td class="gym-name">Spirit Cheer 07</td><td class="gym-city">Quebec</td><td class="gym-website"><a class="website-btn" href="https://www.cheer07.com" target="_blank" rel="noopener">Visit &#8599;</a></td></tr>
+        <tr><td class="gym-name">Zodiak Elite</td><td class="gym-city">Quebec</td><td class="gym-website"><a class="website-btn" href="https://www.excelgym-zodiak.com/cheerleading" target="_blank" rel="noopener">Visit &#8599;</a></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ALBERTA -->
+  <div class="province-section" id="sec-ab">
+    <div class="province-heading" style="border-color:#E67E22;">
+      <span class="province-name" style="color:#E67E22;">Alberta</span>
+      <span class="province-gym-count">10 gyms</span>
+    </div>
+    <table>
+      <thead><tr><th>Gym Name</th><th>City</th><th>Website</th></tr></thead>
+      <tbody>
+        <tr><td class="gym-name">Alberta Cheer Empire</td><td class="gym-city">Alberta</td><td class="gym-website"><a class="website-btn" href="https://abcheerempire.com" target="_blank" rel="noopener">Visit &#8599;</a></td></tr>
+        <tr><td class="gym-name">Calgary Stars All-Star Cheer</td><td class="gym-city">Calgary</td><td class="gym-website"><a class="website-btn" href="https://www.calgarystarsgym.com" target="_blank" rel="noopener">Visit &#8599;</a></td></tr>
+        <tr><td class="gym-name">Cheer Sport Sharks &ndash; Edmonton</td><td class="gym-city">Edmonton</td><td class="gym-website"><a class="website-btn" href="https://cheersportsharks.com" target="_blank" rel="noopener">Visit &#8599;</a></td></tr>
+        <tr><td class="gym-name">Gymniks All-Stars</td><td class="gym-city">Grande Prairie</td><td class="gym-website"><a class="website-btn" href="https://www.gpgymnastics.com/classes-programs/competitive-cheerleading" target="_blank" rel="noopener">Visit &#8599;</a></td></tr>
+        <tr><td class="gym-name">Peak Elite Cheerleading</td><td class="gym-city">Alberta</td><td class="gym-website"><a class="website-btn" href="https://peakelitecheerleading.ca" target="_blank" rel="noopener">Visit &#8599;</a></td></tr>
+        <tr><td class="gym-name">Perfect Storm Athletics &ndash; Edmonton</td><td class="gym-city">Edmonton</td><td class="gym-website"><a class="website-btn" href="https://edmonton.perfectstormathletics.com" target="_blank" rel="noopener">Visit &#8599;</a></td></tr>
+        <tr><td class="gym-name">Perfect Storm &ndash; Sherwood Park</td><td class="gym-city">Sherwood Park</td><td class="gym-website"><a class="website-btn" href="https://sherwoodpark.perfectstormathletics.com" target="_blank" rel="noopener">Visit &#8599;</a></td></tr>
+        <tr><td class="gym-name">Premier Academy &ndash; Bonnyville</td><td class="gym-city">Bonnyville</td><td class="gym-website"><a class="website-btn" href="https://premieracademy.ca" target="_blank" rel="noopener">Visit &#8599;</a></td></tr>
+        <tr><td class="gym-name">Premier Academy &ndash; Fort McMurray</td><td class="gym-city">Fort McMurray</td><td class="gym-website"><a class="website-btn" href="https://premieracademy.ca" target="_blank" rel="noopener">Visit &#8599;</a></td></tr>
+        <tr><td class="gym-name">Premier Academy &ndash; Red Deer</td><td class="gym-city">Red Deer</td><td class="gym-website"><a class="website-btn" href="https://premieracademy.ca" target="_blank" rel="noopener">Visit &#8599;</a></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- BRITISH COLUMBIA -->
+  <div class="province-section" id="sec-bc">
+    <div class="province-heading" style="border-color:#3FCB8C;">
+      <span class="province-name" style="color:#3FCB8C;">British Columbia</span>
+      <span class="province-gym-count">5 gyms</span>
+    </div>
+    <table>
+      <thead><tr><th>Gym Name</th><th>City</th><th>Website</th></tr></thead>
+      <tbody>
+        <tr><td class="gym-name">Cheer Sport Sharks &ndash; Vancouver</td><td class="gym-city">Vancouver</td><td class="gym-website"><a class="website-btn" href="https://cheersportsharks.com" target="_blank" rel="noopener">Visit &#8599;</a></td></tr>
+        <tr><td class="gym-name">Freeze Athletics</td><td class="gym-city">British Columbia</td><td class="gym-website"><a class="website-btn" href="https://www.freezeathletics.com" target="_blank" rel="noopener">Visit &#8599;</a></td></tr>
+        <tr><td class="gym-name">Kelowna Cheer Athletics (KCA)</td><td class="gym-city">Kelowna</td><td class="gym-website"><a class="website-btn" href="https://www.kelownacheerathletics.com" target="_blank" rel="noopener">Visit &#8599;</a></td></tr>
+        <tr><td class="gym-name">Okanagan Firestorm Cheer</td><td class="gym-city">Okanagan</td><td class="gym-website"><a class="website-btn" href="https://okfirestormcheer.com" target="_blank" rel="noopener">Visit &#8599;</a></td></tr>
+        <tr><td class="gym-name">Vancouver All Stars (G Force Gym)</td><td class="gym-city">Vancouver</td><td class="gym-website"><a class="website-btn" href="https://www.vancouverallstarcheer.com" target="_blank" rel="noopener">Visit &#8599;</a></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- SASKATCHEWAN -->
+  <div class="province-section" id="sec-sk">
+    <div class="province-heading" style="border-color:#4A9EFF;">
+      <span class="province-name" style="color:#4A9EFF;">Saskatchewan</span>
+      <span class="province-gym-count">13 gyms</span>
+    </div>
+    <table>
+      <thead><tr><th>Gym Name</th><th>City</th><th>Website</th></tr></thead>
+      <tbody>
+        <tr><td class="gym-name">Aerial Cheer Athletics</td><td class="gym-city">Saskatchewan</td><td class="gym-website"><span class="no-website">Facebook only</span></td></tr>
+        <tr><td class="gym-name">Airbourne Cheer Athletics</td><td class="gym-city">Saskatchewan</td><td class="gym-website"><a class="website-btn" href="https://airbournecheerathletics.com" target="_blank" rel="noopener">Visit &#8599;</a></td></tr>
+        <tr><td class="gym-name">Biggar Cheerleading</td><td class="gym-city">Biggar</td><td class="gym-website"><span class="no-website">Facebook only</span></td></tr>
+        <tr><td class="gym-name">Boss Athletics</td><td class="gym-city">Saskatchewan</td><td class="gym-website"><a class="website-btn" href="https://bosscheerathletics.com" target="_blank" rel="noopener">Visit &#8599;</a></td></tr>
+        <tr><td class="gym-name">Bravo Dance Company</td><td class="gym-city">Saskatchewan</td><td class="gym-website"><a class="website-btn" href="https://www.bravodanceco.com" target="_blank" rel="noopener">Visit &#8599;</a></td></tr>
+        <tr><td class="gym-name">Channel Performance</td><td class="gym-city">Saskatchewan</td><td class="gym-website"><a class="website-btn" href="https://www.channelperformance.ca" target="_blank" rel="noopener">Visit &#8599;</a></td></tr>
+        <tr><td class="gym-name">Gridders Cheerleading</td><td class="gym-city">Saskatchewan</td><td class="gym-website"><a class="website-btn" href="https://www.griddercheer.com" target="_blank" rel="noopener">Visit &#8599;</a></td></tr>
+        <tr><td class="gym-name">Infinity Athletics</td><td class="gym-city">Saskatchewan</td><td class="gym-website"><a class="website-btn" href="https://infinityathletics.ca" target="_blank" rel="noopener">Visit &#8599;</a></td></tr>
+        <tr><td class="gym-name">Prairie Fire Cheerleading</td><td class="gym-city">Saskatchewan</td><td class="gym-website"><a class="website-btn" href="https://www.prairiefirecheerleading.ca" target="_blank" rel="noopener">Visit &#8599;</a></td></tr>
+        <tr><td class="gym-name">Prince Albert Cheer Explosion</td><td class="gym-city">Prince Albert</td><td class="gym-website"><a class="website-btn" href="https://pacecheerleading.com" target="_blank" rel="noopener">Visit &#8599;</a></td></tr>
+        <tr><td class="gym-name">Rebels Cheerleading Athletics</td><td class="gym-city">Saskatchewan</td><td class="gym-website"><a class="website-btn" href="https://www.rebelscheerleading.com" target="_blank" rel="noopener">Visit &#8599;</a></td></tr>
+        <tr><td class="gym-name">Warman Ultimate Cheerleading</td><td class="gym-city">Warman</td><td class="gym-website"><a class="website-btn" href="https://warmanultimatecheerleading.com" target="_blank" rel="noopener">Visit &#8599;</a></td></tr>
+        <tr><td class="gym-name">Western Cheer</td><td class="gym-city">Saskatchewan</td><td class="gym-website"><a class="website-btn" href="https://westerncheer.ca" target="_blank" rel="noopener">Visit &#8599;</a></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- MANITOBA -->
+  <div class="province-section" id="sec-mb">
+    <div class="province-heading" style="border-color:#9B59B6;">
+      <span class="province-name" style="color:#9B59B6;">Manitoba</span>
+      <span class="province-gym-count">3 gyms</span>
+    </div>
+    <table>
+      <thead><tr><th>Gym Name</th><th>City</th><th>Website</th></tr></thead>
+      <tbody>
+        <tr><td class="gym-name">Central Cheer</td><td class="gym-city">Winnipeg</td><td class="gym-website"><a class="website-btn" href="https://centralcheer.ca" target="_blank" rel="noopener">Visit &#8599;</a></td></tr>
+        <tr><td class="gym-name">Phoenix Cheer Athletics</td><td class="gym-city">Manitoba</td><td class="gym-website"><a class="website-btn" href="https://www.phoenixcheerathletics.com" target="_blank" rel="noopener">Visit &#8599;</a></td></tr>
+        <tr><td class="gym-name">Vision Cheer Company</td><td class="gym-city">Manitoba</td><td class="gym-website"><a class="website-btn" href="https://www.visioncheercompany.ca" target="_blank" rel="noopener">Visit &#8599;</a></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- NEW BRUNSWICK -->
+  <div class="province-section" id="sec-nb">
+    <div class="province-heading" style="border-color:#3FCB8C;">
+      <span class="province-name" style="color:#3FCB8C;">New Brunswick</span>
+      <span class="province-gym-count">2 gyms</span>
+    </div>
+    <table>
+      <thead><tr><th>Gym Name</th><th>City</th><th>Website</th></tr></thead>
+      <tbody>
+        <tr><td class="gym-name">Olympia Allstar Cheerleading</td><td class="gym-city">Moncton</td><td class="gym-website"><a class="website-btn" href="https://www.olympiacheerleading.com" target="_blank" rel="noopener">Visit &#8599;</a></td></tr>
+        <tr><td class="gym-name">Sky Athletics Cheerleading</td><td class="gym-city">Saint John</td><td class="gym-website"><a class="website-btn" href="https://www.skycheer.ca" target="_blank" rel="noopener">Visit &#8599;</a></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- NOVA SCOTIA -->
+  <div class="province-section" id="sec-ns">
+    <div class="province-heading" style="border-color:#FF4D5E;">
+      <span class="province-name" style="color:#FF4D5E;">Nova Scotia</span>
+      <span class="province-gym-count">6 gyms</span>
+    </div>
+    <table>
+      <thead><tr><th>Gym Name</th><th>City</th><th>Website</th></tr></thead>
+      <tbody>
+        <tr><td class="gym-name">Empire Athletics South Shore</td><td class="gym-city">South Shore</td><td class="gym-website"><a class="website-btn" href="https://www.empireathletics-ss.ca" target="_blank" rel="noopener">Visit &#8599;</a></td></tr>
+        <tr><td class="gym-name">Extreme Athletics</td><td class="gym-city">Dartmouth</td><td class="gym-website"><a class="website-btn" href="http://www.extremeathletics.ca" target="_blank" rel="noopener">Visit &#8599;</a></td></tr>
+        <tr><td class="gym-name">Halifax Cheer Elite</td><td class="gym-city">Halifax</td><td class="gym-website"><a class="website-btn" href="https://www.halifaxcheerelite.net" target="_blank" rel="noopener">Visit &#8599;</a></td></tr>
+        <tr><td class="gym-name">Integrity Cheer Empire</td><td class="gym-city">Windsor &amp; Kentville</td><td class="gym-website"><a class="website-btn" href="https://www.integritycheerempire.com" target="_blank" rel="noopener">Visit &#8599;</a></td></tr>
+        <tr><td class="gym-name">Legacy Cheer Atlantic</td><td class="gym-city">Dartmouth</td><td class="gym-website"><a class="website-btn" href="https://www.legacycheeratlantic.net" target="_blank" rel="noopener">Visit &#8599;</a></td></tr>
+        <tr><td class="gym-name">Premier Cheer All-Stars</td><td class="gym-city">Sydney</td><td class="gym-website"><a class="website-btn" href="https://premiercheerleadingallstars.com" target="_blank" rel="noopener">Visit &#8599;</a></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- PRINCE EDWARD ISLAND -->
+  <div class="province-section" id="sec-pe">
+    <div class="province-heading" style="border-color:#FF2E8B;">
+      <span class="province-name" style="color:#FF2E8B;">Prince Edward Island</span>
+      <span class="province-gym-count">1 gym</span>
+    </div>
+    <table>
+      <thead><tr><th>Gym Name</th><th>City</th><th>Website</th></tr></thead>
+      <tbody>
+        <tr><td class="gym-name">Passion Elite Cheer</td><td class="gym-city">Charlottetown</td><td class="gym-website"><a class="website-btn" href="https://www.passionelitecheer.ca" target="_blank" rel="noopener">Visit &#8599;</a></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- NEWFOUNDLAND & LABRADOR -->
+  <div class="province-section" id="sec-nl">
+    <div class="province-heading" style="border-color:#4A9EFF;">
+      <span class="province-name" style="color:#4A9EFF;">Newfoundland &amp; Labrador</span>
+      <span class="province-gym-count">1 gym</span>
+    </div>
+    <table>
+      <thead><tr><th>Gym Name</th><th>City</th><th>Website</th></tr></thead>
+      <tbody>
+        <tr><td class="gym-name">Cheer Sport Sharks &ndash; NL</td><td class="gym-city">Mount Pearl</td><td class="gym-website"><a class="website-btn" href="https://cheersportsharks.com" target="_blank" rel="noopener">Visit &#8599;</a></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="no-results" id="no-results" style="display:none;">No gyms matched your search.</div>
+</div>
+
+<div class="footer">
+  <p>Data sourced from the Cheer Hub Canadian All-Star Gym Directory</p>
+  <p>Updated for the 2026&ndash;2027 competitive season</p>
+</div>
+
+<script>
+var searchEl  = document.getElementById('search');
+var noResults = document.getElementById('no-results');
+var countEl   = document.getElementById('results-count');
+searchEl.addEventListener('input', function() {
+  var q = this.value.toLowerCase().trim();
+  var total = 0;
+  document.querySelectorAll('.province-section').forEach(function(sec) {
+    var rows = sec.querySelectorAll('tbody tr');
+    var visible = 0;
+    var prov = sec.querySelector('.province-name').textContent.toLowerCase();
+    rows.forEach(function(row) {
+      var match = !q || row.textContent.toLowerCase().includes(q) || prov.includes(q);
+      row.style.display = match ? '' : 'none';
+      if (match) visible++;
+    });
+    sec.style.display = visible > 0 ? '' : 'none';
+    total += visible;
+  });
+  noResults.style.display = total === 0 ? 'block' : 'none';
+  countEl.style.display = q ? 'block' : 'none';
+  if (q) countEl.textContent = total + ' gym' + (total !== 1 ? 's' : '') + ' found for "' + this.value + '"';
+});
+</script>
+</body>
+</html>

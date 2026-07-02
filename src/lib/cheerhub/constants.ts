@@ -16,41 +16,35 @@ export const EDITOR_PASSCODE =
   process.env.NEXT_PUBLIC_EDITOR_PASSCODE ?? 'CHEERHUB2026';
 
 /* ----------------------------------------------------------------
-   20 scored line items, 150 pts total.
-   Based on Cheer Canada / IASF elite judging framework.
+   14 scored line items, 100 pts total.
+   Cheer Canada elite judging framework.
    ---------------------------------------------------------------- */
 export const CRITERIA: Criterion[] = [
-  // BUILDING /60
-  { key: 'stuntDiff',    group: 'building', label: 'Stunt Difficulty',       max: 10, sub: 'Risk vs Reward · Elite Skill Variety · Inversions · Partner Stunts · Skill Distribution' },
-  { key: 'stuntExec',    group: 'building', label: 'Stunt Execution',        max: 10, sub: 'Control · Stability · Body Positions · Completion of Skills · Recovery from Mistakes · Safety' },
-  { key: 'pyramidDiff',  group: 'building', label: 'Pyramid Difficulty',     max: 10, sub: 'Inversions · Innovation · Risk vs Reward · Elite Skill Variety · Partner Stunts' },
-  { key: 'pyramidExec',  group: 'building', label: 'Pyramid Execution',      max: 10, sub: 'Precision · Synchronization · Team Uniformity · Balance · Skill Distribution' },
-  { key: 'tossDiff',     group: 'building', label: 'Basket Toss Difficulty', max: 10, sub: 'Difficulty · Innovation · Risk vs Reward · Basket Toss Execution' },
-  { key: 'tossExec',     group: 'building', label: 'Basket Toss Execution',  max: 10, sub: 'Safety · Control · Stability · Completion of Skills · Endurance' },
-  // TUMBLING & JUMPS /30
-  { key: 'tumbleDiff',   group: 'tumbling', label: 'Tumbling Difficulty',    max: 8,  sub: 'Standing Tumbling · Running Tumbling · Elite Skill Variety · Risk vs Reward' },
-  { key: 'tumbleExec',   group: 'tumbling', label: 'Tumbling Execution',     max: 8,  sub: 'Technique · Body Positions · Control · Recovery from Mistakes · Safety' },
-  { key: 'jumpTech',     group: 'tumbling', label: 'Jump Technique',         max: 7,  sub: 'Flexibility · Timing · Body Positions · Synchronization · Precision' },
-  { key: 'standTumble',  group: 'tumbling', label: 'Standing Tumbling',      max: 4,  sub: 'Difficulty · Balance · Completion of Skills' },
-  { key: 'runTumble',    group: 'tumbling', label: 'Running Tumbling',       max: 3,  sub: 'Difficulty · Endurance · Completion of Skills' },
-  // CHOREOGRAPHY & DANCE /30
-  { key: 'choreo',       group: 'choreo',   label: 'Choreography',           max: 6,  sub: 'Creativity · Innovation · Routine Composition · Visual Effect' },
-  { key: 'routineComp',  group: 'choreo',   label: 'Routine Composition',    max: 6,  sub: 'Flow of Routine · Transitions · Timing · Musical Interpretation' },
-  { key: 'dance',        group: 'choreo',   label: 'Dance Performance',      max: 6,  sub: 'Motion Technique · Energy · Musical Interpretation · Timing' },
-  { key: 'transitions',  group: 'choreo',   label: 'Transitions & Flow',     max: 6,  sub: 'Flow of Routine · Visual Effect · Team Uniformity · Creativity' },
-  { key: 'musicalInterp',group: 'choreo',   label: 'Musical Interpretation', max: 6,  sub: 'Timing · Motion Technique · Energy · Synchronization' },
-  // OVERALL PERFORMANCE /30
-  { key: 'impression',   group: 'overall',  label: 'Overall Impression',     max: 8,  sub: 'Overall Performance · Showmanship · Crowd Appeal · Confidence · Energy' },
-  { key: 'showmanship',  group: 'overall',  label: 'Showmanship & Energy',   max: 8,  sub: 'Energy · Confidence · Crowd Appeal · Visual Effect · Endurance' },
-  { key: 'uniformity',   group: 'overall',  label: 'Team Uniformity',        max: 7,  sub: 'Synchronization · Precision · Timing · Balance · Team Participation' },
-  { key: 'creativity',   group: 'overall',  label: 'Creativity & Visual',    max: 7,  sub: 'Creativity · Innovation · Visual Effect · Risk vs Reward' },
+  // BUILDING /50
+  { key: 'stuntDiff',    group: 'building', label: 'Stunt Difficulty',        max: 10, sub: 'Risk vs Reward · Skill Variety · Inversions · Elite Skills · Distribution' },
+  { key: 'stuntExec',    group: 'building', label: 'Stunt Execution',         max: 10, sub: 'Control · Stability · Body Positions · Completion · Safety' },
+  { key: 'pyramidDiff',  group: 'building', label: 'Pyramid Difficulty',      max: 10, sub: 'Inversions · Innovation · Risk vs Reward · Elite Skill Variety' },
+  { key: 'pyramidExec',  group: 'building', label: 'Pyramid Execution',       max: 10, sub: 'Precision · Synchronization · Team Uniformity · Balance' },
+  { key: 'tosses',       group: 'building', label: 'Basket Tosses',           max: 10, sub: 'Difficulty · Innovation · Control · Safety · Execution' },
+  // TUMBLING & JUMPS /25
+  { key: 'tumbleDiff',   group: 'tumbling', label: 'Tumbling Difficulty',     max: 8,  sub: 'Running Tumbling · Elite Skill Variety · Risk vs Reward · Distribution' },
+  { key: 'tumbleExec',   group: 'tumbling', label: 'Tumbling Execution',      max: 8,  sub: 'Technique · Body Positions · Control · Safety · Recovery' },
+  { key: 'standTumble',  group: 'tumbling', label: 'Standing Tumbling',       max: 5,  sub: 'Difficulty · Execution · Balance · Completion of Skills' },
+  { key: 'jumps',        group: 'tumbling', label: 'Jump Performance',        max: 4,  sub: 'Technique · Flexibility · Timing · Synchronization · Precision' },
+  // CHOREOGRAPHY /15
+  { key: 'routineComp',  group: 'choreo',   label: 'Routine Composition',     max: 5,  sub: 'Flow · Transitions · Use of Space · Timing · Musical Interpretation' },
+  { key: 'creativity',   group: 'choreo',   label: 'Creativity & Innovation', max: 5,  sub: 'Originality · Visual Effect · Wow Factor · Theme Execution' },
+  { key: 'musicalInterp',group: 'choreo',   label: 'Musical Interpretation',  max: 5,  sub: 'Timing · Motion Technique · Energy · Synchronization' },
+  // PERFORMANCE /10
+  { key: 'impression',   group: 'overall',  label: 'Overall Impression',      max: 5,  sub: 'Total Package · Crowd Appeal · Confidence · Energy · Showmanship' },
+  { key: 'showmanship',  group: 'overall',  label: 'Entertainment',           max: 5,  sub: 'Performance Quality · Facial Expressions · Stage Presence · Audience Connection' },
 ];
 
 export const GROUP_META: Record<string, GroupMeta> = {
-  building: { label: 'Building',             max: 60 },
-  tumbling: { label: 'Tumbling & Jumps',     max: 30 },
-  choreo:   { label: 'Choreography & Dance', max: 30 },
-  overall:  { label: 'Overall Performance',  max: 30 },
+  building: { label: 'Building',         max: 50 },
+  tumbling: { label: 'Tumbling & Jumps', max: 25 },
+  choreo:   { label: 'Choreography',     max: 15 },
+  overall:  { label: 'Performance',      max: 10 },
 };
 
 export const GROUP_ORDER = ['building', 'tumbling', 'choreo', 'overall'] as const;
@@ -58,38 +52,122 @@ export const GROUP_ORDER = ['building', 'tumbling', 'choreo', 'overall'] as cons
 // 0–10 in 0.25 steps (41 steps: indices 0–40)
 export const DEDUCTION_STEPS: number[] = Array.from({ length: 41 }, (_, i) => i);
 
+export const CANADIAN_GYMS: string[] = [
+  // Ontario
+  'Alpha Cheer & Tumbling',
+  'Beach Cheer Athletics',
+  'Black Widow Cheer Gym',
+  'Champion Cheer Academy',
+  'Cheer Fuzion All-Stars (CFA)',
+  'CheerForce AllStars',
+  'CheerPride All-Stars',
+  'Cheer Sport Sharks – Ancaster',
+  'Cheer Sport Sharks – Kitchener',
+  'Cheer Sport Sharks – Milton',
+  'Cheer Sport Sharks – Ottawa',
+  'Cheer Sport Sharks – Toronto',
+  'Cheer Strike Royals',
+  'Cheer Strong Inc',
+  'Kingston Elite Cheerleading',
+  'NorthStar Cheer',
+  'PCT Cheer & Tumble',
+  'Scorpions Niagara',
+  'Solar Cheerleading Club',
+  'Supreme Cheerleading',
+  'Tigers Athletics',
+  // Quebec
+  'Centre Coyotes',
+  'Cheer Sport Sharks – Laval',
+  'Cheer Sport Sharks – Québec City',
+  'Club Gymini (G-Force)',
+  'Flyers Cheerleading',
+  'Spirit Cheer 07',
+  'Zodiak Elite',
+  // Alberta
+  'Alberta Cheer Empire',
+  'Calgary Stars All-Star Cheer',
+  'Cheer Sport Sharks – Edmonton',
+  'Gymniks All-Stars',
+  'Peak Elite Cheerleading',
+  'Perfect Storm Athletics – Edmonton',
+  'Perfect Storm – Sherwood Park',
+  'Premier Academy – Bonnyville',
+  'Premier Academy – Fort McMurray',
+  'Premier Academy – Red Deer',
+  // British Columbia
+  'Cheer Sport Sharks – Vancouver',
+  'Freeze Athletics',
+  'Kelowna Cheer Athletics (KCA)',
+  'Okanagan Firestorm Cheer',
+  'Vancouver All Stars (G Force Gym)',
+  // Saskatchewan
+  'Aerial Cheer Athletics',
+  'Airbourne Cheer Athletics',
+  'Biggar Cheerleading',
+  'Boss Athletics',
+  'Bravo Dance Company',
+  'Channel Performance',
+  'Gridders Cheerleading',
+  'Infinity Athletics',
+  'Prairie Fire Cheerleading',
+  'Prince Albert Cheer Explosion',
+  'Rebels Cheerleading Athletics',
+  'Warman Ultimate Cheerleading',
+  'Western Cheer',
+  // Manitoba
+  'Central Cheer',
+  'Phoenix Cheer Athletics',
+  'Vision Cheer Company',
+  // New Brunswick
+  'Olympia Allstar Cheerleading',
+  'Sky Athletics Cheerleading',
+  // Nova Scotia
+  'Empire Athletics South Shore',
+  'Extreme Athletics',
+  'Halifax Cheer Elite',
+  'Integrity Cheer Empire',
+  'Legacy Cheer Atlantic',
+  'Premier Cheer All-Stars',
+  // Prince Edward Island
+  'Passion Elite Cheer',
+  // Newfoundland and Labrador
+  'Cheer Sport Sharks – NL',
+];
+
 export const CANADIAN_DIVISIONS: Record<string, string[]> = {
-  'U6': [
-    'U6 Initiation', 'U6 Civil',
-  ],
   'U8': [
-    'U8 Initiation', 'U8 Civil', 'U8 Novice', 'U8 Prep',
-    'U8 Level 1', 'U8 Level 2', 'U8 Non-Tumbling',
+    'U8 Novice', 'U8 Prep',
+    'U8 Level 1', 'U8 Level 2', 'U8 Level 3',
   ],
   'U12': [
-    'U12 Initiation', 'U12 Civil', 'U12 Novice', 'U12 Prep',
+    'U12 Novice', 'U12 Prep',
     'U12 Level 1', 'U12 Level 2', 'U12 Level 3', 'U12 Level 4',
     'U12 NT 2', 'U12 NT 3', 'U12 NT 4',
   ],
   'U16': [
-    'U16 Initiation', 'U16 Civil', 'U16 Novice', 'U16 Prep',
-    'U16 Level 1', 'U16 Level 2', 'U16 Level 3', 'U16 Level 4', 'U16 Level 5',
-    'U16 NT 2', 'U16 NT 3', 'U16 NT 4', 'U16 NT 5',
+    'U16 Novice', 'U16 Prep',
+    'U16 Level 1', 'U16 Level 2', 'U16 Level 3', 'U16 Level 4', 'U16 Level 5', 'U16 Level 6',
+    'U16 NT 2', 'U16 NT 3', 'U16 NT 4', 'U16 NT 5', 'U16 NT 6',
   ],
   'U18': [
-    'U18 Initiation', 'U18 Civil', 'U18 Novice', 'U18 Prep',
+    'U18 Novice', 'U18 Prep',
     'U18 Level 1', 'U18 Level 2', 'U18 Level 3', 'U18 Level 4', 'U18 Level 4.2',
-    'U18 NT 2', 'U18 NT 3', 'U18 NT 4',
+    'U18 Level 5', 'U18 Level 6', 'U18 Level 7',
+    'U18 NT 2', 'U18 NT 3', 'U18 NT 4', 'U18 NT 5', 'U18 NT 6', 'U18 NT 7',
   ],
   'U18 AG / Coed': [
-    'U18 AG Level 5', 'U18 AG Level 6', 'U18 AG NT 5', 'U18 AG NT 6',
-    'U18 Coed Level 5', 'U18 Coed Level 6', 'U18 Coed NT 5', 'U18 Coed NT 6',
+    'U18 AG Level 5', 'U18 AG Level 6', 'U18 AG Level 7',
+    'U18 AG NT 5', 'U18 AG NT 6', 'U18 AG NT 7',
+    'U18 Coed Level 5', 'U18 Coed Level 6', 'U18 Coed Level 7',
+    'U18 Coed NT 5', 'U18 Coed NT 6', 'U18 Coed NT 7',
   ],
   'Open': [
-    'Open Level 2', 'Open Level 3', 'Open Level 4', 'Open Level 4.2',
-    'Open NT 2', 'Open NT 3', 'Open NT 4',
+    'Open Novice', 'Open Prep',
+    'Open Level 1', 'Open Level 2', 'Open Level 3', 'Open Level 4', 'Open Level 4.2',
+    'Open Level 5', 'Open Level 6', 'Open Level 7',
+    'Open NT 2', 'Open NT 3', 'Open NT 4', 'Open NT 5', 'Open NT 6', 'Open NT 7',
   ],
   'Open AG / Masters': [
-    'Open AG Level 5', 'Open AG Level 6', "Master's",
+    'Open AG Level 5', 'Open AG Level 6', 'Open AG Level 7', "Master's",
   ],
 };

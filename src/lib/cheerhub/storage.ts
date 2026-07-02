@@ -1,4 +1,5 @@
 import type { Competition, Entry, Lock, WatchItem } from './types';
+import { SEEDED_COMPETITIONS, SEED_VERSION_KEY } from './seeds';
 
 // All keys in one place so they're easy to audit / migrate.
 export const STORAGE_KEYS = {
@@ -25,6 +26,37 @@ function safeWrite(key: string, value: unknown): void {
     console.error('cheerhub: storage write failed', key, err);
     throw err;
   }
+}
+
+// Seed pre-populated competitions on first install (once per seed version).
+// On re-seeds (version bump) we UPDATE factual fields on existing seeded
+// competitions so venue/date corrections reach users who already have data.
+// User-set fields (status, divisions, bannerUrl) are preserved.
+export function maybeSeeed(): void {
+  try {
+    if (localStorage.getItem(SEED_VERSION_KEY)) return;
+    const existing = safeRead<Competition[]>(STORAGE_KEYS.competitions, []);
+    const seedMap  = new Map(SEEDED_COMPETITIONS.map((s) => [s.id, s]));
+
+    // Keep user-created competitions; update factual data for seeded ones.
+    const userCreated = existing.filter((c) => !seedMap.has(c.id));
+    const seeded = SEEDED_COMPETITIONS.map((seed) => {
+      const prev = existing.find((c) => c.id === seed.id);
+      if (!prev) return seed;
+      return {
+        ...prev,
+        name:        seed.name,
+        venue:       seed.venue,
+        city:        seed.city,
+        startDate:   seed.startDate,
+        endDate:     seed.endDate,
+        accentColor: seed.accentColor,
+      };
+    });
+
+    safeWrite(STORAGE_KEYS.competitions, [...userCreated, ...seeded]);
+    localStorage.setItem(SEED_VERSION_KEY, '1');
+  } catch { /* best-effort */ }
 }
 
 // Competitions
