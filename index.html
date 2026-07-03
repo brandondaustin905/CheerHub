@@ -3,53 +3,182 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Canadian All-Star Gym Directory — The Cheer Hub</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<title>Canadian All-Star Cheer Gym Directory — The Cheer Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Pacifico&family=Barlow+Condensed:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --navy:        #07101D;
+  --navy-mid:    #0D1E33;
+  --navy-card:   #102040;
+  --navy-border: #1A3558;
+  --red:         #C8102E;
+  --red-dark:    #A00D24;
+  --white:       #FFFFFF;
+  --white-dim:   #B8C8DC;
+  --white-faint: #6A8AAE;
+}
+
 body {
-  background: #10151F;
-  color: #F5F3EC;
+  background: var(--navy);
+  color: var(--white);
   font-family: 'Inter', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   padding-bottom: 60px;
 }
+
+/* ── HEADER ── */
 .header {
-  background: linear-gradient(160deg, #1B2A48 0%, #10151F 100%);
-  padding: 44px 20px 32px;
+  background: linear-gradient(175deg, #0D1E38 0%, #07101D 55%);
+  padding: 48px 20px 0;
   text-align: center;
-  border-bottom: 1px solid #243A63;
+  position: relative;
+  overflow: hidden;
+  border-bottom: 3px solid var(--red);
 }
-.header-label {
-  font-size: 11px;
-  letter-spacing: 0.2em;
-  color: #F2B705;
+
+/* subtle radial glow behind text */
+.header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 70% 50% at 50% 30%, rgba(200,16,46,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.eyebrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 4px;
+  position: relative;
+}
+.eyebrow-line {
+  flex: 1;
+  max-width: 80px;
+  height: 1px;
+  background: var(--white-dim);
+}
+.eyebrow-text {
+  font-family: 'Barlow Condensed', sans-serif;
   font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.28em;
+  color: var(--white-dim);
   text-transform: uppercase;
-  margin-bottom: 10px;
 }
-.header h1 {
+.leaf { font-size: 16px; }
+
+.hero-allstar {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: clamp(34px, 8vw, 54px);
-  letter-spacing: 0.03em;
-  line-height: 1;
-  color: #F5F3EC;
+  font-size: clamp(52px, 16vw, 100px);
+  line-height: 0.9;
+  letter-spacing: 0.04em;
+  color: var(--white);
+  text-shadow: 0 2px 20px rgba(0,0,0,0.6);
+  position: relative;
 }
-.header-sub { margin-top: 10px; font-size: 14px; color: #92A2C2; }
-.header-count {
+
+/* star in ALL-STAR */
+.star-char {
+  color: var(--red);
   display: inline-block;
-  margin-top: 14px;
-  padding: 5px 16px;
-  background: rgba(242,183,5,0.12);
-  border: 1px solid rgba(242,183,5,0.3);
-  border-radius: 20px;
-  font-size: 12px;
-  color: #F2B705;
-  font-weight: 600;
 }
+
+.hero-cheergym {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(52px, 16vw, 100px);
+  line-height: 0.92;
+  letter-spacing: 0.04em;
+  color: var(--red);
+  text-shadow: 0 2px 24px rgba(200,16,46,0.35);
+  position: relative;
+}
+
+.hero-directory {
+  font-family: 'Pacifico', cursive;
+  font-size: clamp(28px, 7vw, 52px);
+  color: var(--white);
+  margin-top: 6px;
+  margin-bottom: 28px;
+  text-shadow: 0 2px 12px rgba(0,0,0,0.5);
+  position: relative;
+}
+
+/* ── FEATURE ICONS ── */
+.features {
+  display: flex;
+  justify-content: center;
+  gap: clamp(12px, 4vw, 32px);
+  margin-bottom: 28px;
+  position: relative;
+}
+.feature {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.feature-circle {
+  width: 52px;
+  height: 52px;
+  border: 2px solid rgba(255,255,255,0.5);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+.feature-label {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--white-dim);
+  text-align: center;
+  line-height: 1.3;
+}
+.feature-label em {
+  display: block;
+  color: var(--red);
+  font-style: normal;
+}
+
+/* ── TAGLINE BAR ── */
+.tagline-bar {
+  background: var(--white);
+  padding: 12px 24px;
+  margin: 0 -20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.tagline-check {
+  color: var(--red);
+  font-size: 18px;
+  font-weight: 900;
+}
+.tagline-text {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 800;
+  font-size: clamp(13px, 3.5vw, 17px);
+  letter-spacing: 0.06em;
+  color: #0D1E33;
+  text-transform: uppercase;
+}
+.tagline-accent {
+  color: var(--red);
+}
+
+/* ── SEARCH ── */
 .search-wrap {
   max-width: 700px;
-  margin: 24px auto 0;
+  margin: 28px auto 0;
   padding: 0 16px;
   position: relative;
 }
@@ -58,94 +187,194 @@ body {
   left: 30px;
   top: 50%;
   transform: translateY(-50%);
-  color: #92A2C2;
+  color: var(--white-faint);
   font-size: 16px;
   pointer-events: none;
 }
 .search-input {
   width: 100%;
   padding: 13px 16px 13px 44px;
-  background: #1B2A48;
-  border: 1px solid #243A63;
-  border-radius: 12px;
-  color: #F5F3EC;
+  background: var(--navy-card);
+  border: 1px solid var(--navy-border);
+  border-radius: 10px;
+  color: var(--white);
   font-size: 15px;
   font-family: 'Inter', sans-serif;
   outline: none;
   transition: border-color 0.15s;
 }
-.search-input:focus { border-color: #F2B705; }
-.search-input::placeholder { color: #92A2C2; }
+.search-input:focus { border-color: var(--red); }
+.search-input::placeholder { color: var(--white-faint); }
+
+/* ── GYM COUNT BADGE ── */
+.count-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 16px auto 0;
+}
+.count-pill {
+  display: inline-block;
+  padding: 5px 16px;
+  background: rgba(200,16,46,0.12);
+  border: 1px solid rgba(200,16,46,0.35);
+  border-radius: 20px;
+  font-size: 12px;
+  color: #FF6680;
+  font-weight: 600;
+  font-family: 'Barlow Condensed', sans-serif;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* ── CONTENT ── */
 .content { max-width: 900px; margin: 32px auto 0; padding: 0 16px; }
-.results-count { font-size: 13px; color: #92A2C2; margin-bottom: 20px; display: none; }
-.province-section { margin-bottom: 40px; }
+
+.results-count {
+  font-size: 13px;
+  color: var(--white-faint);
+  margin-bottom: 20px;
+  display: none;
+  font-family: 'Barlow Condensed', sans-serif;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* ── PROVINCE SECTIONS ── */
+.province-section { margin-bottom: 36px; }
+
 .province-heading {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 10px;
-  padding-bottom: 10px;
-  border-bottom: 2px solid;
+  gap: 12px;
+  margin-bottom: 0;
+  padding: 10px 14px;
+  background: var(--navy-mid);
+  border-left: 4px solid var(--red);
+  border-radius: 4px 4px 0 0;
 }
-.province-name { font-size: 13px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
-.province-gym-count { font-size: 12px; color: #92A2C2; margin-left: auto; }
-table { width: 100%; border-collapse: collapse; }
+.province-name {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 800;
+  font-size: 15px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--white);
+}
+.province-flag { font-size: 16px; }
+.province-gym-count {
+  font-size: 11px;
+  color: var(--white-faint);
+  margin-left: auto;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--navy-card);
+  border-radius: 0 0 6px 6px;
+  overflow: hidden;
+}
 thead th {
   text-align: left;
   font-size: 10px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #92A2C2;
+  color: var(--white-faint);
   font-weight: 600;
-  padding: 8px 12px;
-  background: #1B2A48;
-  border-bottom: 1px solid #243A63;
+  font-family: 'Barlow Condensed', sans-serif;
+  padding: 8px 14px;
+  background: #0B1A2D;
+  border-bottom: 1px solid var(--navy-border);
 }
-thead th:first-child { border-radius: 8px 0 0 0; }
-thead th:last-child  { border-radius: 0 8px 0 0; }
-tbody tr { border-bottom: 1px solid rgba(36,58,99,0.5); transition: background 0.12s; }
+tbody tr { border-bottom: 1px solid rgba(26,53,88,0.6); transition: background 0.12s; }
 tbody tr:last-child { border-bottom: none; }
-tbody tr:hover { background: rgba(36,58,99,0.5); }
-td { padding: 13px 12px; font-size: 14px; color: #F5F3EC; vertical-align: middle; }
+tbody tr:hover { background: rgba(26,53,88,0.6); }
+td { padding: 12px 14px; font-size: 14px; color: var(--white); vertical-align: middle; }
 td.gym-name { font-weight: 600; }
-td.gym-city { color: #92A2C2; font-size: 13px; }
+td.gym-city { color: var(--white-dim); font-size: 13px; }
 td.gym-website { text-align: right; }
+
 .website-btn {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  padding: 5px 12px;
-  background: rgba(242,183,5,0.1);
-  border: 1px solid rgba(242,183,5,0.35);
-  border-radius: 8px;
-  color: #F2B705;
+  padding: 5px 14px;
+  background: var(--red);
+  border-radius: 6px;
+  color: var(--white);
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
+  font-family: 'Barlow Condensed', sans-serif;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   text-decoration: none;
   white-space: nowrap;
   transition: background 0.15s;
 }
-.website-btn:hover { background: rgba(242,183,5,0.22); }
-.no-website { font-size: 12px; color: #92A2C2; }
-.no-results { text-align: center; padding: 60px 0; color: #92A2C2; font-size: 15px; }
+.website-btn:hover { background: var(--red-dark); }
+.no-website { font-size: 12px; color: var(--white-faint); font-family: 'Barlow Condensed', sans-serif; letter-spacing: 0.04em; }
+
+.no-results { text-align: center; padding: 60px 0; color: var(--white-faint); font-size: 15px; }
+
+/* ── FOOTER ── */
 .footer {
   text-align: center;
   padding: 32px 20px;
-  border-top: 1px solid #243A63;
-  color: #92A2C2;
+  border-top: 1px solid var(--navy-border);
+  color: var(--white-faint);
   font-size: 12px;
   line-height: 2;
   margin-top: 20px;
+  font-family: 'Barlow Condensed', sans-serif;
+  letter-spacing: 0.05em;
 }
+.footer-leaf { color: var(--red); font-size: 18px; display: block; margin-bottom: 6px; }
 </style>
 </head>
 <body>
 
 <div class="header">
-  <p class="header-label">The Cheer Hub</p>
-  <h1>Canadian All-Star<br>Gym Directory</h1>
-  <p class="header-sub">Verified all-star cheerleading gyms across Canada &middot; 2026&ndash;2027 season</p>
-  <span class="header-count">68 verified gyms across 10 provinces</span>
+  <div class="eyebrow">
+    <span class="leaf">🍁</span>
+    <span class="eyebrow-line"></span>
+    <span class="eyebrow-text">Canadian</span>
+    <span class="eyebrow-line"></span>
+    <span class="leaf">🍁</span>
+  </div>
+
+  <div class="hero-allstar">ALL<span class="star-char">&#9733;</span>STAR</div>
+  <div class="hero-cheergym">CHEER GYM</div>
+  <div class="hero-directory">Directory</div>
+
+  <div class="features">
+    <div class="feature">
+      <div class="feature-circle">📍</div>
+      <div class="feature-label"><em>Gyms by</em>Province</div>
+    </div>
+    <div class="feature">
+      <div class="feature-circle">🌐</div>
+      <div class="feature-label"><em>Official</em>Websites</div>
+    </div>
+    <div class="feature">
+      <div class="feature-circle">📋</div>
+      <div class="feature-label"><em>Locations &amp;</em>Contact Details</div>
+    </div>
+    <div class="feature">
+      <div class="feature-circle">🏆</div>
+      <div class="feature-label"><em>Compare</em>Programs</div>
+    </div>
+  </div>
+
+  <div class="tagline-bar">
+    <span class="tagline-check">&#10003;</span>
+    <span class="tagline-text">Find. Compare. Connect. <span class="tagline-accent">All in one easy hub.</span></span>
+  </div>
 </div>
 
 <div class="search-wrap">
@@ -153,12 +382,17 @@ td.gym-website { text-align: right; }
   <input class="search-input" type="search" id="search" placeholder="Search gyms or cities&hellip;" autocomplete="off" />
 </div>
 
+<div class="count-badge">
+  <span class="count-pill">🍁 68 verified gyms &middot; 10 provinces &middot; 2026&ndash;2027 season</span>
+</div>
+
 <div class="content">
   <p class="results-count" id="results-count"></p>
 
   <div class="province-section" id="sec-on">
-    <div class="province-heading" style="border-color:#FF4D5E;">
-      <span class="province-name" style="color:#FF4D5E;">Ontario</span>
+    <div class="province-heading">
+      <span class="province-flag">🏒</span>
+      <span class="province-name">Ontario</span>
       <span class="province-gym-count">21 gyms</span>
     </div>
     <table>
@@ -190,8 +424,9 @@ td.gym-website { text-align: right; }
   </div>
 
   <div class="province-section" id="sec-qc">
-    <div class="province-heading" style="border-color:#FF2E8B;">
-      <span class="province-name" style="color:#FF2E8B;">Quebec</span>
+    <div class="province-heading">
+      <span class="province-flag">⚜️</span>
+      <span class="province-name">Quebec</span>
       <span class="province-gym-count">7 gyms</span>
     </div>
     <table>
@@ -209,8 +444,9 @@ td.gym-website { text-align: right; }
   </div>
 
   <div class="province-section" id="sec-ab">
-    <div class="province-heading" style="border-color:#E67E22;">
-      <span class="province-name" style="color:#E67E22;">Alberta</span>
+    <div class="province-heading">
+      <span class="province-flag">🤠</span>
+      <span class="province-name">Alberta</span>
       <span class="province-gym-count">10 gyms</span>
     </div>
     <table>
@@ -231,8 +467,9 @@ td.gym-website { text-align: right; }
   </div>
 
   <div class="province-section" id="sec-bc">
-    <div class="province-heading" style="border-color:#3FCB8C;">
-      <span class="province-name" style="color:#3FCB8C;">British Columbia</span>
+    <div class="province-heading">
+      <span class="province-flag">🏔️</span>
+      <span class="province-name">British Columbia</span>
       <span class="province-gym-count">5 gyms</span>
     </div>
     <table>
@@ -248,8 +485,9 @@ td.gym-website { text-align: right; }
   </div>
 
   <div class="province-section" id="sec-sk">
-    <div class="province-heading" style="border-color:#4A9EFF;">
-      <span class="province-name" style="color:#4A9EFF;">Saskatchewan</span>
+    <div class="province-heading">
+      <span class="province-flag">🌾</span>
+      <span class="province-name">Saskatchewan</span>
       <span class="province-gym-count">13 gyms</span>
     </div>
     <table>
@@ -273,8 +511,9 @@ td.gym-website { text-align: right; }
   </div>
 
   <div class="province-section" id="sec-mb">
-    <div class="province-heading" style="border-color:#9B59B6;">
-      <span class="province-name" style="color:#9B59B6;">Manitoba</span>
+    <div class="province-heading">
+      <span class="province-flag">🦬</span>
+      <span class="province-name">Manitoba</span>
       <span class="province-gym-count">3 gyms</span>
     </div>
     <table>
@@ -288,8 +527,9 @@ td.gym-website { text-align: right; }
   </div>
 
   <div class="province-section" id="sec-nb">
-    <div class="province-heading" style="border-color:#3FCB8C;">
-      <span class="province-name" style="color:#3FCB8C;">New Brunswick</span>
+    <div class="province-heading">
+      <span class="province-flag">🌊</span>
+      <span class="province-name">New Brunswick</span>
       <span class="province-gym-count">2 gyms</span>
     </div>
     <table>
@@ -302,8 +542,9 @@ td.gym-website { text-align: right; }
   </div>
 
   <div class="province-section" id="sec-ns">
-    <div class="province-heading" style="border-color:#FF4D5E;">
-      <span class="province-name" style="color:#FF4D5E;">Nova Scotia</span>
+    <div class="province-heading">
+      <span class="province-flag">⚓</span>
+      <span class="province-name">Nova Scotia</span>
       <span class="province-gym-count">6 gyms</span>
     </div>
     <table>
@@ -320,8 +561,9 @@ td.gym-website { text-align: right; }
   </div>
 
   <div class="province-section" id="sec-pe">
-    <div class="province-heading" style="border-color:#FF2E8B;">
-      <span class="province-name" style="color:#FF2E8B;">Prince Edward Island</span>
+    <div class="province-heading">
+      <span class="province-flag">🏝️</span>
+      <span class="province-name">Prince Edward Island</span>
       <span class="province-gym-count">1 gym</span>
     </div>
     <table>
@@ -333,8 +575,9 @@ td.gym-website { text-align: right; }
   </div>
 
   <div class="province-section" id="sec-nl">
-    <div class="province-heading" style="border-color:#4A9EFF;">
-      <span class="province-name" style="color:#4A9EFF;">Newfoundland &amp; Labrador</span>
+    <div class="province-heading">
+      <span class="province-flag">🪨</span>
+      <span class="province-name">Newfoundland &amp; Labrador</span>
       <span class="province-gym-count">1 gym</span>
     </div>
     <table>
@@ -349,7 +592,8 @@ td.gym-website { text-align: right; }
 </div>
 
 <div class="footer">
-  <p>Data sourced from the Cheer Hub Canadian All-Star Gym Directory</p>
+  <span class="footer-leaf">🍁</span>
+  <p>The Cheer Hub &mdash; Canadian All-Star Gym Directory</p>
   <p>Updated for the 2026&ndash;2027 competitive season</p>
 </div>
 
