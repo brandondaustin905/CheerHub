@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stress Reduction Log | Survival Kit</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="hero">
+  <h1>😌 Stress Reduction Log</h1>
+  <p>Track what actually helps your athlete over the season. Rate each technique as you try it.</p>
+</div>
+
+<main>
+  <div class="tool-header no-print">
+    <div class="btn-row">
+      <button class="btn" onclick="window.print()">🖨️ Print</button>
+      <button class="btn secondary" onclick="resetStress()">↺ Reset Log</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Techniques</h2>
+    <table class="tool-table" id="stressTable">
+      <thead>
+        <tr><th>Technique</th><th>How To Use</th><th>Did It Help?</th><th style="width:90px;">Rating</th></tr>
+      </thead>
+      <tbody id="stressBody"></tbody>
+    </table>
+    <p class="save-status" id="saveStatus">Changes save automatically in this browser.</p>
+  </div>
+
+  <div class="card">
+    <p style="margin:0;">💡 <strong>Parent Tip:</strong> Show resilience and positivity — good vibes spread faster than panic.</p>
+  </div>
+</main>
+
+<footer>The Cheer Hub — Ultimate Competition Survival Kit</footer>
+
+<script src="nav.js"></script>
+<script>
+renderNav("stress-reduction.html");
+
+const TECHNIQUES = [
+  ["Mindful Breathing", "3-5 slow breaths together"],
+  ["Visualization", "Picture routines & sticking landings"],
+  ["Stay Organized", "Packing checklist, meal plan, schedule"],
+  ["Focus on Effort", "Celebrate personal growth"],
+  ["Post-Competition Reflection", "Discuss wins & improvements"],
+];
+
+const body = document.getElementById("stressBody");
+const statusEl = document.getElementById("saveStatus");
+const saved = JSON.parse(localStorage.getItem("survivalKit_stress") || "{}");
+
+TECHNIQUES.forEach(([tech, how]) => {
+  const s = saved[tech] || {};
+  const tr = document.createElement("tr");
+  tr.innerHTML = `
+    <td><strong>${tech}</strong></td>
+    <td style="color:#55495f;">${how}</td>
+    <td><input type="text" data-t="${tech}" data-k="notes" value="${s.notes || ""}" placeholder="Notes..."></td>
+    <td>
+      <select class="rating-select" data-t="${tech}" data-k="rating">
+        <option value="">-</option>
+        ${[1,2,3,4,5].map(n => `<option value="${n}" ${s.rating==n?"selected":""}>${n}</option>`).join("")}
+      </select>
+    </td>
+  `;
+  body.appendChild(tr);
+  tr.querySelectorAll("input,select").forEach(el => el.addEventListener("input", saveAll));
+  tr.querySelector("select").addEventListener("change", saveAll);
+});
+
+function saveAll() {
+  const data = {};
+  [...body.children].forEach(tr => {
+    const t = tr.querySelector('[data-k="notes"]').dataset.t;
+    data[t] = {
+      notes: tr.querySelector('[data-k="notes"]').value,
+      rating: tr.querySelector('[data-k="rating"]').value,
+    };
+  });
+  localStorage.setItem("survivalKit_stress", JSON.stringify(data));
+  flashSaved(statusEl);
+}
+
+function resetStress() {
+  if (!confirm("Clear the stress reduction log?")) return;
+  localStorage.removeItem("survivalKit_stress");
+  location.reload();
+}
+</script>
+</body>
+</html>
