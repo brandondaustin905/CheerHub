@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Packing Checklist | Survival Kit</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="hero">
+  <h1>🎒 Packing Checklist</h1>
+  <p>Check off gear as you pack. Add or edit items freely — your progress saves automatically.</p>
+</div>
+
+<main>
+  <div class="tool-header no-print">
+    <div class="btn-row">
+      <button class="btn" onclick="window.print()">🖨️ Print</button>
+      <button class="btn secondary" onclick="resetPacking()">↺ Reset All</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Packed?</h2>
+    <div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>
+    <p class="hint" id="progressText">0 of 0 items packed</p>
+    <table class="tool-table" id="packBody0" style="display:none;"></table>
+    <div id="packList"></div>
+    <div class="btn-row no-print" style="margin-top:14px;">
+      <button class="btn secondary" onclick="addPackRow()">+ Add Item</button>
+    </div>
+    <p class="save-status" id="saveStatus">Changes save automatically in this browser.</p>
+  </div>
+
+  <div class="card">
+    <p style="margin:0;">💡 <strong>Parent Tip:</strong> Pack the night before and label everything. Involve your athlete — it builds responsibility and reduces parental panic.</p>
+  </div>
+</main>
+
+<footer>The Cheer Hub — Ultimate Competition Survival Kit</footer>
+
+<script src="nav.js"></script>
+<script>
+renderNav("packing-checklist.html");
+
+const DEFAULT_ITEMS = [
+  ["Uniforms", "Competition / practice separated", false],
+  ["Shoes & Socks", "Extra pair just in case", false],
+  ["Bows / Hair Supplies", "Brush, hairspray, elastics", false],
+  ["Makeup (competition-approved)", "Keep small bag ready", false],
+  ["Safety Gear", "Knee pads, braces", false],
+  ["Snacks / Hydration", "Energy bars, water bottles", false],
+  ["Comfort Kit", "Motivational note, favorite snack", false],
+];
+
+const list = document.getElementById("packList");
+const statusEl = document.getElementById("saveStatus");
+
+function makeItem(name, note, packed) {
+  const row = document.createElement("div");
+  row.className = "checklist-item" + (packed ? " done" : "");
+  row.innerHTML = `
+    <input type="checkbox" ${packed ? "checked" : ""}>
+    <div class="step-text">
+      <input type="text" data-k="name" value="${name}" style="border:none;background:transparent;font-weight:700;width:100%;font-size:0.95rem;">
+      <input type="text" data-k="note" value="${note}" style="border:none;background:transparent;color:#7a6a86;width:100%;font-size:0.85rem;">
+    </div>
+  `;
+  list.appendChild(row);
+  const cb = row.querySelector('input[type="checkbox"]');
+  cb.addEventListener("change", () => {
+    row.classList.toggle("done", cb.checked);
+    recalc(); saveAll();
+  });
+  row.querySelectorAll('input[type="text"]').forEach(inp => inp.addEventListener("input", saveAll));
+}
+
+function recalc() {
+  const items = [...list.children];
+  const total = items.length;
+  const packed = items.filter(r => r.querySelector('input[type="checkbox"]').checked).length;
+  const pct = total ? Math.round((packed/total)*100) : 0;
+  document.getElementById("progressBar").style.width = pct + "%";
+  document.getElementById("progressText").textContent = `${packed} of ${total} items packed (${pct}%)`;
+}
+
+function saveAll() {
+  const items = [...list.children].map(row => ({
+    name: row.querySelector('[data-k="name"]').value,
+    note: row.querySelector('[data-k="note"]').value,
+    packed: row.querySelector('input[type="checkbox"]').checked,
+  }));
+  localStorage.setItem("survivalKit_packing", JSON.stringify(items));
+  recalc();
+  flashSaved(statusEl);
+}
+
+function addPackRow() {
+  makeItem("", "", false);
+  saveAll();
+}
+
+function resetPacking() {
+  if (!confirm("Clear the packing checklist?")) return;
+  localStorage.removeItem("survivalKit_packing");
+  list.innerHTML = "";
+  DEFAULT_ITEMS.forEach(([n,note,p]) => makeItem(n,note,p));
+  recalc();
+}
+
+const saved = localStorage.getItem("survivalKit_packing");
+if (saved) {
+  JSON.parse(saved).forEach(r => makeItem(r.name, r.note, r.packed));
+} else {
+  DEFAULT_ITEMS.forEach(([n,note,p]) => makeItem(n,note,p));
+}
+recalc();
+</script>
+</body>
+</html>
