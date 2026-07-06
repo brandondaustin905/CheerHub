@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pre-Competition Routine | Survival Kit</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="hero">
+  <h1>⏰ Pre-Competition Routine</h1>
+  <p>Check off each step live on competition day. Edit steps to match your team's actual routine.</p>
+</div>
+
+<main>
+  <div class="tool-header no-print">
+    <div class="btn-row">
+      <button class="btn" onclick="window.print()">🖨️ Print</button>
+      <button class="btn secondary" onclick="resetRoutine()">↺ Reset Checklist</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Routine Steps</h2>
+    <div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>
+    <p class="hint" id="progressText"></p>
+    <div id="stepList"></div>
+    <div class="btn-row no-print" style="margin-top:14px;">
+      <button class="btn secondary" onclick="addStep()">+ Add Step</button>
+    </div>
+    <p class="save-status" id="saveStatus">Changes save automatically in this browser.</p>
+  </div>
+
+  <div class="card">
+    <p style="margin:0;">💡 <strong>Parent Tip:</strong> Stay calm. Deep breaths. Your athlete mirrors your zen energy.</p>
+  </div>
+</main>
+
+<footer>The Cheer Hub — Ultimate Competition Survival Kit</footer>
+
+<script src="nav.js"></script>
+<script>
+renderNav("pre-comp-routine.html");
+
+const DEFAULT_STEPS = [
+  "Arrive early — allow time to settle and warm up",
+  "Team check-in — confirm all gear & meet coaches/teammates",
+  "Dynamic stretching — arms, legs, core, tumbling prep",
+  "Quiet cue review — stunts, tumbling passes, jumps",
+  "Mental visualization — picture a perfect routine",
+  'Positive self-talk — "I am prepared, strong, and ready"',
+  "Avoid last-minute corrections — your role is cheerleader, not panic coordinator",
+];
+
+const list = document.getElementById("stepList");
+const statusEl = document.getElementById("saveStatus");
+
+function makeStep(text, done) {
+  const row = document.createElement("div");
+  row.className = "checklist-item" + (done ? " done" : "");
+  row.innerHTML = `
+    <input type="checkbox" ${done ? "checked" : ""}>
+    <input type="text" class="step-text" value="${text}" style="border:none;background:transparent;font-size:0.95rem;">
+  `;
+  list.appendChild(row);
+  const cb = row.querySelector('input[type="checkbox"]');
+  cb.addEventListener("change", () => { row.classList.toggle("done", cb.checked); recalc(); saveAll(); });
+  row.querySelector('input[type="text"]').addEventListener("input", saveAll);
+}
+
+function recalc() {
+  const items = [...list.children];
+  const total = items.length;
+  const done = items.filter(r => r.querySelector('input[type="checkbox"]').checked).length;
+  const pct = total ? Math.round((done/total)*100) : 0;
+  document.getElementById("progressBar").style.width = pct + "%";
+  document.getElementById("progressText").textContent = `${done} of ${total} steps complete`;
+}
+
+function saveAll() {
+  const items = [...list.children].map(row => ({
+    text: row.querySelector('input[type="text"]').value,
+    done: row.querySelector('input[type="checkbox"]').checked,
+  }));
+  localStorage.setItem("survivalKit_routine", JSON.stringify(items));
+  recalc();
+  flashSaved(statusEl);
+}
+
+function addStep() { makeStep("", false); saveAll(); }
+
+function resetRoutine() {
+  if (!confirm("Reset the pre-competition routine checklist?")) return;
+  localStorage.removeItem("survivalKit_routine");
+  list.innerHTML = "";
+  DEFAULT_STEPS.forEach(s => makeStep(s, false));
+  recalc();
+}
+
+const saved = localStorage.getItem("survivalKit_routine");
+if (saved) {
+  JSON.parse(saved).forEach(r => makeStep(r.text, r.done));
+} else {
+  DEFAULT_STEPS.forEach(s => makeStep(s, false));
+}
+recalc();
+</script>
+</body>
+</html>
