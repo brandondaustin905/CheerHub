@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cheer Gear & Accessories | The Cheer Hub</title>
+<style>
+  :root {
+    --navy: #0f1c3f;
+    --red: #c41a22;
+    --gold: #facc15;
+    --ink: #14213d;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background: #150a1f;
+    color: #1c2333;
+  }
+  .hero {
+    background: linear-gradient(160deg, var(--red) 0%, var(--navy) 100%);
+    padding: 70px 8vw 60px 8vw;
+    position: relative;
+    overflow: hidden;
+    border-bottom: 10px solid var(--gold);
+  }
+  .hero::before, .hero::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+  }
+  .hero::before { width: 340px; height: 340px; right: -80px; top: -100px; }
+  .hero::after { width: 220px; height: 220px; right: 220px; bottom: -120px; }
+  .hero h1 {
+    color: #fff;
+    font-size: clamp(2rem, 5vw, 3.4rem);
+    margin: 0 0 14px 0;
+    text-shadow: 0 3px 0 rgba(0,0,0,0.25);
+  }
+  .hero p.sub {
+    color: #f0f2f8;
+    font-size: 1.15rem;
+    max-width: 640px;
+    margin: 0;
+  }
+  main {
+    background: #f7f8fb;
+    padding: 50px 8vw 90px 8vw;
+  }
+  .intro-card {
+    background: #fff;
+    border: 1px solid #dde2ee;
+    border-left: 6px solid var(--red);
+    border-radius: 14px;
+    padding: 26px 30px;
+    margin: -46px auto 46px auto;
+    max-width: 980px;
+    box-shadow: 0 12px 30px rgba(15,28,63,0.12);
+  }
+  .intro-card h2 {
+    margin-top: 0;
+    color: var(--navy);
+    font-size: 1.2rem;
+  }
+  .intro-card ul { margin: 10px 0 0 0; padding-left: 22px; color: #3a4258; line-height: 1.6; }
+  h2.section-title {
+    color: var(--navy);
+    font-size: 1.5rem;
+    border-bottom: 3px solid var(--gold);
+    display: inline-block;
+    padding-bottom: 6px;
+    margin: 46px 0 22px 0;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+  }
+  .card {
+    background: #fff;
+    border-radius: 14px;
+    padding: 22px 24px;
+    box-shadow: 0 6px 18px rgba(15,28,63,0.08);
+    border-top: 5px solid var(--red);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .card:nth-child(3n+2) { border-top-color: var(--navy); }
+  .card:nth-child(3n+3) { border-top-color: var(--gold); }
+  .card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 26px rgba(15,28,63,0.16);
+  }
+  .card h3 { margin: 0 0 8px 0; color: #14213d; font-size: 1.08rem; }
+  .card a.site-link {
+    display: inline-block;
+    font-weight: 600;
+    color: var(--red);
+    text-decoration: none;
+    margin-bottom: 10px;
+    word-break: break-word;
+  }
+  .card a.site-link:hover { text-decoration: underline; color: var(--navy); }
+  .card p { margin: 0; color: #3a4258; font-size: 0.94rem; line-height: 1.5; }
+  .badge {
+    display: inline-block;
+    margin-top: 10px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #145c2c;
+    background: #e3f7e9;
+    padding: 3px 10px;
+    border-radius: 999px;
+  }
+  .badge.neutral {
+    color: #7a5b00;
+    background: #fff4d6;
+  }
+  details {
+    margin-top: 12px;
+    border-top: 1px dashed #dde2ee;
+    padding-top: 10px;
+  }
+  details summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--navy);
+    font-size: 0.88rem;
+    outline: none;
+  }
+  details summary:hover { color: var(--red); }
+  .reviews-box {
+    margin-top: 8px;
+    font-size: 0.86rem;
+    color: #3a4258;
+    line-height: 1.5;
+  }
+  .reviews-box a {
+    display: inline-block;
+    margin-top: 4px;
+    color: var(--red);
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .reviews-box a:hover { text-decoration: underline; }
+  .closing {
+    max-width: 980px;
+    margin: 60px auto 0 auto;
+    text-align: center;
+    background: linear-gradient(135deg, var(--red), var(--navy));
+    color: #fff;
+    padding: 34px 30px;
+    border-radius: 16px;
+  }
+  .closing h3 { margin-top: 0; }
+  footer {
+    text-align: center;
+    padding: 24px;
+    color: #6b7690;
+    font-size: 0.85rem;
+    background: #f7f8fb;
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>🛍️ Cheer Gear & Accessories</h1>
+  <p class="sub">Top picks & trusted retailers for Canadian athletes — curated for The Cheer Hub.</p>
+</div>
+
+<main>
+  <div class="intro-card">
+    <h2>✨ How to use this page</h2>
+    <ul>
+      <li>Browse <strong>Canadian Retailers</strong> first — most ship fast and know the Canadian cheer scene</li>
+      <li>Check <strong>International Retailers</strong> for specialty items or brands not available locally</li>
+      <li>Tap any <strong>website link</strong> to confirm current pricing, sizing, and shipping details</li>
+    </ul>
+  </div>
+
+  <h2 class="section-title">🇨🇦 Canadian Cheerleading Retailers</h2>
+  <div class="grid">
+    <div class="card">
+      <h3>Total Spirit Cheerleading</h3>
+      <a class="site-link" href="https://totalspirit.com/" target="_blank" rel="noopener">totalspirit.com</a>
+      <p>Canada's leading supplier of cheer shoes, uniforms & apparel, with customizable team options. Primary Canadian distributor for Nfinity shoes/backpacks. Pop-up shops at major competitions.</p>
+      <details>
+        <summary>📋 Check reviews</summary>
+        <div class="reviews-box"><a href="https://www.google.com/search?q=Total+Spirit+Cheerleading+reviews" target="_blank" rel="noopener">See reviews on Google →</a></div>
+      </details>
+    </div>
+    <div class="card">
+      <h3>PRO Cheer</h3>
+      <a class="site-link" href="https://pro-cheer.myshopify.com/" target="_blank" rel="noopener">pro-cheer.myshopify.com</a>
+      <p>Cutting-edge uniforms and practice apparel, built in close collaboration with teams.</p>
+      <details>
+        <summary>📋 Check reviews</summary>
+        <div class="reviews-box"><a href="https://www.google.com/search?q=PRO+Cheer+uniforms+Canada+reviews" target="_blank" rel="noopener">See reviews on Google →</a></div>
+      </details>
+    </div>
+    <div class="card">
+      <h3>Canadian Cheer</h3>
+      <a class="site-link" href="https://canadiancheer.com/" target="_blank" rel="noopener">canadiancheer.com</a>
+      <p>Hosts 15+ events per season. Pro Store with practice gear, apparel, and competition uniforms.</p>
+      <details>
+        <summary>📋 Check reviews</summary>
+        <div class="reviews-box"><a href="https://www.google.com/search?q=Canadian+Cheer+canadiancheer.com+reviews" target="_blank" rel="noopener">See reviews on Google →</a></div>
+      </details>
+    </div>
+    <div class="card">
+      <h3>Cheer Action</h3>
+      <a class="site-link" href="https://www.cheeraction.ca/" target="_blank" rel="noopener">cheeraction.ca</a>
+      <p>Affordable, high-quality uniforms and gear with custom team designs.</p>
+      <details>
+        <summary>📋 Check reviews</summary>
+        <div class="reviews-box">Client testimonials on-site praise their customization and easy process. <a href="https://www.google.com/search?q=Cheer+Action+cheeraction.ca+reviews" target="_blank" rel="noopener">See more on Google →</a></div>
+      </details>
+    </div>
+    <div class="card">
+      <h3>TeamGear.ca</h3>
+      <a class="site-link" href="https://teamgear.ca/pages/cheerleading" target="_blank" rel="noopener">teamgear.ca</a>
+      <p>100% Canadian-made custom apparel with a 5-week turnaround. No minimum order quantity.</p>
+      <details>
+        <summary>📋 Check reviews</summary>
+        <div class="reviews-box"><a href="https://www.google.com/search?q=TeamGear.ca+cheerleading+reviews" target="_blank" rel="noopener">See reviews on Google →</a></div>
+      </details>
+    </div>
+    <div class="card">
+      <h3>Zero & Co</h3>
+      <a class="site-link" href="https://www.zerocheer.ca/" target="_blank" rel="noopener">zerocheer.ca</a>
+      <p>Custom uniforms, practice wear, warm-ups & accessories.</p>
+      <details>
+        <summary>📋 Check reviews</summary>
+        <div class="reviews-box"><a href="https://www.google.com/search?q=Zero+%26+Co+zerocheer.ca+reviews" target="_blank" rel="noopener">See reviews on Google →</a></div>
+      </details>
+    </div>
+    <div class="card">
+      <h3>Cheer Sport Sharks – Fins Pro Shop</h3>
+      <a class="site-link" href="https://app.amilia.com/store/en/cheer-sport-sharks/shop/products" target="_blank" rel="noopener">Shop link</a>
+      <p>Gear from Canada's most decorated teams — competitive & rec options.</p>
+      <details>
+        <summary>📋 Check reviews</summary>
+        <div class="reviews-box"><a href="https://www.google.com/search?q=Cheer+Sport+Sharks+Fins+Pro+Shop+reviews" target="_blank" rel="noopener">See reviews on Google →</a></div>
+      </details>
+    </div>
+    <div class="card">
+      <h3>Dance Corner Canada</h3>
+      <a class="site-link" href="https://www.musiccollection.ca/shop/dance-store/cheer" target="_blank" rel="noopener">musiccollection.ca</a>
+      <p>Shoes, bags & clothing from Nfinity and other trusted brands, online & in-store.</p>
+      <details>
+        <summary>📋 Check reviews</summary>
+        <div class="reviews-box"><a href="https://www.google.com/search?q=Dance+Corner+Canada+reviews" target="_blank" rel="noopener">See reviews on Google →</a></div>
+      </details>
+    </div>
+    <div class="card">
+      <h3>FullOut™ Athletic</h3>
+      <a class="site-link" href="https://fulloutathletic.com/" target="_blank" rel="noopener">fulloutathletic.com</a>
+      <p>Canadian-made premium cheer practice sets (bras & shorts) — no rhinestones, built to reduce irritation for bases & backspots without sacrificing style. Priced in CAD.</p>
+      <details>
+        <summary>📋 Check reviews</summary>
+        <div class="reviews-box">
+          Ratings are shown per product on their site (many items have 5–12+ verified reviews).
+          <a href="https://www.google.com/search?q=FullOut+Athletic+cheer+reviews" target="_blank" rel="noopener">See more reviews on Google →</a>
+        </div>
+      </details>
+    </div>
+    <div class="card">
+      <h3>Omni Cheer</h3>
+      <a class="site-link" href="https://www.omnicheer.com/" target="_blank" rel="noopener">omnicheer.com</a>
+      <p>One-stop shop for uniforms, shoes, bows, bags & team gear.</p>
+      <details>
+        <summary>📋 Check reviews</summary>
+        <div class="reviews-box"><a href="https://www.google.com/search?q=Omni+Cheer+reviews" target="_blank" rel="noopener">See reviews on Google →</a></div>
+      </details>
+    </div>
+  </div>
+
+  <h2 class="section-title">🌐 International Retailers Shipping to Canada</h2>
+  <div class="grid">
+    <div class="card">
+      <h3>Rebel Athletic</h3>
+      <a class="site-link" href="https://www.rebelathletic.com/" target="_blank" rel="noopener">rebelathletic.com</a>
+      <p>Premium apparel, custom uniforms, shoes & accessories. Virtual sizing app + free prototypes.</p>
+      <span class="badge">Ships to Canada ✅</span>
+      <details>
+        <summary>📋 Check reviews</summary>
+        <div class="reviews-box"><a href="https://www.google.com/search?q=Rebel+Athletic+reviews" target="_blank" rel="noopener">See reviews on Google →</a></div>
+      </details>
+    </div>
+    <div class="card">
+      <h3>GK Elite / GK Cheer</h3>
+      <a class="site-link" href="https://www.gkelite.com/" target="_blank" rel="noopener">gkelite.com</a>
+      <p>World-renowned gymnastics & cheer apparel brand, distributed in 35+ countries. Ships to Canada via Standard International, and also has a dedicated Canadian distributor for faster local delivery.</p>
+      <span class="badge">Ships to Canada ✅</span>
+      <details>
+        <summary>📋 Check reviews</summary>
+        <div class="reviews-box"><a href="https://www.google.com/search?q=GK+Elite+cheer+reviews" target="_blank" rel="noopener">See reviews on Google →</a></div>
+      </details>
+    </div>
+    <div class="card">
+      <h3>Omni Cheer</h3>
+      <a class="site-link" href="https://www.omnicheer.com/" target="_blank" rel="noopener">omnicheer.com</a>
+      <p>Comprehensive gear selection — uniforms, shoes, accessories.</p>
+      <span class="badge">Ships to Canada ✅</span>
+      <details>
+        <summary>📋 Check reviews</summary>
+        <div class="reviews-box"><a href="https://www.google.com/search?q=Omni+Cheer+reviews" target="_blank" rel="noopener">See reviews on Google →</a></div>
+      </details>
+    </div>
+    <div class="card">
+      <h3>Superior Cheer</h3>
+      <a class="site-link" href="https://www.superiorcheer.com/" target="_blank" rel="noopener">superiorcheer.com</a>
+      <p>Wide variety — uniforms, poms, accessories.</p>
+      <span class="badge">Ships to Canada ✅</span>
+      <details>
+        <summary>📋 Check reviews</summary>
+        <div class="reviews-box"><a href="https://www.google.com/search?q=Superior+Cheer+reviews" target="_blank" rel="noopener">See reviews on Google →</a></div>
+      </details>
+    </div>
+    <div class="card">
+      <h3>Cheerleading.com</h3>
+      <a class="site-link" href="https://www.cheerleading.com/" target="_blank" rel="noopener">cheerleading.com</a>
+      <p>Extensive gear range. Ships via UPS/DHL/FedEx. $100 minimum on international orders.</p>
+      <span class="badge">Ships to Canada ✅</span>
+      <details>
+        <summary>📋 Check reviews</summary>
+        <div class="reviews-box"><a href="https://www.google.com/search?q=cheerleading.com+reviews" target="_blank" rel="noopener">See reviews on Google →</a></div>
+      </details>
+    </div>
+    <div class="card">
+      <h3>Nfinity</h3>
+      <a class="site-link" href="https://www.nfinity.com/" target="_blank" rel="noopener">nfinity.com</a>
+      <p>Performance shoes & apparel. Seamless intl. shipping via Global-e (local currency/payment).</p>
+      <span class="badge">Ships to Canada ✅</span>
+      <details>
+        <summary>📋 Check reviews</summary>
+        <div class="reviews-box"><a href="https://www.google.com/search?q=Nfinity+cheer+shoes+reviews" target="_blank" rel="noopener">See reviews on Google →</a></div>
+      </details>
+    </div>
+    <div class="card">
+      <h3>High V Apparel</h3>
+      <a class="site-link" href="https://www.highvapparel.com/" target="_blank" rel="noopener">highvapparel.com</a>
+      <p>Stylish tops, hoodies & activewear. Free shipping over $100.</p>
+      <span class="badge">Ships to Canada ✅</span>
+      <details>
+        <summary>📋 Check reviews</summary>
+        <div class="reviews-box"><a href="https://www.google.com/search?q=High+V+Apparel+cheer+reviews" target="_blank" rel="noopener">See reviews on Google →</a></div>
+      </details>
+    </div>
+    <div class="card">
+      <h3>Momentec Brands</h3>
+      <a class="site-link" href="https://www.momentecbrands.com/shop-by-sport-cheer-dance" target="_blank" rel="noopener">momentecbrands.com</a>
+      <p>Customizable cheer & dance apparel for teams of all sizes.</p>
+      <span class="badge">Ships to Canada ✅</span>
+      <details>
+        <summary>📋 Check reviews</summary>
+        <div class="reviews-box"><a href="https://www.google.com/search?q=Momentec+Brands+reviews" target="_blank" rel="noopener">See reviews on Google →</a></div>
+      </details>
+    </div>
+    <div class="card">
+      <h3>PRO Cheer (International Collection)</h3>
+      <a class="site-link" href="https://pro-cheer.myshopify.com/collections" target="_blank" rel="noopener">pro-cheer.myshopify.com</a>
+      <p>Apparel & accessories incl. exclusive "Cheer is My Sport" collection.</p>
+      <span class="badge">Ships to Canada ✅</span>
+      <details>
+        <summary>📋 Check reviews</summary>
+        <div class="reviews-box"><a href="https://www.google.com/search?q=PRO+Cheer+reviews" target="_blank" rel="noopener">See reviews on Google →</a></div>
+      </details>
+    </div>
+    <div class="card">
+      <h3>Sports Gear Swag</h3>
+      <a class="site-link" href="https://www.sportsgearswag.com/cheerleading/shop" target="_blank" rel="noopener">sportsgearswag.com</a>
+      <p>Custom uniforms, no minimum order quantity.</p>
+      <span class="badge">Ships to Canada ✅</span>
+      <details>
+        <summary>📋 Check reviews</summary>
+        <div class="reviews-box"><a href="https://www.google.com/search?q=Sports+Gear+Swag+reviews" target="_blank" rel="noopener">See reviews on Google →</a></div>
+      </details>
+    </div>
+    <div class="card">
+      <h3>Gabi & Co.</h3>
+      <a class="site-link" href="https://gabicheer.com/" target="_blank" rel="noopener">gabicheer.com</a>
+      <p>Cheer-specific jewelry — bracelets, earrings, necklaces & armlets designed for athletes. Clean, competition-ready pieces "built for pressure."</p>
+      <span class="badge neutral">Check checkout for Canada rates</span>
+      <details>
+        <summary>📋 Check reviews</summary>
+        <div class="reviews-box"><a href="https://www.google.com/search?q=Gabi+%26+Co+gabicheer.com+reviews" target="_blank" rel="noopener">See reviews on Google →</a></div>
+      </details>
+    </div>
+  </div>
+
+  <div class="closing">
+    <h3>🎊 Ready to gear up?</h3>
+    <p>Explore the list above and elevate your cheer game today! Know a retailer that should be added here? Drop it in the comments and we'll get it added to the directory.</p>
+  </div>
+</main>
+
+<footer>The Cheer Hub — Cheer Gear & Accessories Directory</footer>
+
+</body>
+</html>
