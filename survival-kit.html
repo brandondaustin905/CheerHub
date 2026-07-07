@@ -1,0 +1,1665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ultimate Competition Survival Kit | The Cheer Hub</title>
+<style>
+:root {
+  --pink: #b91c2c; --purple: #0f1c3f; --gold: #facc15; --dark: #14213d; --bg: #f7f8fb;
+  --card-shadow: 0 6px 18px rgba(15,28,63,0.10);
+}
+* { box-sizing: border-box; }
+body { margin:0; font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif; background:var(--bg); color:#1c2333; }
+.site-nav { background:linear-gradient(135deg,var(--pink),var(--purple)); padding:14px 5vw; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:100; box-shadow:0 2px 12px rgba(0,0,0,0.15); flex-wrap:wrap; gap:10px; }
+.nav-right { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+.site-nav .brand { color:#fff; font-weight:800; font-size:1.15rem; text-decoration:none; display:flex; align-items:center; gap:8px; cursor:pointer; background:none; border:none; }
+.nav-menu-wrap { position:relative; }
+.nav-menu-btn { background:rgba(255,255,255,0.15); color:#fff; border:1px solid rgba(255,255,255,0.4); padding:9px 18px; border-radius:8px; font-weight:700; font-size:0.95rem; cursor:pointer; display:flex; align-items:center; gap:8px; }
+.nav-menu-btn:hover { background:rgba(255,255,255,0.28); }
+#profileBtn { max-width:220px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.nav-dropdown { display:none; position:absolute; right:0; top:calc(100% + 8px); background:#fff; border-radius:10px; box-shadow:0 12px 30px rgba(0,0,0,0.25); min-width:250px; max-width:min(280px, 90vw); overflow:hidden; border:1px solid #dde2ee; }
+#profileDropdown { right:auto; left:0; }
+.nav-dropdown.open { display:block; }
+.nav-dropdown button { display:block; width:100%; text-align:left; padding:12px 18px; color:var(--dark); text-decoration:none; font-size:0.92rem; font-weight:600; border:none; background:#fff; border-bottom:1px solid #eef1f8; cursor:pointer; font-family:inherit; }
+.nav-dropdown button:last-child { border-bottom:none; }
+.nav-dropdown button:hover { background:#eef1f7; color:var(--pink); }
+.nav-dropdown button.active { color:var(--pink); background:#eef1f7; }
+.nav-dropdown .section-label { padding:10px 18px 4px 18px; font-size:0.72rem; letter-spacing:0.06em; color:#7d8aa8; font-weight:700; }
+.hero { background:linear-gradient(160deg,var(--pink) 0%,var(--purple) 100%); padding:54px 8vw 46px 8vw; color:#fff; }
+.hero h1 { margin:0 0 10px 0; font-size:clamp(1.7rem,4vw,2.6rem); }
+.hero p { margin:0; font-size:1.05rem; color:#e8ecf5; max-width:640px; }
+.tag-pill { display:inline-block; background:var(--gold); color:#201407; font-weight:700; font-size:0.78rem; letter-spacing:0.05em; padding:6px 16px; border-radius:999px; margin-bottom:16px; }
+main { padding:40px 8vw 80px 8vw; max-width:1100px; margin:0 auto; }
+.page { display:none; }
+.page.active { display:block; }
+.grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:20px; margin-top:24px; }
+.tool-card { background:#fff; border-radius:14px; padding:24px; box-shadow:var(--card-shadow); border-top:5px solid var(--pink); text-decoration:none; color:inherit; display:block; cursor:pointer; border-left:none; border-right:none; border-bottom:none; width:100%; text-align:left; font-family:inherit; transition:transform .15s ease, box-shadow .15s ease; }
+.tool-card:nth-child(3n+2) { border-top-color:var(--purple); }
+.tool-card:nth-child(3n+3) { border-top-color:var(--gold); }
+.tool-card:hover { transform:translateY(-4px); box-shadow:0 12px 26px rgba(80,20,90,0.16); }
+.tool-card .icon { font-size:1.8rem; margin-bottom:10px; display:block; }
+.tool-card h3 { margin:0 0 8px 0; color:var(--dark); font-size:1.1rem; }
+.tool-card p { margin:0; color:#55495f; font-size:0.92rem; line-height:1.5; }
+.tool-header { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:24px; }
+.tool-header h1 { margin:0; color:var(--dark); font-size:1.7rem; }
+.btn { background:var(--pink); color:#fff; border:none; padding:10px 20px; border-radius:8px; font-weight:700; font-size:0.9rem; cursor:pointer; text-decoration:none; display:inline-flex; align-items:center; gap:8px; }
+.btn:hover { background:var(--purple); }
+.btn.secondary { background:#fff; color:var(--pink); border:2px solid var(--pink); }
+.btn.secondary:hover { background:#eef1f7; }
+.btn-row { display:flex; gap:10px; flex-wrap:wrap; }
+.card { background:#fff; border-radius:14px; padding:24px 26px; box-shadow:var(--card-shadow); margin-bottom:22px; }
+.card h2 { color:var(--purple); font-size:1.2rem; margin-top:0; border-bottom:3px solid var(--gold); display:inline-block; padding-bottom:4px; }
+.hint { color:#66708a; font-size:0.88rem; margin:-6px 0 18px 0; }
+table.tool-table { width:100%; border-collapse:collapse; }
+table.tool-table th { background:#eef1f8; color:var(--dark); text-align:left; padding:10px 12px; font-size:0.85rem; border-bottom:2px solid #dde2ee; }
+table.tool-table td { padding:8px 12px; border-bottom:1px solid #e4e8f2; vertical-align:middle; }
+table.tool-table input[type="text"], table.tool-table input[type="number"], table.tool-table textarea { width:100%; border:1px solid #d7dce8; border-radius:6px; padding:7px 9px; font-family:inherit; font-size:0.92rem; }
+table.tool-table input:focus, table.tool-table textarea:focus, .form-field input:focus, .form-field textarea:focus { outline:2px solid var(--pink); }
+.total-row td { font-weight:700; background:#fef9c3; }
+.form-field { margin-bottom:16px; }
+.form-field label { display:block; font-weight:700; font-size:0.88rem; color:var(--dark); margin-bottom:5px; }
+.form-field input, .form-field textarea { width:100%; border:1px solid #d7dce8; border-radius:8px; padding:10px 12px; font-family:inherit; font-size:0.95rem; }
+.two-col { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+@media (max-width:640px) { .two-col { grid-template-columns:1fr; } }
+.progress-wrap { background:#e4e8f2; border-radius:999px; height:14px; overflow:hidden; margin:10px 0 20px 0; }
+.progress-bar { background:linear-gradient(90deg,var(--pink),var(--purple)); height:100%; width:0%; transition:width .3s ease; }
+.save-status { font-size:0.82rem; color:#6b7690; margin-top:10px; }
+.checklist-item { display:flex; align-items:center; gap:10px; padding:10px 0; border-bottom:1px solid #e4e8f2; }
+.checklist-item input[type="checkbox"] { width:20px; height:20px; accent-color:var(--pink); flex-shrink:0; }
+.checklist-item .step-text { flex:1; }
+.checklist-item.done .step-text { text-decoration:line-through; color:#7d8aa8; }
+.rating-select { padding:6px 8px; border-radius:6px; border:1px solid #d7dce8; }
+footer { text-align:center; padding:26px; color:#6b7690; font-size:0.85rem; background:#f7f8fb; border-top:1px solid #dde2ee; }
+.how-to-steps { counter-reset:step; list-style:none; padding:0; }
+.how-to-steps li { counter-increment:step; position:relative; padding:6px 0 6px 44px; margin-bottom:12px; }
+.how-to-steps li::before { content:counter(step); position:absolute; left:0; top:2px; background:var(--pink); color:#fff; width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:0.9rem; }
+@media print {
+  .site-nav, .btn-row, footer, .no-print { display:none !important; }
+  body { background:#fff; }
+  .card { box-shadow:none; border:1px solid #ccc; }
+  .hero { background:#fff !important; color:#000 !important; padding:10px 0; }
+  .hero p, .hero h1 { color:#000 !important; }
+  main { padding:10px; }
+}
+
+/* ---- Premium visual additions ---- */
+.badge-row { display:flex; flex-wrap:wrap; gap:10px; margin-top:14px; }
+.badge-chip { display:flex; align-items:center; gap:6px; padding:8px 14px; border-radius:999px; font-size:0.82rem; font-weight:700; background:#e4e8f2; color:#7d8aa8; }
+.badge-chip.earned { background:linear-gradient(135deg,var(--gold),#f5b90a); color:#3a2a00; box-shadow:0 3px 10px rgba(250,204,21,0.35); }
+.stat-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:16px; margin-top:18px; }
+.stat-card { background:linear-gradient(160deg,var(--pink),var(--purple)); color:#fff; border-radius:14px; padding:20px; text-align:center; }
+.stat-card .num { font-size:1.9rem; font-weight:800; display:block; }
+.stat-card .label { font-size:0.8rem; color:#e8ecf5; margin-top:4px; }
+.glossary-search { width:100%; padding:12px 16px; border-radius:10px; border:1px solid #d7dce8; font-size:1rem; margin-bottom:14px; font-family:inherit; }
+.glossary-chips { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:20px; }
+.glossary-chip { padding:7px 16px; border-radius:999px; border:2px solid #e4e8f2; background:#fff; color:#66708a; font-weight:700; font-size:0.85rem; cursor:pointer; }
+.glossary-chip.active { background:var(--pink); border-color:var(--pink); color:#fff; }
+.glossary-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:14px; }
+.glossary-term { padding:16px 18px; border-radius:12px; background:#fff; border:1px solid #e4e8f2; border-left:5px solid var(--pink); position:relative; box-shadow:0 2px 8px rgba(15,28,63,0.05); }
+.glossary-term.cat-roles { border-left-color:var(--pink); }
+.glossary-term.cat-skills { border-left-color:var(--purple); }
+.glossary-term.cat-levels { border-left-color:var(--gold); }
+.glossary-term.cat-scoring { border-left-color:#0891b2; }
+.glossary-term.cat-eventday { border-left-color:#16a34a; }
+.glossary-term h4 { margin:0 0 6px 0; color:var(--dark); font-size:1.02rem; padding-right:34px; }
+.glossary-term p { margin:0; color:#55495f; font-size:0.9rem; line-height:1.45; }
+.glossary-term .cat-tag { display:inline-block; font-size:0.68rem; font-weight:800; letter-spacing:0.04em; text-transform:uppercase; color:#a3aec2; margin-bottom:6px; }
+.bookmark-btn { position:absolute; top:14px; right:14px; background:none; border:none; font-size:1.2rem; cursor:pointer; line-height:1; }
+.glossary-empty { color:#66708a; text-align:center; padding:30px 0; grid-column:1/-1; }
+.tip-category-title { background:var(--dark); color:#fff; padding:10px 16px; border-radius:8px; font-weight:700; font-size:0.95rem; margin-top:20px; margin-bottom:10px; }
+.tip-item { padding:10px 4px; border-bottom:1px solid #e4e8f2; color:#3a3a45; font-size:0.94rem; }
+.label-sheet { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:16px; }
+.label-tile { border:2px dashed #d7dce8; border-radius:8px; padding:14px 8px; text-align:center; font-weight:700; color:var(--dark); font-size:0.95rem; background:#fff; }
+</style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <button class="brand" onclick="showPage('home')">🥾 Survival Kit Hub</button>
+  <div class="nav-right">
+    <div class="nav-menu-wrap">
+      <button class="nav-menu-btn" id="profileBtn">👤 <span id="profileNameLabel">My Athlete</span> ▾</button>
+      <div class="nav-dropdown" id="profileDropdown"></div>
+    </div>
+    <div class="nav-menu-wrap">
+      <button class="nav-menu-btn" id="navMenuBtn">☰ Menu</button>
+      <div class="nav-dropdown" id="navDropdown">
+        <button data-page="home" class="active">🏠 Home & How To Use</button>
+        <div class="section-label">The Kit</div>
+        <button data-page="budget">💰 Budget Tracker</button>
+        <button data-page="packing">🎒 Packing Checklist</button>
+        <button data-page="meal">🍎 Meal & Hydration Planner</button>
+        <button data-page="routine">⏰ Pre-Competition Routine</button>
+        <button data-page="stress">😌 Stress Reduction Log</button>
+        <button data-page="weekly">✅ Weekly Checklist</button>
+        <button data-page="emergency">🏥 Emergency Contact Card</button>
+        <button id="navPremiumLockedBtn" style="display:none;">🔒 Unlock Premium Tools</button>
+        <div id="navPremiumSection" style="display:none;">
+          <div class="section-label">Premium Tools</div>
+          <button data-page="glossary">📘 Cheer Decoder Glossary</button>
+          <button data-page="converter">💱 USD → CAD Converter</button>
+          <button data-page="labels">🏷️ Gear Label Generator</button>
+          <button data-page="tips">🎓 Veteran Parent Tips</button>
+          <button data-page="summary">📊 Season Summary Report</button>
+          <button data-page="compTracker">🏆 Season Competition Tracker</button>
+          <button data-page="fundraising">💵 Fundraising Tracker</button>
+          <button data-page="contacts">📇 Team & Carpool Contacts</button>
+          <button data-page="goals">🎯 Skills & Goals Tracker</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ================= HOME ================= -->
+<div class="page active" id="page-home">
+  <div class="hero">
+    <h1>🥾 Ultimate Competition Survival Kit</h1>
+    <p>Your editable, printable, personalized toolkit for a stress-free competition season. Every tool below saves your changes right in your browser — fill it in once, and it's there next time you visit.</p>
+  </div>
+  <main>
+    <div class="card" style="border-left:6px solid var(--pink);">
+      <h2 style="border:none;">📖 How To Use This Kit</h2>
+      <ol class="how-to-steps">
+        <li>Use the <strong>☰ Menu</strong> button in the top-right corner to jump between tools at any time.</li>
+        <li>Each tool has editable fields — type directly into them just like a form.</li>
+        <li>Your entries <strong>save automatically</strong> as you type, right in this browser.</li>
+        <li>Use the <strong>Print</strong> button on any tool to print a clean, nav-free copy — great for the Emergency Contact Card and Pre-Competition Routine.</li>
+        <li>Use the <strong>Reset</strong> button on a tool if you want to clear it and start fresh (e.g. for a new competition).</li>
+      </ol>
+      <div style="background:#eef1f7; border-radius:10px; padding:16px 18px; margin-top:18px;">
+        <p style="margin:0 0 8px 0;"><strong>How saving works:</strong> this kit saves your information using your browser's local storage — meaning it's saved <strong>on this device, in this browser</strong>, not to an account or the cloud.</p>
+        <ul style="margin:0; padding-left:20px;">
+          <li>✅ Come back to the same browser on the same device, and everything you typed will still be there.</li>
+          <li>⚠️ Switching devices or browsers means your entries won't carry over automatically.</li>
+          <li>⚠️ Clearing your browser's history/cache/site data will erase what's saved here.</li>
+          <li>💡 For anything important long-term (like the Emergency Contact Card), print a copy or take a screenshot as backup.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="card no-print" style="border-left:6px solid var(--gold);">
+      <h2 style="border:none;">🏆 Your Progress</h2>
+      <p style="margin:0; color:#55495f;">Badges light up gold as you fill in each tool for this profile.</p>
+      <div class="badge-row" id="badgeRow"></div>
+    </div>
+
+    <div class="card no-print" style="border-left:6px solid var(--gold);">
+      <h2 style="border:none;">👤 Managing More Than One Athlete or Season?</h2>
+      <p style="margin:0 0 14px 0; color:#55495f;">Use the profile switcher in the top-right corner (next to the Menu button) to keep separate, fully independent copies of this entire kit — one per athlete, or one per season. Switching profiles never mixes or overwrites another profile's data.</p>
+      <button class="btn secondary" onclick="document.getElementById('profileBtn').click()">👤 Open Profile Switcher</button>
+    </div>
+
+    <div class="card no-print" style="border-left:6px solid var(--pink);">
+    <h2 style="border:none;">📧 Email My Full Kit</h2>
+    <p style="margin:0 0 14px 0; color:#55495f;">Send everything you've filled in — budget, packing list, meal plan, routine, stress log, weekly checklist, and emergency card — to your own inbox (or share with a co-parent/coach) as one email.</p>
+    <button class="btn" onclick="emailFullKit()">📧 Email My Full Kit</button>
+  </div>
+
+  <h2 style="color:var(--dark); margin-top:36px;">The Kit</h2>
+    <div class="grid">
+      <button class="tool-card" onclick="showPage('budget')"><span class="icon">💰</span><h3>Budget Tracker</h3><p>Track estimated vs. actual costs — totals calculate automatically.</p></button>
+      <button class="tool-card" onclick="showPage('packing')"><span class="icon">🎒</span><h3>Packing Checklist</h3><p>Check off gear as you pack, with a live progress bar.</p></button>
+      <button class="tool-card" onclick="showPage('meal')"><span class="icon">🍎</span><h3>Meal & Hydration Planner</h3><p>Build your own athlete's actual competition-day meal plan.</p></button>
+      <button class="tool-card" onclick="showPage('routine')"><span class="icon">⏰</span><h3>Pre-Competition Routine</h3><p>A step-by-step routine you can check off live.</p></button>
+      <button class="tool-card" onclick="showPage('stress')"><span class="icon">😌</span><h3>Stress Reduction Log</h3><p>Track which calming techniques actually help your athlete.</p></button>
+      <button class="tool-card" onclick="showPage('weekly')"><span class="icon">✅</span><h3>Weekly Checklist</h3><p>A fresh prep checklist and reflection for every competition.</p></button>
+      <button class="tool-card" onclick="showPage('emergency')"><span class="icon">🏥</span><h3>Emergency Contact Card</h3><p>A one-page fillable, printable card for your bag.</p></button>
+    </div>
+
+    <h2 style="color:var(--dark); margin-top:36px;">🔒 Access Premium Tools</h2>
+    <p style="color:#55495f; margin-top:-14px;">Built from real questions Canadian cheer parents ask most.</p>
+    <div class="card" id="premiumLockedCard" style="border-left:6px solid var(--gold); text-align:center;">
+      <p style="margin:0 0 14px 0; font-size:1.02rem;">🔒 These tools are premium-only. Enter your access passcode to unlock them.</p>
+      <button class="btn" onclick="unlockPremiumTools()">🔓 Enter Passcode</button>
+    </div>
+    <div class="grid" id="premiumToolsGrid" style="display:none;">
+      <button class="tool-card" onclick="showPage('glossary')"><span class="icon">📘</span><h3>Cheer Decoder Glossary</h3><p>Every confusing term — stunt, level, bases, flyers — explained in plain English.</p></button>
+      <button class="tool-card" onclick="showPage('converter')"><span class="icon">💱</span><h3>USD → CAD Converter</h3><p>Convert any competition cost priced in US dollars to true CAD instantly.</p></button>
+      <button class="tool-card" onclick="showPage('labels')"><span class="icon">🏷️</span><h3>Gear Label Generator</h3><p>Type your athlete's name once, print a full sheet of gear labels.</p></button>
+      <button class="tool-card" onclick="showPage('tips')"><span class="icon">🎓</span><h3>Veteran Parent Tips</h3><p>Real, categorized advice from experienced Canadian cheer parents.</p></button>
+      <button class="tool-card" onclick="showPage('summary')"><span class="icon">📊</span><h3>Season Summary Report</h3><p>An auto-generated recap of your whole season — spending, prep, and more.</p></button>
+      <button class="tool-card" onclick="showPage('compTracker')"><span class="icon">🏆</span><h3>Season Competition Tracker</h3><p>Log every competition — date, location, division, hotel status, and results.</p></button>
+      <button class="tool-card" onclick="showPage('fundraising')"><span class="icon">💵</span><h3>Fundraising Tracker</h3><p>Set a goal and track progress across every fundraiser this season.</p></button>
+      <button class="tool-card" onclick="showPage('contacts')"><span class="icon">📇</span><h3>Team & Carpool Contacts</h3><p>Keep teammate parent contacts and carpool arrangements in one place.</p></button>
+      <button class="tool-card" onclick="showPage('goals')"><span class="icon">🎯</span><h3>Skills & Goals Tracker</h3><p>Track your athlete's personal skill goals and celebrate every milestone.</p></button>
+    </div>
+  </main>
+  <footer>The Cheer Hub — Ultimate Competition Survival Kit</footer>
+</div>
+
+<!-- ================= BUDGET TRACKER ================= -->
+<div class="page" id="page-budget">
+  <div class="hero"><h1>💰 Budget Tracker</h1><p>Track estimated vs. actual costs. Totals and differences calculate automatically as you type.</p></div>
+  <main>
+    <div class="tool-header no-print"><div class="btn-row"><button class="btn" onclick="window.print()">🖨️ Print</button><button class="btn" onclick="emailSection('budget')">📧 Email This Page</button><button class="btn secondary" onclick="resetBudget()">↺ Reset All</button></div></div>
+    <div class="card">
+      <h2>Cost Tracker</h2>
+      <p class="hint">Edit item names, estimated cost, actual cost, and notes freely. Add rows as needed. Check "USD" for any cost billed in US dollars (e.g. many US-based competitions) — it'll convert to CAD automatically using the rate below.</p>
+      <div class="form-field" style="max-width:320px;">
+        <label>USD → CAD Exchange Rate</label>
+        <div style="display:flex; gap:8px;">
+          <input type="number" step="0.01" id="exchangeRate" value="1.38" style="flex:1;">
+          <button class="btn secondary no-print" style="white-space:nowrap;" onclick="fetchLiveRate()">🔄 Fetch Live Rate</button>
+        </div>
+        <p class="hint" id="rateStatus" style="margin:6px 0 0 0;">Manual rate — tap "Fetch Live Rate" for today's actual rate.</p>
+      </div>
+      <table class="tool-table" id="budgetTable">
+        <thead><tr><th>Item</th><th style="width:120px;">Estimated ($)</th><th style="width:120px;">Actual ($)</th><th style="width:60px;">USD?</th><th style="width:110px;">Difference</th><th>Notes / Tips</th></tr></thead>
+        <tbody id="budgetBody"></tbody>
+        <tfoot><tr class="total-row"><td>TOTAL (CAD)</td><td id="totalEst">$0.00</td><td id="totalAct">$0.00</td><td></td><td id="totalDiff">$0.00</td><td></td></tr></tfoot>
+      </table>
+      <div class="btn-row no-print" style="margin-top:14px;"><button class="btn secondary" onclick="addBudgetRow()">+ Add Row</button></div>
+      <p class="save-status" id="budgetSaveStatus">Changes save automatically in this browser.</p>
+    </div>
+    <div class="card"><p style="margin:0;">💡 <strong>Parent Tip:</strong> A positive difference means you're over budget on that item — a negative (or $0) difference means you're on track or under.</p></div>
+  </main>
+  <footer>The Cheer Hub — Ultimate Competition Survival Kit</footer>
+</div>
+
+<!-- ================= PACKING CHECKLIST ================= -->
+<div class="page" id="page-packing">
+  <div class="hero"><h1>🎒 Packing Checklist</h1><p>Check off gear as you pack. Add or edit items freely — your progress saves automatically.</p></div>
+  <main>
+    <div class="tool-header no-print"><div class="btn-row"><button class="btn" onclick="window.print()">🖨️ Print</button><button class="btn" onclick="emailSection('packing')">📧 Email This Page</button><button class="btn secondary" onclick="resetPacking()">↺ Reset All</button></div></div>
+    <div class="card">
+      <h2>Packed?</h2>
+      <div class="progress-wrap"><div class="progress-bar" id="packProgressBar"></div></div>
+      <p class="hint" id="packProgressText">0 of 0 items packed</p>
+      <div id="packList"></div>
+      <div class="btn-row no-print" style="margin-top:14px;"><button class="btn secondary" onclick="addPackRow()">+ Add Item</button></div>
+      <p class="save-status" id="packSaveStatus">Changes save automatically in this browser.</p>
+    </div>
+    <div class="card"><p style="margin:0;">💡 <strong>Parent Tip:</strong> Pack the night before and label everything. Involve your athlete — it builds responsibility and reduces parental panic.</p></div>
+  </main>
+  <footer>The Cheer Hub — Ultimate Competition Survival Kit</footer>
+</div>
+
+<!-- ================= MEAL PLANNER ================= -->
+<div class="page" id="page-meal">
+  <div class="hero"><h1>🍎 Meal & Hydration Planner</h1><p>Reference ideas on the left. Build your own athlete's actual plan on the right.</p></div>
+  <main>
+    <div class="tool-header no-print"><div class="btn-row"><button class="btn" onclick="window.print()">🖨️ Print</button><button class="btn" onclick="emailSection('meal')">📧 Email This Page</button><button class="btn secondary" onclick="resetMeals()">↺ Reset My Plan</button></div></div>
+    <div class="card">
+      <h2>Meal Plan</h2>
+      <table class="tool-table" id="mealTable">
+        <thead><tr><th style="width:110px;">Meal</th><th>Idea Bank (reference)</th><th>My Athlete's Plan</th></tr></thead>
+        <tbody id="mealBody"></tbody>
+      </table>
+      <p class="save-status" id="mealSaveStatus">Changes save automatically in this browser.</p>
+    </div>
+    <div class="card"><p style="margin:0;">⚡ <strong>Bonus Hack:</strong> Pre-pack snacks in labeled bags per day to avoid "hangry chaos" at competitions.</p></div>
+  </main>
+  <footer>The Cheer Hub — Ultimate Competition Survival Kit</footer>
+</div>
+
+<!-- ================= PRE-COMP ROUTINE ================= -->
+<div class="page" id="page-routine">
+  <div class="hero"><h1>⏰ Pre-Competition Routine</h1><p>Check off each step live on competition day. Edit steps to match your team's actual routine.</p></div>
+  <main>
+    <div class="tool-header no-print"><div class="btn-row"><button class="btn" onclick="window.print()">🖨️ Print</button><button class="btn" onclick="emailSection('routine')">📧 Email This Page</button><button class="btn secondary" onclick="resetRoutine()">↺ Reset Checklist</button></div></div>
+    <div class="card">
+      <h2>Routine Steps</h2>
+      <div class="progress-wrap"><div class="progress-bar" id="routineProgressBar"></div></div>
+      <p class="hint" id="routineProgressText"></p>
+      <div id="stepList"></div>
+      <div class="btn-row no-print" style="margin-top:14px;"><button class="btn secondary" onclick="addStep()">+ Add Step</button></div>
+      <p class="save-status" id="routineSaveStatus">Changes save automatically in this browser.</p>
+    </div>
+    <div class="card"><p style="margin:0;">💡 <strong>Parent Tip:</strong> Stay calm. Deep breaths. Your athlete mirrors your zen energy.</p></div>
+  </main>
+  <footer>The Cheer Hub — Ultimate Competition Survival Kit</footer>
+</div>
+
+<!-- ================= STRESS REDUCTION ================= -->
+<div class="page" id="page-stress">
+  <div class="hero"><h1>😌 Stress Reduction Log</h1><p>Track what actually helps your athlete over the season. Rate each technique as you try it.</p></div>
+  <main>
+    <div class="tool-header no-print"><div class="btn-row"><button class="btn" onclick="window.print()">🖨️ Print</button><button class="btn" onclick="emailSection('stress')">📧 Email This Page</button><button class="btn secondary" onclick="resetStress()">↺ Reset Log</button></div></div>
+    <div class="card">
+      <h2>Techniques</h2>
+      <table class="tool-table" id="stressTable">
+        <thead><tr><th>Technique</th><th>How To Use</th><th>Did It Help?</th><th style="width:90px;">Rating</th></tr></thead>
+        <tbody id="stressBody"></tbody>
+      </table>
+      <p class="save-status" id="stressSaveStatus">Changes save automatically in this browser.</p>
+    </div>
+    <div class="card"><p style="margin:0;">💡 <strong>Parent Tip:</strong> Show resilience and positivity — good vibes spread faster than panic.</p></div>
+  </main>
+  <footer>The Cheer Hub — Ultimate Competition Survival Kit</footer>
+</div>
+
+<!-- ================= WEEKLY CHECKLIST ================= -->
+<div class="page" id="page-weekly">
+  <div class="hero"><h1>✅ Weekly Checklist & Reflection</h1><p>Your prep checklist and reflection questions for this competition weekend.</p></div>
+  <main>
+    <div class="tool-header no-print"><div class="btn-row"><button class="btn" onclick="window.print()">🖨️ Print</button><button class="btn" onclick="emailSection('weekly')">📧 Email This Page</button><button class="btn secondary" onclick="resetWeekly()">↺ Start Fresh for Next Competition</button></div></div>
+    <div class="card"><h2>This Competition</h2><div class="form-field"><label>Competition / Date</label><input type="text" id="compName" placeholder="e.g. Winter Classic — Jan 18"></div></div>
+    <div class="card"><h2>Checklist</h2><div id="weeklyList"></div><p class="save-status" id="weeklySaveStatus1">Changes save automatically in this browser.</p></div>
+    <div class="card">
+      <h2>Reflection</h2>
+      <div class="form-field"><label>Favorite moment today?</label><textarea rows="2" id="q1"></textarea></div>
+      <div class="form-field"><label>Skill/routine to improve next time?</label><textarea rows="2" id="q2"></textarea></div>
+      <div class="form-field"><label>How did I support my teammates?</label><textarea rows="2" id="q3"></textarea></div>
+      <p class="save-status" id="weeklySaveStatus2">Changes save automatically in this browser.</p>
+    </div>
+  </main>
+  <footer>The Cheer Hub — Ultimate Competition Survival Kit</footer>
+</div>
+
+<!-- ================= EMERGENCY CONTACT ================= -->
+<div class="page" id="page-emergency">
+  <div class="hero"><h1>🏥 Emergency Contact Card</h1><p>Fill this in once, then print it and keep it in your competition bag.</p></div>
+  <main>
+    <div class="tool-header no-print"><div class="btn-row"><button class="btn" onclick="window.print()">🖨️ Print This Card</button><button class="btn" onclick="emailSection('emergency')">📧 Email This Card</button><button class="btn secondary" onclick="resetCard()">↺ Clear All</button></div></div>
+    <div class="card">
+      <h2>Athlete & Emergency Information</h2>
+      <div class="two-col"><div class="form-field"><label>Athlete Name</label><input type="text" id="f_name"></div><div class="form-field"><label>Date of Birth</label><input type="text" id="f_dob"></div></div>
+      <div class="form-field"><label>Allergies</label><input type="text" id="f_allergies"></div>
+      <div class="two-col"><div class="form-field"><label>Emergency Contact (1) — Name</label><input type="text" id="f_ec1name"></div><div class="form-field"><label>Emergency Contact (1) — Phone</label><input type="text" id="f_ec1phone"></div></div>
+      <div class="two-col"><div class="form-field"><label>Emergency Contact (2) — Name</label><input type="text" id="f_ec2name"></div><div class="form-field"><label>Emergency Contact (2) — Phone</label><input type="text" id="f_ec2phone"></div></div>
+      <div class="form-field"><label>Primary Physician</label><input type="text" id="f_physician"></div>
+      <div class="form-field"><label>Health Insurance Provider & Policy #</label><input type="text" id="f_insurance"></div>
+      <div class="form-field"><label>Nearest Emergency Room</label><input type="text" id="f_er"></div>
+      <div class="form-field"><label>Medical Conditions / Notes</label><textarea rows="3" id="f_notes"></textarea></div>
+      <p class="save-status" id="emergSaveStatus">Changes save automatically in this browser.</p>
+    </div>
+  </main>
+  <footer>The Cheer Hub — Ultimate Competition Survival Kit</footer>
+</div>
+
+<!-- ================= CHEER DECODER GLOSSARY ================= -->
+<div class="page" id="page-glossary">
+  <div class="hero"><h1>📘 Cheer Decoder Glossary</h1><p>Every confusing term explained in plain English — filter by category, search, or bookmark the ones you want to remember.</p></div>
+  <main>
+    <div class="tool-header no-print"><div class="btn-row"><button class="btn" onclick="window.print()">🖨️ Print</button></div></div>
+    <div class="card">
+      <input type="text" class="glossary-search" id="glossarySearch" placeholder="Search a term (e.g. 'flyer', 'level', 'tumbling')...">
+      <div class="glossary-chips" id="glossaryChips"></div>
+      <div class="glossary-grid" id="glossaryList"></div>
+    </div>
+  </main>
+  <footer>The Cheer Hub — Ultimate Competition Survival Kit</footer>
+</div>
+
+<!-- ================= USD/CAD CONVERTER ================= -->
+<div class="page" id="page-converter">
+  <div class="hero"><h1>💱 USD → CAD Cost Converter</h1><p>Many US-based competitions price everything in USD. Convert any cost to true CAD instantly.</p></div>
+  <main>
+    <div class="tool-header no-print"><div class="btn-row"><button class="btn" onclick="window.print()">🖨️ Print</button></div></div>
+    <div class="card">
+      <h2>Quick Convert</h2>
+      <div class="two-col">
+        <div class="form-field"><label>Amount in USD ($)</label><input type="number" step="0.01" id="conv_usd" placeholder="e.g. 65.00"></div>
+        <div class="form-field">
+          <label>Exchange Rate (USD → CAD)</label>
+          <div style="display:flex; gap:8px;">
+            <input type="number" step="0.0001" id="conv_rate" value="1.38" style="flex:1;">
+            <button class="btn secondary no-print" style="white-space:nowrap;" onclick="fetchConverterRate()">🔄 Live Rate</button>
+          </div>
+        </div>
+      </div>
+      <p class="hint" id="convRateStatus">Manual rate — tap "Live Rate" for today's actual rate.</p>
+      <div class="stat-grid">
+        <div class="stat-card"><span class="num" id="conv_result">$0.00</span><span class="label">Total in CAD</span></div>
+      </div>
+    </div>
+    <div class="card"><p style="margin:0;">💡 <strong>Parent Tip:</strong> This same converter is built into every row of your Budget Tracker too — check the "USD?" box on any line item there to have it convert automatically as part of your season total.</p></div>
+  </main>
+  <footer>The Cheer Hub — Ultimate Competition Survival Kit</footer>
+</div>
+
+<!-- ================= GEAR LABEL GENERATOR ================= -->
+<div class="page" id="page-labels">
+  <div class="hero"><h1>🏷️ Gear Label Generator</h1><p>Type your athlete's name once, print a full sheet of labels for uniforms and gear.</p></div>
+  <main>
+    <div class="tool-header no-print"><div class="btn-row"><button class="btn" onclick="window.print()">🖨️ Print Label Sheet</button></div></div>
+    <div class="card no-print">
+      <h2>Label Details</h2>
+      <div class="two-col">
+        <div class="form-field"><label>Athlete Name</label><input type="text" id="lbl_name" placeholder="e.g. Emma R."></div>
+        <div class="form-field"><label>Team / Gym (optional)</label><input type="text" id="lbl_team" placeholder="e.g. Storm All-Stars"></div>
+      </div>
+      <button class="btn" onclick="renderLabelSheet()">🏷️ Generate Sheet</button>
+    </div>
+    <div class="card">
+      <h2>Preview / Print Sheet (24 labels)</h2>
+      <div class="label-sheet" id="labelSheet"></div>
+    </div>
+    <div class="card"><p style="margin:0;">💡 <strong>Parent Tip:</strong> Veteran cheer parents universally agree: label EVERYTHING. Gear gets lost or swapped constantly at competitions.</p></div>
+  </main>
+  <footer>The Cheer Hub — Ultimate Competition Survival Kit</footer>
+</div>
+
+<!-- ================= VETERAN PARENT TIPS ================= -->
+<div class="page" id="page-tips">
+  <div class="hero"><h1>🎓 Veteran Parent Tips</h1><p>Real, categorized advice from experienced cheer parents — so you stop needing a "translator."</p></div>
+  <main>
+    <div class="tool-header no-print"><div class="btn-row"><button class="btn" onclick="window.print()">🖨️ Print</button></div></div>
+    <div class="card" id="tipsContainer"></div>
+  </main>
+  <footer>The Cheer Hub — Ultimate Competition Survival Kit</footer>
+</div>
+
+<!-- ================= SEASON SUMMARY REPORT ================= -->
+<div class="page" id="page-summary">
+  <div class="hero"><h1>📊 Season Summary Report</h1><p>An auto-generated recap of everything you've filled in for this profile.</p></div>
+  <main>
+    <div class="tool-header no-print"><div class="btn-row"><button class="btn" onclick="window.print()">🖨️ Print My Report</button><button class="btn" onclick="emailSummary()">📧 Email My Report</button></div></div>
+    <div class="card">
+      <h2>Season At A Glance</h2>
+      <div class="stat-grid" id="summaryStats"></div>
+    </div>
+    <div class="card">
+      <h2>Highlights</h2>
+      <div id="summaryHighlights"></div>
+    </div>
+  </main>
+  <footer>The Cheer Hub — Ultimate Competition Survival Kit</footer>
+</div>
+
+<!-- ================= SEASON COMPETITION TRACKER ================= -->
+<div class="page" id="page-compTracker">
+  <div class="hero"><h1>🏆 Season Competition Tracker</h1><p>Log every competition this season — date, location, division, hotel status, and results.</p></div>
+  <main>
+    <div class="tool-header no-print"><div class="btn-row"><button class="btn" onclick="window.print()">🖨️ Print</button><button class="btn" onclick="emailSection('compTracker')">📧 Email This Page</button><button class="btn secondary" onclick="addCompRow()">+ Add Competition</button></div></div>
+    <div class="card">
+      <h2>This Season's Competitions</h2>
+      <p class="hint">Add a row per competition. Fill in results after each event — this feeds into your Season Summary automatically.</p>
+      <table class="tool-table" id="compTable">
+        <thead><tr><th>Competition</th><th>Date</th><th>Location</th><th style="width:90px;">Division</th><th style="width:90px;">Hotel?</th><th>Result / Placement</th></tr></thead>
+        <tbody id="compBody"></tbody>
+      </table>
+      <p class="save-status" id="compSaveStatus">Changes save automatically in this browser.</p>
+    </div>
+    <div class="card"><p style="margin:0;">💡 <strong>Parent Tip:</strong> Log results right after awards while it's fresh — it makes your Season Summary genuinely meaningful by the end of the year.</p></div>
+  </main>
+  <footer>The Cheer Hub — Ultimate Competition Survival Kit</footer>
+</div>
+
+<!-- ================= FUNDRAISING TRACKER ================= -->
+<div class="page" id="page-fundraising">
+  <div class="hero"><h1>💵 Fundraising Tracker</h1><p>Set a goal, log every fundraiser, and watch your progress build.</p></div>
+  <main>
+    <div class="tool-header no-print"><div class="btn-row"><button class="btn" onclick="window.print()">🖨️ Print</button><button class="btn" onclick="emailSection('fundraising')">📧 Email This Page</button><button class="btn secondary" onclick="addFundraiserRow()">+ Add Fundraiser</button></div></div>
+    <div class="card">
+      <h2>Season Fundraising Goal</h2>
+      <div class="form-field" style="max-width:260px;">
+        <label>Goal Amount ($)</label>
+        <input type="number" step="0.01" id="fundGoal" placeholder="e.g. 1500">
+      </div>
+      <div class="progress-wrap"><div class="progress-bar" id="fundProgressBar"></div></div>
+      <p class="hint" id="fundProgressText"></p>
+    </div>
+    <div class="card">
+      <h2>Fundraisers</h2>
+      <table class="tool-table" id="fundTable">
+        <thead><tr><th>Fundraiser</th><th style="width:120px;">Amount Raised ($)</th><th>Notes</th></tr></thead>
+        <tbody id="fundBody"></tbody>
+        <tfoot><tr class="total-row"><td>TOTAL RAISED</td><td id="fundTotal">$0.00</td><td></td></tr></tfoot>
+      </table>
+      <p class="save-status" id="fundSaveStatus">Changes save automatically in this browser.</p>
+    </div>
+    <div class="card"><p style="margin:0;">💡 <strong>Parent Tip:</strong> Ask your team about fundraising opportunities early in the season — it can meaningfully offset your Budget Tracker total.</p></div>
+  </main>
+  <footer>The Cheer Hub — Ultimate Competition Survival Kit</footer>
+</div>
+
+<!-- ================= TEAM & CARPOOL CONTACTS ================= -->
+<div class="page" id="page-contacts">
+  <div class="hero"><h1>📇 Team & Carpool Contacts</h1><p>Keep teammate parent contacts and carpool arrangements in one place.</p></div>
+  <main>
+    <div class="tool-header no-print"><div class="btn-row"><button class="btn" onclick="window.print()">🖨️ Print</button><button class="btn" onclick="emailSection('contacts')">📧 Email This Page</button><button class="btn secondary" onclick="addContactRow()">+ Add Contact</button></div></div>
+    <div class="card">
+      <h2>Contacts</h2>
+      <table class="tool-table" id="contactTable">
+        <thead><tr><th>Parent Name</th><th>Athlete</th><th>Phone</th><th>Carpool Notes</th></tr></thead>
+        <tbody id="contactBody"></tbody>
+      </table>
+      <p class="save-status" id="contactSaveStatus">Changes save automatically in this browser.</p>
+    </div>
+    <div class="card"><p style="margin:0;">💡 <strong>Parent Tip:</strong> Set this up in the first week of the season — it saves so much last-minute group-chat scrambling before competitions.</p></div>
+  </main>
+  <footer>The Cheer Hub — Ultimate Competition Survival Kit</footer>
+</div>
+
+<!-- ================= SKILLS & GOALS TRACKER ================= -->
+<div class="page" id="page-goals">
+  <div class="hero"><h1>🎯 Skills & Goals Tracker</h1><p>Track your athlete's personal skill goals and celebrate every milestone.</p></div>
+  <main>
+    <div class="tool-header no-print"><div class="btn-row"><button class="btn" onclick="window.print()">🖨️ Print</button><button class="btn" onclick="emailSection('goals')">📧 Email This Page</button><button class="btn secondary" onclick="addGoalRow()">+ Add Goal</button></div></div>
+    <div class="card">
+      <h2>Current Goals</h2>
+      <div class="progress-wrap"><div class="progress-bar" id="goalProgressBar"></div></div>
+      <p class="hint" id="goalProgressText"></p>
+      <table class="tool-table" id="goalTable">
+        <thead><tr><th>Skill / Goal</th><th style="width:120px;">Target Date</th><th style="width:90px;">Achieved?</th><th>Notes</th></tr></thead>
+        <tbody id="goalBody"></tbody>
+      </table>
+      <p class="save-status" id="goalSaveStatus">Changes save automatically in this browser.</p>
+    </div>
+    <div class="card"><p style="margin:0;">💡 <strong>Parent Tip:</strong> Celebrate effort and small progress toward a goal, not just the moment it's achieved — it builds resilience for the next skill.</p></div>
+  </main>
+  <footer>The Cheer Hub — Ultimate Competition Survival Kit</footer>
+</div>
+
+<script>
+// ---------- PROFILE SYSTEM ----------
+function getProfiles() {
+  const raw = localStorage.getItem("survivalKit_profileList");
+  return raw ? JSON.parse(raw) : null;
+}
+function setProfiles(list) { localStorage.setItem("survivalKit_profileList", JSON.stringify(list)); }
+function getActiveProfileId() { return localStorage.getItem("survivalKit_activeProfile") || "default"; }
+function setActiveProfileId(id) { localStorage.setItem("survivalKit_activeProfile", id); }
+function pKey(key) { return "survivalKit_" + getActiveProfileId() + "_" + key; }
+
+(function initProfiles() {
+  let profiles = getProfiles();
+  if (!profiles) {
+    profiles = [{ id: "default", name: "My Athlete" }];
+    setProfiles(profiles);
+    setActiveProfileId("default");
+    const migrateKeys = ["budget","packing","meals","routine","stress","weekly_checklist",
+      "weekly_compName","weekly_q1","weekly_q2","weekly_q3",
+      "emergency_f_name","emergency_f_dob","emergency_f_allergies","emergency_f_ec1name","emergency_f_ec1phone",
+      "emergency_f_ec2name","emergency_f_ec2phone","emergency_f_physician","emergency_f_insurance","emergency_f_er","emergency_f_notes"];
+    migrateKeys.forEach(k => {
+      const old = localStorage.getItem("survivalKit_" + k);
+      if (old !== null && localStorage.getItem(pKey(k)) === null) {
+        localStorage.setItem(pKey(k), old);
+      }
+    });
+  }
+})();
+
+function refreshProfileLabel() {
+  const profiles = getProfiles();
+  const activeId = getActiveProfileId();
+  const active = profiles.find(p => p.id === activeId) || profiles[0];
+  document.getElementById('profileNameLabel').textContent = active ? active.name : 'My Athlete';
+}
+
+function renderProfileDropdown() {
+  const profiles = getProfiles();
+  const activeId = getActiveProfileId();
+  const dd = document.getElementById('profileDropdown');
+  let html = '<div class="section-label">Switch Profile</div>';
+  profiles.forEach(p => {
+    html += `<button data-switch="${p.id}" class="${p.id===activeId?'active':''}">${p.id===activeId?'✓ ':''}${p.name}</button>`;
+  });
+  html += '<div class="section-label">Manage</div>';
+  html += '<button id="addProfileBtn">+ Add New Athlete/Season</button>';
+  html += '<button id="renameProfileBtn">✏️ Rename Current</button>';
+  if (profiles.length > 1) html += '<button id="deleteProfileBtn" style="color:#b91c2c;">🗑️ Delete Current</button>';
+  dd.innerHTML = html;
+
+  dd.querySelectorAll('[data-switch]').forEach(btn => {
+    btn.addEventListener('click', () => { setActiveProfileId(btn.dataset.switch); location.reload(); });
+  });
+  document.getElementById('addProfileBtn').addEventListener('click', () => {
+    const name = prompt("Name this profile (e.g. athlete's name, or 'Emma - 2026 Season'):");
+    if (!name) return;
+    const id = 'p_' + Date.now();
+    const list = getProfiles();
+    list.push({ id, name });
+    setProfiles(list);
+    setActiveProfileId(id);
+    location.reload();
+  });
+  document.getElementById('renameProfileBtn').addEventListener('click', () => {
+    const list = getProfiles();
+    const p = list.find(x => x.id === getActiveProfileId());
+    const name = prompt("Rename this profile:", p.name);
+    if (!name) return;
+    p.name = name;
+    setProfiles(list);
+    refreshProfileLabel();
+    renderProfileDropdown();
+  });
+  const delBtn = document.getElementById('deleteProfileBtn');
+  if (delBtn) {
+    delBtn.addEventListener('click', () => {
+      if (!confirm("Delete this profile and ALL its saved data? This can't be undone.")) return;
+      let list = getProfiles();
+      const idToDelete = getActiveProfileId();
+      list = list.filter(p => p.id !== idToDelete);
+      setProfiles(list);
+      setActiveProfileId(list[0].id);
+      location.reload();
+    });
+  }
+}
+
+document.getElementById('profileBtn').addEventListener('click', (e) => {
+  e.stopPropagation();
+  document.getElementById('profileDropdown').classList.toggle('open');
+  document.getElementById('navDropdown').classList.remove('open');
+});
+document.addEventListener('click', () => document.getElementById('profileDropdown').classList.remove('open'));
+renderProfileDropdown();
+refreshProfileLabel();
+
+// ---------- PREMIUM TOOLS PASSCODE GATE ----------
+const PREMIUM_PASSCODE = "CHEERHUB2026";
+const PREMIUM_PAGES = ["glossary", "converter", "labels", "tips", "summary", "compTracker", "fundraising", "contacts", "goals"];
+
+function isPremiumUnlocked() {
+  return localStorage.getItem("survivalKit_premiumUnlocked") === "true";
+}
+function setPremiumUnlocked() {
+  localStorage.setItem("survivalKit_premiumUnlocked", "true");
+}
+function refreshPremiumGateUI() {
+  const lockedCard = document.getElementById("premiumLockedCard");
+  const grid = document.getElementById("premiumToolsGrid");
+  const navSection = document.getElementById("navPremiumSection");
+  const navLockedBtn = document.getElementById("navPremiumLockedBtn");
+  const unlocked = isPremiumUnlocked();
+  if (lockedCard && grid) {
+    lockedCard.style.display = unlocked ? "none" : "block";
+    grid.style.display = unlocked ? "grid" : "none";
+  }
+  if (navSection && navLockedBtn) {
+    navSection.style.display = unlocked ? "block" : "none";
+    navLockedBtn.style.display = unlocked ? "none" : "block";
+  }
+}
+window.unlockPremiumTools = function() {
+  if (isPremiumUnlocked()) { refreshPremiumGateUI(); return true; }
+  const entered = prompt("Enter your premium access passcode:");
+  if (entered === null) return false;
+  if (entered.trim().toUpperCase() === PREMIUM_PASSCODE) {
+    setPremiumUnlocked();
+    refreshPremiumGateUI();
+    return true;
+  } else {
+    alert("That passcode isn't correct. Please check with your community for the current premium access code.");
+    return false;
+  }
+};
+
+// ---------- Page switching ----------
+function showPage(name) {
+  if (PREMIUM_PAGES.includes(name) && !isPremiumUnlocked()) {
+    const unlocked = window.unlockPremiumTools();
+    if (!unlocked) return;
+  }
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  document.querySelectorAll('.nav-dropdown button[data-page]').forEach(b => b.classList.toggle('active', b.dataset.page === name));
+  document.getElementById('navDropdown').classList.remove('open');
+  window.scrollTo(0,0);
+}
+document.getElementById('navMenuBtn').addEventListener('click', (e) => {
+  e.stopPropagation();
+  document.getElementById('navDropdown').classList.toggle('open');
+  document.getElementById('profileDropdown').classList.remove('open');
+});
+document.addEventListener('click', () => document.getElementById('navDropdown').classList.remove('open'));
+document.querySelectorAll('.nav-dropdown button[data-page]').forEach(b => {
+  b.addEventListener('click', () => showPage(b.dataset.page));
+});
+document.getElementById('navPremiumLockedBtn').addEventListener('click', (e) => {
+  e.stopPropagation();
+  window.unlockPremiumTools();
+});
+
+// ---------- localStorage helpers ----------
+function saveField(key, value) { localStorage.setItem(pKey(key), value); }
+function loadField(key, fallback = "") { const v = localStorage.getItem(pKey(key)); return v === null ? fallback : v; }
+function bindAutoSave(el, key) { el.value = loadField(key, el.value || ""); el.addEventListener("input", () => saveField(key, el.value)); }
+function flashSaved(msgEl) { if (!msgEl) return; msgEl.textContent = "✓ Saved to this browser"; clearTimeout(msgEl._t); msgEl._t = setTimeout(() => { msgEl.textContent = "Changes save automatically in this browser."; }, 1500); }
+
+// ---------- BUDGET TRACKER ----------
+(function() {
+  const DEFAULT_ROWS = [
+    ["Registration Fees", "", "", "Include late fees", false],
+    ["Uniforms / Shoes / Bows", "", "", "Track extras & replacements", false],
+    ["Travel (Gas / Hotel / Parking / Flights)", "", "", "Share with other parents if possible", false],
+    ["Meals / Snacks", "", "", "Buy in bulk to save", false],
+    ["Fundraising / Sponsorship Offsets", "", "", "Enter as negative to offset total", false],
+    ["Emergency / Miscellaneous", "", "", "Extra bows, first-aid, etc.", false],
+  ];
+  const body = document.getElementById("budgetBody");
+  const statusEl = document.getElementById("budgetSaveStatus");
+  const rateEl = document.getElementById("exchangeRate");
+  bindAutoSave(rateEl, "budget_exchangeRate");
+  if (!rateEl.value) rateEl.value = "1.38";
+  rateEl.addEventListener("input", recalc);
+
+  window.fetchLiveRate = async function() {
+    const statusEl2 = document.getElementById("rateStatus");
+    statusEl2.textContent = "Fetching today's rate...";
+    try {
+      const res = await fetch("https://api.frankfurter.dev/v1/latest?base=USD&symbols=CAD");
+      const data = await res.json();
+      const rate = data.rates && data.rates.CAD;
+      if (rate) {
+        rateEl.value = rate.toFixed(4);
+        saveField("budget_exchangeRate", rateEl.value);
+        statusEl2.textContent = `✓ Live rate as of ${data.date}: 1 USD = ${rate.toFixed(4)} CAD`;
+        recalc();
+      } else {
+        throw new Error("No rate returned");
+      }
+    } catch (e) {
+      statusEl2.textContent = "⚠️ Couldn't fetch a live rate right now — using your manual rate instead. Check your connection and try again.";
+    }
+  };
+
+  function makeRow(data) {
+    const tr = document.createElement("tr");
+    const isUsd = data[4] || false;
+    tr.innerHTML = `<td><input type="text" data-k="item" value="${data[0]}"></td>
+      <td><input type="number" step="0.01" data-k="est" value="${data[1]}"></td>
+      <td><input type="number" step="0.01" data-k="act" value="${data[2]}"></td>
+      <td style="text-align:center;"><input type="checkbox" data-k="isUsd" ${isUsd ? "checked" : ""}></td>
+      <td class="diff-cell">$0.00</td>
+      <td><input type="text" data-k="notes" value="${data[3]}"></td>`;
+    body.appendChild(tr);
+    tr.querySelectorAll("input").forEach(inp => inp.addEventListener("input", () => { recalc(); saveAll(); }));
+  }
+  function recalc() {
+    const rate = parseFloat(rateEl.value) || 1;
+    let totalEst = 0, totalAct = 0;
+    [...body.children].forEach(tr => {
+      let est = parseFloat(tr.querySelector('[data-k="est"]').value) || 0;
+      let act = parseFloat(tr.querySelector('[data-k="act"]').value) || 0;
+      const isUsd = tr.querySelector('[data-k="isUsd"]').checked;
+      if (isUsd) { est = est * rate; act = act * rate; }
+      const diff = act - est;
+      const diffCell = tr.querySelector(".diff-cell");
+      diffCell.textContent = (diff < 0 ? "-$" : "$") + Math.abs(diff).toFixed(2) + (isUsd ? " (CAD)" : "");
+      diffCell.style.color = diff > 0 ? "#b91c1c" : "#166534";
+      totalEst += est; totalAct += act;
+    });
+    document.getElementById("totalEst").textContent = "$" + totalEst.toFixed(2);
+    document.getElementById("totalAct").textContent = "$" + totalAct.toFixed(2);
+    const totalDiff = totalAct - totalEst;
+    const diffEl = document.getElementById("totalDiff");
+    diffEl.textContent = (totalDiff < 0 ? "-$" : "$") + Math.abs(totalDiff).toFixed(2);
+    diffEl.style.color = totalDiff > 0 ? "#b91c1c" : "#166534";
+  }
+  function saveAll() {
+    const rows = [...body.children].map(tr => ({
+      item: tr.querySelector('[data-k="item"]').value,
+      est: tr.querySelector('[data-k="est"]').value,
+      act: tr.querySelector('[data-k="act"]').value,
+      notes: tr.querySelector('[data-k="notes"]').value,
+      isUsd: tr.querySelector('[data-k="isUsd"]').checked,
+    }));
+    localStorage.setItem(pKey("budget"), JSON.stringify(rows));
+    flashSaved(statusEl);
+  }
+  window.addBudgetRow = function() { makeRow(["", "", "", "", false]); saveAll(); };
+  window.resetBudget = function() {
+    if (!confirm("Clear all budget data?")) return;
+    localStorage.removeItem(pKey("budget")); body.innerHTML = ""; DEFAULT_ROWS.forEach(makeRow); recalc();
+  };
+  const saved = localStorage.getItem(pKey("budget"));
+  if (saved) { JSON.parse(saved).forEach(r => makeRow([r.item, r.est, r.act, r.notes, r.isUsd])); } else { DEFAULT_ROWS.forEach(makeRow); }
+  recalc();
+})();
+
+// ---------- PACKING CHECKLIST ----------
+(function() {
+  const DEFAULT_ITEMS = [
+    ["Uniforms", "Competition / practice separated", false],
+    ["Shoes & Socks", "Extra pair just in case", false],
+    ["Bows / Hair Supplies", "Brush, hairspray, elastics", false],
+    ["Makeup (competition-approved)", "Keep small bag ready", false],
+    ["Safety Gear", "Knee pads, braces", false],
+    ["Snacks / Hydration", "Energy bars, water bottles", false],
+    ["Comfort Kit", "Motivational note, favorite snack", false],
+  ];
+  const list = document.getElementById("packList");
+  const statusEl = document.getElementById("packSaveStatus");
+  function makeItem(name, note, packed) {
+    const row = document.createElement("div");
+    row.className = "checklist-item" + (packed ? " done" : "");
+    row.innerHTML = `<input type="checkbox" ${packed ? "checked" : ""}>
+      <div class="step-text">
+        <input type="text" data-k="name" value="${name}" style="border:none;background:transparent;font-weight:700;width:100%;font-size:0.95rem;">
+        <input type="text" data-k="note" value="${note}" style="border:none;background:transparent;color:#66708a;width:100%;font-size:0.85rem;">
+      </div>`;
+    list.appendChild(row);
+    const cb = row.querySelector('input[type="checkbox"]');
+    cb.addEventListener("change", () => { row.classList.toggle("done", cb.checked); recalc(); saveAll(); });
+    row.querySelectorAll('input[type="text"]').forEach(inp => inp.addEventListener("input", saveAll));
+  }
+  function recalc() {
+    const items = [...list.children];
+    const total = items.length;
+    const packed = items.filter(r => r.querySelector('input[type="checkbox"]').checked).length;
+    const pct = total ? Math.round((packed/total)*100) : 0;
+    document.getElementById("packProgressBar").style.width = pct + "%";
+    document.getElementById("packProgressText").textContent = `${packed} of ${total} items packed (${pct}%)`;
+  }
+  function saveAll() {
+    const items = [...list.children].map(row => ({ name: row.querySelector('[data-k="name"]').value, note: row.querySelector('[data-k="note"]').value, packed: row.querySelector('input[type="checkbox"]').checked }));
+    localStorage.setItem(pKey("packing"), JSON.stringify(items));
+    recalc(); flashSaved(statusEl);
+  }
+  window.addPackRow = function() { makeItem("", "", false); saveAll(); };
+  window.resetPacking = function() {
+    if (!confirm("Clear the packing checklist?")) return;
+    localStorage.removeItem(pKey("packing")); list.innerHTML = ""; DEFAULT_ITEMS.forEach(([n,note,p]) => makeItem(n,note,p)); recalc();
+  };
+  const saved = localStorage.getItem(pKey("packing"));
+  if (saved) { JSON.parse(saved).forEach(r => makeItem(r.name, r.note, r.packed)); } else { DEFAULT_ITEMS.forEach(([n,note,p]) => makeItem(n,note,p)); }
+  recalc();
+})();
+
+// ---------- MEAL PLANNER ----------
+(function() {
+  const MEALS = [
+    ["Breakfast", "Oatmeal with fruit, scrambled eggs & toast, smoothie with protein"],
+    ["Lunch", "Wraps with lean protein, pasta salad, rice bowls"],
+    ["Dinner", "Lean protein + complex carbs + veggies"],
+    ["Snacks", "Apples, grapes, bananas, trail mix, cheese sticks, energy bars"],
+    ["Hydration", "Water (primary), electrolyte tablets, coconut water"],
+  ];
+  const body = document.getElementById("mealBody");
+  const statusEl = document.getElementById("mealSaveStatus");
+  const saved = JSON.parse(localStorage.getItem(pKey("meals")) || "{}");
+  MEALS.forEach(([meal, idea]) => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td><strong>${meal}</strong></td><td style="color:#55495f;">${idea}</td>
+      <td><textarea rows="2" data-meal="${meal}" placeholder="Write your athlete's plan here...">${saved[meal] || ""}</textarea></td>`;
+    body.appendChild(tr);
+    tr.querySelector("textarea").addEventListener("input", saveAll);
+  });
+  function saveAll() {
+    const data = {};
+    [...body.children].forEach(tr => { const ta = tr.querySelector("textarea"); data[ta.dataset.meal] = ta.value; });
+    localStorage.setItem(pKey("meals"), JSON.stringify(data));
+    flashSaved(statusEl);
+  }
+  window.resetMeals = function() {
+    if (!confirm("Clear your athlete's meal plan?")) return;
+    localStorage.removeItem(pKey("meals")); [...body.querySelectorAll("textarea")].forEach(ta => ta.value = "");
+  };
+})();
+
+// ---------- PRE-COMP ROUTINE ----------
+(function() {
+  const DEFAULT_STEPS = [
+    "Arrive early — allow time to settle and warm up",
+    "Team check-in — confirm all gear & meet coaches/teammates",
+    "Dynamic stretching — arms, legs, core, tumbling prep",
+    "Quiet cue review — stunts, tumbling passes, jumps",
+    "Mental visualization — picture a perfect routine",
+    'Positive self-talk — "I am prepared, strong, and ready"',
+    "Avoid last-minute corrections — your role is cheerleader, not panic coordinator",
+  ];
+  const list = document.getElementById("stepList");
+  const statusEl = document.getElementById("routineSaveStatus");
+  function makeStep(text, done) {
+    const row = document.createElement("div");
+    row.className = "checklist-item" + (done ? " done" : "");
+    row.innerHTML = `<input type="checkbox" ${done ? "checked" : ""}><input type="text" class="step-text" value="${text}" style="border:none;background:transparent;font-size:0.95rem;">`;
+    list.appendChild(row);
+    const cb = row.querySelector('input[type="checkbox"]');
+    cb.addEventListener("change", () => { row.classList.toggle("done", cb.checked); recalc(); saveAll(); });
+    row.querySelector('input[type="text"]').addEventListener("input", saveAll);
+  }
+  function recalc() {
+    const items = [...list.children];
+    const total = items.length;
+    const done = items.filter(r => r.querySelector('input[type="checkbox"]').checked).length;
+    const pct = total ? Math.round((done/total)*100) : 0;
+    document.getElementById("routineProgressBar").style.width = pct + "%";
+    document.getElementById("routineProgressText").textContent = `${done} of ${total} steps complete`;
+  }
+  function saveAll() {
+    const items = [...list.children].map(row => ({ text: row.querySelector('input[type="text"]').value, done: row.querySelector('input[type="checkbox"]').checked }));
+    localStorage.setItem(pKey("routine"), JSON.stringify(items));
+    recalc(); flashSaved(statusEl);
+  }
+  window.addStep = function() { makeStep("", false); saveAll(); };
+  window.resetRoutine = function() {
+    if (!confirm("Reset the pre-competition routine checklist?")) return;
+    localStorage.removeItem(pKey("routine")); list.innerHTML = ""; DEFAULT_STEPS.forEach(s => makeStep(s, false)); recalc();
+  };
+  const saved = localStorage.getItem(pKey("routine"));
+  if (saved) { JSON.parse(saved).forEach(r => makeStep(r.text, r.done)); } else { DEFAULT_STEPS.forEach(s => makeStep(s, false)); }
+  recalc();
+})();
+
+// ---------- STRESS REDUCTION ----------
+(function() {
+  const TECHNIQUES = [
+    ["Mindful Breathing", "3-5 slow breaths together"],
+    ["Visualization", "Picture routines & sticking landings"],
+    ["Stay Organized", "Packing checklist, meal plan, schedule"],
+    ["Focus on Effort", "Celebrate personal growth"],
+    ["Post-Competition Reflection", "Discuss wins & improvements"],
+  ];
+  const body = document.getElementById("stressBody");
+  const statusEl = document.getElementById("stressSaveStatus");
+  const saved = JSON.parse(localStorage.getItem(pKey("stress")) || "{}");
+  TECHNIQUES.forEach(([tech, how]) => {
+    const s = saved[tech] || {};
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td><strong>${tech}</strong></td><td style="color:#55495f;">${how}</td>
+      <td><input type="text" data-t="${tech}" data-k="notes" value="${s.notes || ""}" placeholder="Notes..."></td>
+      <td><select class="rating-select" data-t="${tech}" data-k="rating"><option value="">-</option>${[1,2,3,4,5].map(n => `<option value="${n}" ${s.rating==n?"selected":""}>${n}</option>`).join("")}</select></td>`;
+    body.appendChild(tr);
+    tr.querySelectorAll("input,select").forEach(el => el.addEventListener("input", saveAll));
+    tr.querySelector("select").addEventListener("change", saveAll);
+  });
+  function saveAll() {
+    const data = {};
+    [...body.children].forEach(tr => {
+      const t = tr.querySelector('[data-k="notes"]').dataset.t;
+      data[t] = { notes: tr.querySelector('[data-k="notes"]').value, rating: tr.querySelector('[data-k="rating"]').value };
+    });
+    localStorage.setItem(pKey("stress"), JSON.stringify(data));
+    flashSaved(statusEl);
+  }
+  window.resetStress = function() {
+    if (!confirm("Clear the stress reduction log?")) return;
+    localStorage.removeItem(pKey("stress"));
+    body.innerHTML = "";
+    TECHNIQUES.forEach(([tech, how]) => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td><strong>${tech}</strong></td><td style="color:#55495f;">${how}</td>
+        <td><input type="text" data-t="${tech}" data-k="notes" value="" placeholder="Notes..."></td>
+        <td><select class="rating-select" data-t="${tech}" data-k="rating"><option value="">-</option>${[1,2,3,4,5].map(n => `<option value="${n}">${n}</option>`).join("")}</select></td>`;
+      body.appendChild(tr);
+      tr.querySelectorAll("input,select").forEach(el => el.addEventListener("input", saveAll));
+      tr.querySelector("select").addEventListener("change", saveAll);
+    });
+  };
+})();
+
+// ---------- WEEKLY CHECKLIST ----------
+(function() {
+  const ITEMS = [
+    "Complete budget tracker",
+    "Pack gear using checklist",
+    "Prep meals & snacks for all travel days",
+    "Run through pre-competition routine with athlete",
+    "Implement stress-reduction strategies before & after performances",
+  ];
+  const list = document.getElementById("weeklyList");
+  const status1 = document.getElementById("weeklySaveStatus1");
+  const status2 = document.getElementById("weeklySaveStatus2");
+  function makeItem(text, done) {
+    const row = document.createElement("div");
+    row.className = "checklist-item" + (done ? " done" : "");
+    row.innerHTML = `<input type="checkbox" ${done ? "checked" : ""}><span class="step-text">${text}</span>`;
+    list.appendChild(row);
+    const cb = row.querySelector("input");
+    cb.addEventListener("change", () => { row.classList.toggle("done", cb.checked); saveChecklist(); });
+  }
+  function saveChecklist() {
+    const data = [...list.children].map((row,i) => ({ text: ITEMS[i], done: row.querySelector("input").checked }));
+    localStorage.setItem(pKey("weekly_checklist"), JSON.stringify(data));
+    flashSaved(status1);
+  }
+  const savedChecklist = JSON.parse(localStorage.getItem(pKey("weekly_checklist")) || "null");
+  if (savedChecklist) { savedChecklist.forEach(r => makeItem(r.text, r.done)); } else { ITEMS.forEach(t => makeItem(t, false)); }
+  bindAutoSave(document.getElementById("compName"), "weekly_compName");
+  ["q1","q2","q3"].forEach(id => bindAutoSave(document.getElementById(id), "weekly_" + id));
+  [document.getElementById("compName"), document.getElementById("q1"), document.getElementById("q2"), document.getElementById("q3")]
+    .forEach(el => el.addEventListener("input", () => flashSaved(status2)));
+  window.resetWeekly = function() {
+    if (!confirm("Start fresh? This clears the competition name, checklist, and reflection answers.")) return;
+    ["weekly_checklist","weekly_compName","weekly_q1","weekly_q2","weekly_q3"].forEach(k => localStorage.removeItem(pKey(k)));
+    location.reload();
+  };
+})();
+
+// ---------- EMERGENCY CONTACT ----------
+(function() {
+  const FIELDS = ["f_name","f_dob","f_allergies","f_ec1name","f_ec1phone","f_ec2name","f_ec2phone","f_physician","f_insurance","f_er","f_notes"];
+  const statusEl = document.getElementById("emergSaveStatus");
+  FIELDS.forEach(id => {
+    const el = document.getElementById(id);
+    bindAutoSave(el, "emergency_" + id);
+    el.addEventListener("input", () => flashSaved(statusEl));
+  });
+  window.resetCard = function() {
+    if (!confirm("Clear the emergency contact card?")) return;
+    FIELDS.forEach(id => { localStorage.removeItem(pKey("emergency_" + id)); document.getElementById(id).value = ""; });
+  };
+})();
+
+// ---------- CHEER DECODER GLOSSARY ----------
+(function() {
+  const TERMS = [
+    ["Base", "roles", "The athlete(s) on the ground who lift, support, and stabilize the flyer during a stunt."],
+    ["Flyer (Top Girl/Guy)", "roles", "The athlete who gets lifted into the air during stunts."],
+    ["Backspot", "roles", "The athlete positioned behind a stunt group, supporting and spotting the flyer for safety."],
+    ["Spotter", "roles", "A dedicated safety role — watches for and protects against falls, may not always be counted as a base."],
+    ["Stunt", "skills", "Any skill where one or more athletes lift, toss, or support another athlete in the air."],
+    ["Pyramid", "skills", "A stunt formation where multiple stunt groups connect together, often the routine's visual highlight."],
+    ["Tumbling", "skills", "Floor skills like round-offs, back handsprings, and tucks — performed without help from other athletes."],
+    ["Standing Tumbling", "skills", "A tumbling pass performed from a standstill, without a running start."],
+    ["Running Tumbling", "skills", "A tumbling pass that starts with a run and roundoff into connected skills — generally higher difficulty."],
+    ["Jump", "skills", "An airborne skill (like a toe touch or hurdler) that doesn't involve flipping."],
+    ["Level (1-7)", "levels", "USASF's skill-difficulty rating system. Level 1 is beginner; Level 6-7 are the most advanced skills allowed."],
+    ["Novice", "levels", "An entry-level competitive division — lower financial and time commitment, usually 1-2 competitions per season."],
+    ["Prep", "levels", "A slightly more competitive division than Novice, typically for newer teams still building experience."],
+    ["All-Star", "levels", "Competitive cheerleading based at a private gym (not a school), focused entirely on training and competing."],
+    ["USASF", "levels", "U.S. All Star Federation — sets the rules, levels, and safety standards used across most competitive cheer, including in Canada."],
+    ["Deductions", "scoring", "Points subtracted from a team's score for errors like falls, drops, or formation/timing mistakes."],
+    ["Execution Score", "scoring", "The portion of the score judging how cleanly and correctly skills were performed."],
+    ["Difficulty Score", "scoring", "The portion of the score judging how hard the attempted skills were, regardless of execution."],
+    ["Divisions", "scoring", "Categories teams are grouped into based on age, skill level, and team size for fair competition."],
+    ["Full-Out", "scoring", "A complete run-through of the routine at full effort and full choreography, as if performing live."],
+    ["Bid", "eventday", "An invitation earned at a competition to attend a bigger, more prestigious event (like Summit or Worlds)."],
+    ["Worlds", "eventday", "The Cheerleading Worlds Championship — the highest level international competition, held annually in Orlando, FL."],
+    ["Choreography", "eventday", "The full routine — combining stunts, tumbling, jumps, and dance into a 2:30 performance."],
+    ["Music Mix", "eventday", "The custom edited song/soundtrack a team performs to."],
+    ["Warm-Up Room", "eventday", "A designated practice area at a competition where teams run through skills right before performing."],
+    ["Awards Ceremony", "eventday", "Where placements/scores are announced — timing varies a lot by competition, so always check the event schedule on-site."],
+  ];
+
+  const CATEGORIES = [
+    { key: "all", label: "All Terms" },
+    { key: "roles", label: "👤 Roles" },
+    { key: "skills", label: "🤸 Skills" },
+    { key: "levels", label: "📊 Levels & Divisions" },
+    { key: "scoring", label: "🏆 Scoring" },
+    { key: "eventday", label: "🎤 Event Day" },
+  ];
+
+  const list = document.getElementById("glossaryList");
+  const search = document.getElementById("glossarySearch");
+  const chipsEl = document.getElementById("glossaryChips");
+  let activeCat = "all";
+
+  function getBookmarks() {
+    return JSON.parse(loadField("glossary_bookmarks", "[]"));
+  }
+  function toggleBookmark(term) {
+    let marks = getBookmarks();
+    if (marks.includes(term)) marks = marks.filter(t => t !== term);
+    else marks.push(term);
+    saveField("glossary_bookmarks", JSON.stringify(marks));
+    render();
+  }
+
+  function renderChips() {
+    chipsEl.innerHTML = CATEGORIES.map(c =>
+      `<button class="glossary-chip ${c.key===activeCat?'active':''}" data-cat="${c.key}">${c.label}</button>`
+    ).join("") + `<button class="glossary-chip ${activeCat==='bookmarked'?'active':''}" data-cat="bookmarked">🔖 My Saved Terms</button>`;
+    chipsEl.querySelectorAll("[data-cat]").forEach(btn => {
+      btn.addEventListener("click", () => { activeCat = btn.dataset.cat; renderChips(); render(); });
+    });
+  }
+
+  function render() {
+    const f = search.value.toLowerCase();
+    const marks = getBookmarks();
+    let filtered = TERMS.filter(([term, cat, def]) => term.toLowerCase().includes(f) || def.toLowerCase().includes(f));
+    if (activeCat === "bookmarked") filtered = filtered.filter(([term]) => marks.includes(term));
+    else if (activeCat !== "all") filtered = filtered.filter(([, cat]) => cat === activeCat);
+
+    list.innerHTML = "";
+    if (!filtered.length) {
+      list.innerHTML = `<div class="glossary-empty">${activeCat === 'bookmarked' ? "No saved terms yet — tap the ☆ on any term to save it here." : "No terms match your search."}</div>`;
+      return;
+    }
+    const catLabels = { roles: "Roles", skills: "Skills", levels: "Levels & Divisions", scoring: "Scoring", eventday: "Event Day" };
+    filtered.forEach(([term, cat, def]) => {
+      const isMarked = marks.includes(term);
+      const div = document.createElement("div");
+      div.className = `glossary-term cat-${cat}`;
+      div.innerHTML = `
+        <button class="bookmark-btn" title="Save this term">${isMarked ? "⭐" : "☆"}</button>
+        <span class="cat-tag">${catLabels[cat]}</span>
+        <h4>${term}</h4>
+        <p>${def}</p>`;
+      div.querySelector(".bookmark-btn").addEventListener("click", () => toggleBookmark(term));
+      list.appendChild(div);
+    });
+  }
+
+  search.addEventListener("input", render);
+  renderChips();
+  render();
+})();
+
+// ---------- USD/CAD CONVERTER ----------
+(function() {
+  const usdEl = document.getElementById("conv_usd");
+  const rateEl = document.getElementById("conv_rate");
+  const resultEl = document.getElementById("conv_result");
+  const statusEl = document.getElementById("convRateStatus");
+  bindAutoSave(usdEl, "converter_usd");
+  bindAutoSave(rateEl, "converter_rate");
+  if (!rateEl.value) rateEl.value = "1.38";
+
+  function recalcConverter() {
+    const usd = parseFloat(usdEl.value) || 0;
+    const rate = parseFloat(rateEl.value) || 0;
+    resultEl.textContent = "$" + (usd * rate).toFixed(2);
+  }
+  usdEl.addEventListener("input", recalcConverter);
+  rateEl.addEventListener("input", recalcConverter);
+
+  window.fetchConverterRate = async function() {
+    statusEl.textContent = "Fetching today's rate...";
+    try {
+      const res = await fetch("https://api.frankfurter.dev/v1/latest?base=USD&symbols=CAD");
+      const data = await res.json();
+      const rate = data.rates && data.rates.CAD;
+      if (rate) {
+        rateEl.value = rate.toFixed(4);
+        saveField("converter_rate", rateEl.value);
+        statusEl.textContent = `✓ Live rate as of ${data.date}: 1 USD = ${rate.toFixed(4)} CAD`;
+        recalcConverter();
+      } else { throw new Error("No rate"); }
+    } catch (e) {
+      statusEl.textContent = "⚠️ Couldn't fetch a live rate right now — using your manual rate instead.";
+    }
+  };
+  recalcConverter();
+})();
+
+// ---------- GEAR LABEL GENERATOR ----------
+(function() {
+  const nameEl = document.getElementById("lbl_name");
+  const teamEl = document.getElementById("lbl_team");
+  bindAutoSave(nameEl, "labels_name");
+  bindAutoSave(teamEl, "labels_team");
+
+  window.renderLabelSheet = function() {
+    const name = nameEl.value || "Athlete Name";
+    const team = teamEl.value;
+    const sheet = document.getElementById("labelSheet");
+    sheet.innerHTML = "";
+    for (let i = 0; i < 24; i++) {
+      const tile = document.createElement("div");
+      tile.className = "label-tile";
+      tile.innerHTML = `${name}${team ? "<br><span style='font-weight:400;font-size:0.82rem;color:#66708a;'>" + team + "</span>" : ""}`;
+      sheet.appendChild(tile);
+    }
+  };
+
+  if (nameEl.value) renderLabelSheet();
+})();
+
+// ---------- VETERAN PARENT TIPS ----------
+(function() {
+  const CATEGORIES = [
+    {
+      title: "💰 Budget & Costs",
+      tips: [
+        "Total costs go well beyond registration — factor in travel, hotels, spectator fees, parking, spirit wear, and food for the whole weekend.",
+        "If a competition is priced in USD, check the exchange rate before you budget — it adds up fast on top of an already pricey weekend.",
+        "Ask about team fundraising early — it can meaningfully offset your own out-of-pocket costs.",
+      ],
+    },
+    {
+      title: "🗓️ Scheduling & Logistics",
+      tips: [
+        "Competition schedules are often not finalized until the Tuesday or Wednesday before the event — avoid locking in other plans too early.",
+        "Book hotel room blocks the moment they're released — they sell out fast, especially for bigger competitions.",
+        "Double (or triple) your usual drive-time estimate for arena traffic on competition day.",
+      ],
+    },
+    {
+      title: "🎒 Gear & Packing",
+      tips: [
+        "Label absolutely everything — uniforms, shoes, bows, warm-ups. Gear gets lost or mixed up between teammates constantly.",
+        "Pack the night before, and get your athlete involved — it builds responsibility and cuts down on morning chaos.",
+        "Bring comfortable shoes for yourself — you'll likely be on your feet or on hard bleachers most of the day.",
+      ],
+    },
+    {
+      title: "🤝 Coaches & Team Communication",
+      tips: [
+        "Coaches see things you don't from the sidelines — trust their placement and choreography decisions unless you have real safety concerns.",
+        "If your athlete has an issue with a skill or a teammate, encourage them to talk to the coach directly first — it builds their own advocacy skills.",
+        "A team group chat is useful, but remember most questions have already been asked — check pinned messages or ask a veteran parent before posting.",
+      ],
+    },
+    {
+      title: "❤️ Supporting Your Athlete Emotionally",
+      tips: [
+        "Celebrate effort and improvement, not just placements — it builds resilience that outlasts any single competition result.",
+        "Avoid comparing your athlete's progress to teammates — every athlete develops skills on a different timeline.",
+        "Your own stress is contagious — a calm, prepared parent helps a nervous athlete more than any pep talk.",
+      ],
+    },
+  ];
+
+  const container = document.getElementById("tipsContainer");
+  let html = "";
+  CATEGORIES.forEach(cat => {
+    html += `<div class="tip-category-title">${cat.title}</div>`;
+    cat.tips.forEach(t => { html += `<div class="tip-item">• ${t}</div>`; });
+  });
+  container.innerHTML = html;
+})();
+
+// ---------- SEASON SUMMARY REPORT ----------
+function computeSummaryStats() {
+  const budgetRows = [...(document.getElementById("budgetBody")?.children || [])];
+  let totalAct = 0;
+  budgetRows.forEach(tr => { totalAct += parseFloat(tr.querySelector('[data-k="act"]')?.value) || 0; });
+
+  const packItems = [...(document.getElementById("packList")?.children || [])];
+  const packedCount = packItems.filter(r => r.querySelector('input[type="checkbox"]')?.checked).length;
+
+  const routineSteps = [...(document.getElementById("stepList")?.children || [])];
+  const routineDone = routineSteps.filter(r => r.querySelector('input[type="checkbox"]')?.checked).length;
+
+  const stressRows = [...(document.getElementById("stressBody")?.children || [])];
+  const ratings = stressRows.map(tr => parseInt(tr.querySelector('[data-k="rating"]')?.value)).filter(n => !isNaN(n));
+  const avgRating = ratings.length ? (ratings.reduce((a,b)=>a+b,0) / ratings.length).toFixed(1) : "—";
+
+  const weeklyItems = [...(document.getElementById("weeklyList")?.children || [])];
+  const weeklyDone = weeklyItems.filter(r => r.querySelector('input[type="checkbox"]')?.checked).length;
+
+  const compRows = [...(document.getElementById("compBody")?.children || [])];
+  const compsLogged = compRows.filter(tr => tr.querySelector('[data-k="name"]')?.value).length;
+
+  const fundRows = [...(document.getElementById("fundBody")?.children || [])];
+  let fundTotal = 0;
+  fundRows.forEach(tr => { fundTotal += parseFloat(tr.querySelector('[data-k="amount"]')?.value) || 0; });
+
+  const goalRows = [...(document.getElementById("goalBody")?.children || [])];
+  const goalsAchieved = goalRows.filter(tr => tr.querySelector('[data-k="achieved"]')?.checked).length;
+  const goalsTotal = goalRows.filter(tr => tr.querySelector('[data-k="skill"]')?.value).length;
+
+  return { totalAct, packedCount, packTotal: packItems.length, routineDone, routineTotal: routineSteps.length, avgRating, weeklyDone, weeklyTotal: weeklyItems.length, compsLogged, fundTotal, goalsAchieved, goalsTotal };
+}
+
+(function() {
+  const statsEl = document.getElementById("summaryStats");
+  const highlightsEl = document.getElementById("summaryHighlights");
+  if (!statsEl) return;
+  const s = computeSummaryStats();
+  statsEl.innerHTML = `
+    <div class="stat-card"><span class="num">$${s.totalAct.toFixed(0)}</span><span class="label">Spent So Far</span></div>
+    <div class="stat-card"><span class="num">${s.packedCount}/${s.packTotal}</span><span class="label">Items Packed</span></div>
+    <div class="stat-card"><span class="num">${s.routineDone}/${s.routineTotal}</span><span class="label">Routine Steps Done</span></div>
+    <div class="stat-card"><span class="num">${s.avgRating}</span><span class="label">Avg. Stress Technique Rating</span></div>
+    <div class="stat-card"><span class="num">${s.weeklyDone}/${s.weeklyTotal}</span><span class="label">Weekly Checklist Done</span></div>
+    <div class="stat-card"><span class="num">${s.compsLogged}</span><span class="label">Competitions Logged</span></div>
+    <div class="stat-card"><span class="num">$${s.fundTotal.toFixed(0)}</span><span class="label">Fundraising Raised</span></div>
+    <div class="stat-card"><span class="num">${s.goalsAchieved}/${s.goalsTotal}</span><span class="label">Skill Goals Achieved</span></div>
+  `;
+  const profiles = getProfiles();
+  const active = profiles.find(p => p.id === getActiveProfileId());
+  highlightsEl.innerHTML = `<p>This report reflects <strong>${active ? active.name : "your athlete"}'s</strong> current season data across every tool in the kit. Fill in more tools for a fuller picture — this updates live every time you visit.</p>`;
+})();
+
+window.emailSummary = function() {
+  const s = computeSummaryStats();
+  const body = `My Season Summary from The Cheer Hub Survival Kit:\n\n` +
+    `Total Spent So Far: $${s.totalAct.toFixed(2)}\n` +
+    `Packing Progress: ${s.packedCount}/${s.packTotal} items\n` +
+    `Pre-Comp Routine: ${s.routineDone}/${s.routineTotal} steps\n` +
+    `Avg. Stress Technique Rating: ${s.avgRating}/5\n` +
+    `Weekly Checklist: ${s.weeklyDone}/${s.weeklyTotal} complete\n` +
+    `Competitions Logged: ${s.compsLogged}\n` +
+    `Fundraising Raised: $${s.fundTotal.toFixed(2)}\n` +
+    `Skill Goals Achieved: ${s.goalsAchieved}/${s.goalsTotal}\n\n` +
+    `— Sent from The Cheer Hub Survival Kit`;
+  sendMailto("My Season Summary — The Cheer Hub", body);
+};
+
+// ---------- HOME PAGE COMPLETION BADGES ----------
+function renderBadges() {
+  const row = document.getElementById("badgeRow");
+  if (!row) return;
+  const checks = [
+    { key: "budget", label: "💰 Budget Started", test: () => [...(document.getElementById("budgetBody")?.children||[])].some(tr => (parseFloat(tr.querySelector('[data-k="est"]')?.value)||0) > 0 || (parseFloat(tr.querySelector('[data-k="act"]')?.value)||0) > 0) },
+    { key: "packing", label: "🎒 Packing Started", test: () => [...(document.getElementById("packList")?.children||[])].some(r => r.querySelector('input[type="checkbox"]')?.checked) },
+    { key: "meal", label: "🍎 Meal Plan Started", test: () => [...(document.getElementById("mealBody")?.children||[])].some(tr => tr.querySelector('textarea')?.value) },
+    { key: "routine", label: "⏰ Routine Reviewed", test: () => [...(document.getElementById("stepList")?.children||[])].some(r => r.querySelector('input[type="checkbox"]')?.checked) },
+    { key: "emergency", label: "🏥 Emergency Card Filled", test: () => document.getElementById("f_name")?.value },
+  ];
+  row.innerHTML = checks.map(c => {
+    const earned = c.test();
+    return `<span class="badge-chip ${earned ? "earned" : ""}">${earned ? "✓" : "○"} ${c.label}</span>`;
+  }).join("");
+}
+renderBadges();
+refreshPremiumGateUI();
+
+// ---------- SEASON COMPETITION TRACKER ----------
+(function() {
+  const body = document.getElementById("compBody");
+  const statusEl = document.getElementById("compSaveStatus");
+  const DEFAULT_ROWS = [["", "", "", "", "No", ""]];
+
+  function makeRow(data) {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td><input type="text" data-k="name" value="${data[0]||''}" placeholder="e.g. Winter Classic"></td>
+      <td><input type="text" data-k="date" value="${data[1]||''}" placeholder="e.g. Jan 18"></td>
+      <td><input type="text" data-k="location" value="${data[2]||''}" placeholder="e.g. Toronto"></td>
+      <td><input type="text" data-k="division" value="${data[3]||''}"></td>
+      <td>
+        <select data-k="hotel">
+          <option value="No" ${data[4]==="No"?"selected":""}>No</option>
+          <option value="Yes" ${data[4]==="Yes"?"selected":""}>Yes</option>
+          <option value="N/A" ${data[4]==="N/A"?"selected":""}>N/A</option>
+        </select>
+      </td>
+      <td><input type="text" data-k="result" value="${data[5]||''}" placeholder="e.g. 2nd place"></td>`;
+    body.appendChild(tr);
+    tr.querySelectorAll("input,select").forEach(el => el.addEventListener("input", saveAll));
+    tr.querySelector("select").addEventListener("change", saveAll);
+  }
+  function saveAll() {
+    const rows = [...body.children].map(tr => ({
+      name: tr.querySelector('[data-k="name"]').value,
+      date: tr.querySelector('[data-k="date"]').value,
+      location: tr.querySelector('[data-k="location"]').value,
+      division: tr.querySelector('[data-k="division"]').value,
+      hotel: tr.querySelector('[data-k="hotel"]').value,
+      result: tr.querySelector('[data-k="result"]').value,
+    }));
+    localStorage.setItem(pKey("compTracker"), JSON.stringify(rows));
+    flashSaved(statusEl);
+  }
+  window.addCompRow = function() { makeRow(["", "", "", "", "No", ""]); saveAll(); };
+  const saved = localStorage.getItem(pKey("compTracker"));
+  if (saved) { JSON.parse(saved).forEach(r => makeRow([r.name, r.date, r.location, r.division, r.hotel, r.result])); }
+  else { DEFAULT_ROWS.forEach(makeRow); }
+})();
+
+// ---------- FUNDRAISING TRACKER ----------
+(function() {
+  const body = document.getElementById("fundBody");
+  const statusEl = document.getElementById("fundSaveStatus");
+  const goalEl = document.getElementById("fundGoal");
+  bindAutoSave(goalEl, "fund_goal");
+  goalEl.addEventListener("input", () => { recalc(); saveField("fund_goal", goalEl.value); });
+
+  const DEFAULT_ROWS = [
+    ["Team car wash", "", ""],
+    ["Bottle drive", "", ""],
+    ["Spirit wear sales", "", ""],
+  ];
+
+  function makeRow(data) {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td><input type="text" data-k="name" value="${data[0]||''}"></td>
+      <td><input type="number" step="0.01" data-k="amount" value="${data[1]||''}"></td>
+      <td><input type="text" data-k="notes" value="${data[2]||''}"></td>`;
+    body.appendChild(tr);
+    tr.querySelectorAll("input").forEach(inp => inp.addEventListener("input", () => { recalc(); saveAll(); }));
+  }
+  function recalc() {
+    let total = 0;
+    [...body.children].forEach(tr => { total += parseFloat(tr.querySelector('[data-k="amount"]').value) || 0; });
+    document.getElementById("fundTotal").textContent = "$" + total.toFixed(2);
+    const goal = parseFloat(goalEl.value) || 0;
+    const pct = goal > 0 ? Math.min(100, Math.round((total/goal)*100)) : 0;
+    document.getElementById("fundProgressBar").style.width = pct + "%";
+    document.getElementById("fundProgressText").textContent = goal > 0
+      ? `$${total.toFixed(2)} raised of $${goal.toFixed(2)} goal (${pct}%)`
+      : `$${total.toFixed(2)} raised so far — set a goal above to track progress`;
+  }
+  function saveAll() {
+    const rows = [...body.children].map(tr => ({
+      name: tr.querySelector('[data-k="name"]').value,
+      amount: tr.querySelector('[data-k="amount"]').value,
+      notes: tr.querySelector('[data-k="notes"]').value,
+    }));
+    localStorage.setItem(pKey("fundraising"), JSON.stringify(rows));
+    flashSaved(statusEl);
+  }
+  window.addFundraiserRow = function() { makeRow(["", "", ""]); saveAll(); };
+  const saved = localStorage.getItem(pKey("fundraising"));
+  if (saved) { JSON.parse(saved).forEach(r => makeRow([r.name, r.amount, r.notes])); } else { DEFAULT_ROWS.forEach(makeRow); }
+  recalc();
+})();
+
+// ---------- TEAM & CARPOOL CONTACTS ----------
+(function() {
+  const body = document.getElementById("contactBody");
+  const statusEl = document.getElementById("contactSaveStatus");
+  const DEFAULT_ROWS = [["", "", "", ""]];
+
+  function makeRow(data) {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td><input type="text" data-k="parent" value="${data[0]||''}"></td>
+      <td><input type="text" data-k="athlete" value="${data[1]||''}"></td>
+      <td><input type="text" data-k="phone" value="${data[2]||''}"></td>
+      <td><input type="text" data-k="notes" value="${data[3]||''}" placeholder="e.g. Can drive Saturdays"></td>`;
+    body.appendChild(tr);
+    tr.querySelectorAll("input").forEach(inp => inp.addEventListener("input", saveAll));
+  }
+  function saveAll() {
+    const rows = [...body.children].map(tr => ({
+      parent: tr.querySelector('[data-k="parent"]').value,
+      athlete: tr.querySelector('[data-k="athlete"]').value,
+      phone: tr.querySelector('[data-k="phone"]').value,
+      notes: tr.querySelector('[data-k="notes"]').value,
+    }));
+    localStorage.setItem(pKey("contacts"), JSON.stringify(rows));
+    flashSaved(statusEl);
+  }
+  window.addContactRow = function() { makeRow(["", "", "", ""]); saveAll(); };
+  const saved = localStorage.getItem(pKey("contacts"));
+  if (saved) { JSON.parse(saved).forEach(r => makeRow([r.parent, r.athlete, r.phone, r.notes])); } else { DEFAULT_ROWS.forEach(makeRow); }
+})();
+
+// ---------- SKILLS & GOALS TRACKER ----------
+(function() {
+  const body = document.getElementById("goalBody");
+  const statusEl = document.getElementById("goalSaveStatus");
+  const DEFAULT_ROWS = [["", "", "No", ""]];
+
+  function makeRow(data) {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td><input type="text" data-k="skill" value="${data[0]||''}" placeholder="e.g. Standing back handspring"></td>
+      <td><input type="text" data-k="target" value="${data[1]||''}" placeholder="e.g. March"></td>
+      <td style="text-align:center;"><input type="checkbox" data-k="achieved" ${data[2]==="Yes"?"checked":""}></td>
+      <td><input type="text" data-k="notes" value="${data[3]||''}"></td>`;
+    body.appendChild(tr);
+    tr.querySelectorAll("input").forEach(inp => inp.addEventListener("input", () => { recalc(); saveAll(); }));
+  }
+  function recalc() {
+    const rows = [...body.children];
+    const total = rows.length;
+    const achieved = rows.filter(tr => tr.querySelector('[data-k="achieved"]').checked).length;
+    const pct = total ? Math.round((achieved/total)*100) : 0;
+    document.getElementById("goalProgressBar").style.width = pct + "%";
+    document.getElementById("goalProgressText").textContent = `${achieved} of ${total} goals achieved (${pct}%)`;
+  }
+  function saveAll() {
+    const rows = [...body.children].map(tr => ({
+      skill: tr.querySelector('[data-k="skill"]').value,
+      target: tr.querySelector('[data-k="target"]').value,
+      achieved: tr.querySelector('[data-k="achieved"]').checked ? "Yes" : "No",
+      notes: tr.querySelector('[data-k="notes"]').value,
+    }));
+    localStorage.setItem(pKey("goals"), JSON.stringify(rows));
+    recalc();
+    flashSaved(statusEl);
+  }
+  window.addGoalRow = function() { makeRow(["", "", "No", ""]); saveAll(); };
+  const saved = localStorage.getItem(pKey("goals"));
+  if (saved) { JSON.parse(saved).forEach(r => makeRow([r.skill, r.target, r.achieved, r.notes])); } else { DEFAULT_ROWS.forEach(makeRow); }
+  recalc();
+})();
+
+// ---------- EMAIL MY KIT ----------
+function fmtBudgetText() {
+  const rows = [...document.getElementById("budgetBody").children];
+  const rate = parseFloat(document.getElementById("exchangeRate")?.value) || 1;
+  let lines = ["=== BUDGET TRACKER ==="];
+  let totalEst = 0, totalAct = 0;
+  rows.forEach(tr => {
+    const item = tr.querySelector('[data-k="item"]').value || "(unnamed item)";
+    let est = parseFloat(tr.querySelector('[data-k="est"]').value) || 0;
+    let act = parseFloat(tr.querySelector('[data-k="act"]').value) || 0;
+    const isUsd = tr.querySelector('[data-k="isUsd"]')?.checked;
+    const notes = tr.querySelector('[data-k="notes"]').value || "";
+    if (isUsd) { est = est * rate; act = act * rate; }
+    totalEst += est; totalAct += act;
+    lines.push(`- ${item}: Estimated $${est.toFixed(2)} / Actual $${act.toFixed(2)}${isUsd ? " (converted from USD)" : ""}${notes ? " (" + notes + ")" : ""}`);
+  });
+  lines.push(`TOTAL (CAD): Estimated $${totalEst.toFixed(2)} / Actual $${totalAct.toFixed(2)} / Difference $${(totalAct-totalEst).toFixed(2)}`);
+  return lines.join("\n");
+}
+function fmtPackingText() {
+  const rows = [...document.getElementById("packList").children];
+  let lines = ["=== PACKING CHECKLIST ==="];
+  rows.forEach(row => {
+    const name = row.querySelector('[data-k="name"]').value || "(unnamed item)";
+    const note = row.querySelector('[data-k="note"]').value || "";
+    const packed = row.querySelector('input[type="checkbox"]').checked;
+    lines.push(`[${packed ? "x" : " "}] ${name}${note ? " - " + note : ""}`);
+  });
+  return lines.join("\n");
+}
+function fmtMealText() {
+  const rows = [...document.getElementById("mealBody").children];
+  let lines = ["=== MEAL & HYDRATION PLANNER ==="];
+  rows.forEach(tr => {
+    const ta = tr.querySelector("textarea");
+    const meal = ta.dataset.meal;
+    const plan = ta.value || "(not filled in)";
+    lines.push(`${meal}: ${plan}`);
+  });
+  return lines.join("\n");
+}
+function fmtRoutineText() {
+  const rows = [...document.getElementById("stepList").children];
+  let lines = ["=== PRE-COMPETITION ROUTINE ==="];
+  rows.forEach((row,i) => {
+    const text = row.querySelector('input[type="text"]').value || "";
+    const done = row.querySelector('input[type="checkbox"]').checked;
+    lines.push(`${i+1}. [${done ? "x" : " "}] ${text}`);
+  });
+  return lines.join("\n");
+}
+function fmtStressText() {
+  const rows = [...document.getElementById("stressBody").children];
+  let lines = ["=== STRESS REDUCTION LOG ==="];
+  rows.forEach(tr => {
+    const tech = tr.querySelector('strong').textContent;
+    const notes = tr.querySelector('[data-k="notes"]').value || "";
+    const rating = tr.querySelector('[data-k="rating"]').value || "-";
+    lines.push(`${tech}: Rating ${rating}/5${notes ? " - " + notes : ""}`);
+  });
+  return lines.join("\n");
+}
+function fmtWeeklyText() {
+  const compName = document.getElementById("compName").value || "(not specified)";
+  const rows = [...document.getElementById("weeklyList").children];
+  let lines = ["=== WEEKLY CHECKLIST & REFLECTION ===", `Competition/Date: ${compName}`, ""];
+  rows.forEach(row => {
+    const text = row.querySelector('.step-text').textContent;
+    const done = row.querySelector('input[type="checkbox"]').checked;
+    lines.push(`[${done ? "x" : " "}] ${text}`);
+  });
+  lines.push("");
+  lines.push(`Favorite moment: ${document.getElementById("q1").value || "(not filled in)"}`);
+  lines.push(`Skill to improve: ${document.getElementById("q2").value || "(not filled in)"}`);
+  lines.push(`How I supported teammates: ${document.getElementById("q3").value || "(not filled in)"}`);
+  return lines.join("\n");
+}
+function fmtEmergencyText() {
+  const g = id => document.getElementById(id).value || "(not filled in)";
+  return ["=== EMERGENCY CONTACT CARD ===",
+    `Athlete Name: ${g("f_name")}`,
+    `Date of Birth: ${g("f_dob")}`,
+    `Allergies: ${g("f_allergies")}`,
+    `Emergency Contact 1: ${g("f_ec1name")} - ${g("f_ec1phone")}`,
+    `Emergency Contact 2: ${g("f_ec2name")} - ${g("f_ec2phone")}`,
+    `Primary Physician: ${g("f_physician")}`,
+    `Insurance: ${g("f_insurance")}`,
+    `Nearest ER: ${g("f_er")}`,
+    `Medical Notes: ${g("f_notes")}`,
+  ].join("\n");
+}
+function fmtCompTrackerText() {
+  const rows = [...document.getElementById("compBody").children];
+  let lines = ["=== SEASON COMPETITION TRACKER ==="];
+  rows.forEach(tr => {
+    const name = tr.querySelector('[data-k="name"]').value || "(unnamed)";
+    const date = tr.querySelector('[data-k="date"]').value || "";
+    const location = tr.querySelector('[data-k="location"]').value || "";
+    const division = tr.querySelector('[data-k="division"]').value || "";
+    const hotel = tr.querySelector('[data-k="hotel"]').value || "";
+    const result = tr.querySelector('[data-k="result"]').value || "(no result yet)";
+    lines.push(`- ${name} | ${date} | ${location} | Division: ${division} | Hotel: ${hotel} | Result: ${result}`);
+  });
+  return lines.join("\n");
+}
+function fmtFundraisingText() {
+  const rows = [...document.getElementById("fundBody").children];
+  const goal = document.getElementById("fundGoal").value || "(no goal set)";
+  let lines = ["=== FUNDRAISING TRACKER ===", `Goal: $${goal}`, ""];
+  let total = 0;
+  rows.forEach(tr => {
+    const name = tr.querySelector('[data-k="name"]').value || "(unnamed)";
+    const amount = parseFloat(tr.querySelector('[data-k="amount"]').value) || 0;
+    const notes = tr.querySelector('[data-k="notes"]').value || "";
+    total += amount;
+    lines.push(`- ${name}: $${amount.toFixed(2)}${notes ? " (" + notes + ")" : ""}`);
+  });
+  lines.push(`\nTOTAL RAISED: $${total.toFixed(2)}`);
+  return lines.join("\n");
+}
+function fmtContactsText() {
+  const rows = [...document.getElementById("contactBody").children];
+  let lines = ["=== TEAM & CARPOOL CONTACTS ==="];
+  rows.forEach(tr => {
+    const parent = tr.querySelector('[data-k="parent"]').value || "(unnamed)";
+    const athlete = tr.querySelector('[data-k="athlete"]').value || "";
+    const phone = tr.querySelector('[data-k="phone"]').value || "";
+    const notes = tr.querySelector('[data-k="notes"]').value || "";
+    lines.push(`- ${parent} (parent of ${athlete}) — ${phone}${notes ? " — " + notes : ""}`);
+  });
+  return lines.join("\n");
+}
+function fmtGoalsText() {
+  const rows = [...document.getElementById("goalBody").children];
+  let lines = ["=== SKILLS & GOALS TRACKER ==="];
+  rows.forEach(tr => {
+    const skill = tr.querySelector('[data-k="skill"]').value || "(unnamed goal)";
+    const target = tr.querySelector('[data-k="target"]').value || "";
+    const achieved = tr.querySelector('[data-k="achieved"]').checked;
+    const notes = tr.querySelector('[data-k="notes"]').value || "";
+    lines.push(`[${achieved ? "x" : " "}] ${skill}${target ? " (target: " + target + ")" : ""}${notes ? " - " + notes : ""}`);
+  });
+  return lines.join("\n");
+}
+
+const SECTION_FORMATTERS = {
+  budget: { title: "Budget Tracker", fn: fmtBudgetText },
+  packing: { title: "Packing Checklist", fn: fmtPackingText },
+  meal: { title: "Meal & Hydration Planner", fn: fmtMealText },
+  routine: { title: "Pre-Competition Routine", fn: fmtRoutineText },
+  stress: { title: "Stress Reduction Log", fn: fmtStressText },
+  weekly: { title: "Weekly Checklist", fn: fmtWeeklyText },
+  emergency: { title: "Emergency Contact Card", fn: fmtEmergencyText },
+  compTracker: { title: "Season Competition Tracker", fn: fmtCompTrackerText },
+  fundraising: { title: "Fundraising Tracker", fn: fmtFundraisingText },
+  contacts: { title: "Team & Carpool Contacts", fn: fmtContactsText },
+  goals: { title: "Skills & Goals Tracker", fn: fmtGoalsText },
+};
+
+function sendMailto(subject, body) {
+  const url = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  window.location.href = url;
+}
+
+window.emailSection = function(key) {
+  const s = SECTION_FORMATTERS[key];
+  const body = `Here's my ${s.title} from The Cheer Hub's Ultimate Competition Survival Kit:\n\n${s.fn()}\n\n— Sent from The Cheer Hub Survival Kit`;
+  sendMailto(`My ${s.title} — Cheer Hub Survival Kit`, body);
+};
+
+window.emailFullKit = function() {
+  const parts = Object.values(SECTION_FORMATTERS).map(s => s.fn());
+  const body = `Here's my complete Ultimate Competition Survival Kit from The Cheer Hub:\n\n${parts.join("\n\n")}\n\n— Sent from The Cheer Hub Survival Kit`;
+  sendMailto("My Ultimate Competition Survival Kit — The Cheer Hub", body);
+};
+</script>
+</body>
+</html>
