@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Figure Brief 4 — Movement Diagnostics: Finding the Real Cause | The Cheer Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#14213D; --navy-deep:#0D1730; --gold:#FCA311; --red:#C1121F;
+    --paper:#FAF9F6; --card:#FFFFFF; --ink:#1B2A4A; --muted:#5A6478; --line:#E4E1D8;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{background:var(--paper); color:var(--ink); font-family:Georgia,'Times New Roman',serif; line-height:1.65; font-size:17px;}
+  .top{background:var(--navy); color:#fff; padding:14px 20px; display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;}
+  .top .brand{font-family:'Archivo',sans-serif; font-weight:900; letter-spacing:.4px;}
+  .top .brand span{color:var(--gold);}
+  .top .series{font-family:'Archivo',sans-serif; font-size:.78rem; color:#C9D2E4; text-transform:uppercase; letter-spacing:.12em;}
+  .hero{background:linear-gradient(180deg,var(--navy) 0%,var(--navy-deep) 100%); color:#fff; padding:44px 20px 52px; border-bottom:5px solid var(--gold);}
+  .wrap{max-width:880px; margin:0 auto;}
+  .eyebrow{font-family:'Archivo',sans-serif; color:var(--gold); font-weight:700; text-transform:uppercase; letter-spacing:.18em; font-size:.8rem;}
+  h1{font-family:'Archivo',sans-serif; font-weight:900; font-size:clamp(1.7rem,4.5vw,2.6rem); line-height:1.12; margin:10px 0 14px;}
+  .hero p{color:#D7DEEC; max-width:60ch;}
+  main{padding:34px 20px 10px;}
+  .orient{background:var(--card); border-left:5px solid var(--gold); padding:18px 20px; margin-bottom:34px; box-shadow:0 1px 4px rgba(20,33,61,.08);}
+  .plate{background:var(--card); border:1px solid var(--line); box-shadow:0 2px 10px rgba(20,33,61,.07); margin:0 0 38px; position:relative;}
+  .plate-tab{position:absolute; top:-14px; left:18px; background:var(--gold); color:var(--navy); font-family:'Archivo',sans-serif; font-weight:900; font-size:.82rem; letter-spacing:.1em; padding:5px 14px;}
+  .plate h2{font-family:'Archivo',sans-serif; font-weight:700; font-size:1.2rem; padding:26px 22px 4px; color:var(--navy);}
+  .plate .body{padding:12px 22px 22px;}
+  .mermaid{display:flex; justify-content:center; padding:6px 0 2px; overflow-x:auto;}
+  pre.figure{background:var(--navy-deep); color:#E9EDF6; font-size:.78rem; line-height:1.5; padding:18px; overflow-x:auto; border-left:4px solid var(--gold);}
+  table{width:100%; border-collapse:collapse; font-size:.88rem; margin:10px 0;}
+  th{background:var(--navy); color:#fff; font-family:'Archivo',sans-serif; font-weight:700; text-align:left; padding:9px 10px; font-size:.8rem; letter-spacing:.03em;}
+  td{border-bottom:1px solid var(--line); padding:9px 10px; vertical-align:top;}
+  tr:nth-child(even) td{background:#FBF7EE;}
+  .read{background:#FFF6E3; border-left:4px solid var(--gold); padding:12px 16px; margin-top:14px; font-size:.95rem;}
+  .read strong{font-family:'Archivo',sans-serif;}
+  .warn{background:#FBEAEA; border-left:4px solid var(--red); padding:12px 16px; margin-top:14px; font-size:.95rem;}
+  .study{background:var(--navy); color:#D7DEEC; padding:26px 22px; margin:44px 0 0;}
+  .study h2{font-family:'Archivo',sans-serif; color:#fff; font-size:1.05rem; margin-bottom:10px;}
+  .study h2 span{color:var(--gold);}
+  .study li{margin:6px 0 6px 20px;}
+  footer{background:var(--navy-deep); color:#93A0BC; text-align:center; font-family:'Archivo',sans-serif; font-size:.8rem; padding:18px 20px;}
+  .toolbar{text-align:right; padding:0 20px; max-width:880px; margin:14px auto 0;}
+  .toolbar button, .toolbar .btn{font-family:'Archivo',sans-serif; font-weight:700; background:var(--gold); border:none; color:var(--navy); padding:8px 16px; cursor:pointer; text-decoration:none; display:inline-block; font-size:.9rem; margin-left:8px;}
+  @media print{.top,.toolbar,footer{display:none;} .plate{box-shadow:none; break-inside:avoid;} .hero{padding:24px 20px;}}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="brand">🥾 The <span>Cheer Hub</span></div>
+  <div class="series">Partner Stunting · Visual Reference 4 of 6</div>
+</div>
+
+<div class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Figure Brief 4 · Companion to Advanced Curriculum, Chapter 4</div>
+    <h1>🔍 Movement Diagnostics: Finding the Real Cause</h1>
+    <p>Repetition doesn't erode a fault — it consolidates it. Diagnose before you drill. The hierarchy below orders your hypotheses by testing cost and likelihood, so you never blame strength for a timing problem.</p>
+  </div>
+</div>
+
+<div class="toolbar">
+  <a class="btn" href="mailto:?subject=Cheer%20Hub%20Visual%20Reference%20%E2%80%94%20Figure%20Brief%204&body=Movement%20Diagnostics%3A%20Finding%20the%20Real%20Cause%20%E2%80%94%20diagrams%20%26%20quick-reference%3A%0A%0Ahttps%3A%2F%2Fbrandondaustin905.github.io%2FCheerHub%2Ffigure-brief-4-diagnostics.html">✉️ Email me this link</a>
+  <button onclick="window.print()">🖨️ Print</button>
+</div>
+
+<main class="wrap">
+
+  <div class="orient"><strong>How to read this page:</strong> Plate 4A is the method — run it on any fault. Plate 4B is the ten most common faults on one screen. Plate 4C shows where in the film the cause actually lives.</div>
+
+  <section class="plate">
+    <div class="plate-tab">FIG 4A</div>
+    <h2>The diagnostic protocol</h2>
+    <div class="body">
+      <div class="mermaid">
+%%{init: {'theme':'base','themeVariables':{'primaryColor':'#14213D','primaryTextColor':'#FAF9F6','primaryBorderColor':'#FCA311','lineColor':'#FCA311','fontFamily':'Archivo'}}}%%
+flowchart TD
+    O["1 · OBSERVE<br/>film TWO planes<br/>side = fore-aft, dip, arch<br/>front = lateral, pelvic drop<br/>freeze at fault ONSET"] --> H1{"2 · TIGHTNESS?<br/>is the flyer rigid?<br/>(cheapest test — check first)"}
+    H1 -->|"loose"| I1["fix stiffness — a compliant flyer<br/>mimics EVERY other fault"]
+    H1 -->|"rigid"| H2{"3 · TIMING?<br/>slow-mo: her push finishing<br/>AS his drive peaks?"}
+    H2 -->|"seam visible"| I2["coupling work:<br/>counts · metronome · loads-to-sponge"]
+    H2 -->|"coupled"| H3{"4 · STACK?<br/>plumb lines: COM over platform?<br/>hands over BOS?"}
+    H3 -->|"off line"| I3["alignment retraining<br/>at reduced height"]
+    H3 -->|"stacked"| H4{"5 · STRENGTH<br/>(diagnosis of EXCLUSION —<br/>audit benchmarks honestly)"}
+    H4 --> I4["loading block —<br/>no cue fixes arithmetic"]
+    I1 & I2 & I3 & I4 --> R["6 · ONE change → honest rep block<br/>→ RETEST → LOG"]
+      </div>
+      <div class="read"><strong>Why this order:</strong> tightness is checked first because it's the cheapest test and its failure mimics everything else; strength is checked LAST because it's blamed first by instinct, causal least often, and unfixable in-session.</div>
+    </div>
+  </section>
+
+  <section class="plate">
+    <div class="plate-tab">FIG 4B</div>
+    <h2>The ten canonical faults — quick reference</h2>
+    <div class="body">
+      <table>
+        <tr><th>#</th><th>Fault</th><th>Mechanism</th><th>Discriminating test</th><th>Fix targets</th></tr>
+        <tr><td>1</td><td>Drifts backward</td><td>flyer COM posterior: heels or rib-flare → torque</td><td>side freeze: hips behind ankles?</td><td>pelvic tilt + foot pressure — <em>not</em> "hold harder"</td></tr>
+        <tr><td>2</td><td>Extension sinks</td><td>no true lockout / shrug collapse / tension decay</td><td>sink at 0–2 s (mechanics) vs 5–8 s (fatigue)</td><td>lockout holds · benchmark audit · mid-hold re-squeeze</td></tr>
+        <tr><td>3</td><td>Toss travels</td><td>release-condition error: shape break, drive vector, or late jump</td><td>front+side film → which of the three</td><td>straight rides · wall drive drill · count loads</td></tr>
+        <tr><td>4</td><td>Loud cradle</td><td>same momentum, shorter time = force spike</td><td>sound test → base's knees → flyer's hips vs peak</td><td>catch high, absorb low — at reduced height first</td></tr>
+        <tr><td>5</td><td>Wobbly liberty</td><td>pelvic drop (hip abductors) or base correction latency</td><td><strong>20 s ground SL stance</strong> — fail = capacity</td><td>balance ladder / "quiet hands busy feet"</td></tr>
+        <tr><td>6</td><td>Heel stretch dumps</td><td>shape COM beyond controlled range; base follows lean</td><td><strong>15 s ground gate</strong> on that leg</td><td>cap at 80% range · loaded end-range · base holds centre</td></tr>
+        <tr><td>7</td><td>Everything feels heavy</td><td>her push completes AFTER his peak → forces oppose</td><td>slow-mo seam at the load</td><td>cadence volume — ~100% fix rate</td></tr>
+        <tr><td>8</td><td>Base wrist pain</td><td>load in wrist extension, or volume spike</td><td>grip inspection → log audit</td><td>restack · daily prep · cut volume · <strong>persistent → refer out</strong></td></tr>
+        <tr><td>9</td><td>Post-fall fear</td><td>threat response: bracing/hesitation self-confirms</td><td>quietness · load hesitation · over-grip</td><td><strong>drop 2 stages, rebuild with full spot</strong> — never force the rep</td></tr>
+        <tr><td>10</td><td>Inconsistent full-up</td><td>rotation on unstable base: head-initiation, release scatter, low ride</td><td>film reps: head-whip? height scatter? hands?</td><td>half-up → quarter increments · "grow first, then turn"</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <section class="plate">
+    <div class="plate-tab">FIG 4C</div>
+    <h2>Onset vs endpoint — where the cause lives</h2>
+    <div class="body">
+<pre class="figure">
+FILM STRIP of a posterior-drift fall:
+
+frame 1     frame 2      frame 3        frame 4        frame 5
+  |            |         RIB FLARE      lean visible     FALL
+ clean       clean       ← ✅ ONSET:     (everyone        ← ❌ endpoint:
+                          the cause      corrects here)    the crash
+</pre>
+      <div class="read"><strong>Freeze at onset.</strong> The endpoint shows what happened; the onset shows <em>why</em>.</div>
+      <div class="warn"><strong>🛡 Error culture note:</strong> faults are information, not indictments. Programs that punish reporting (down-calls, "that felt off") destroy the data the diagnostic system runs on. The best diagnostics and the best safety culture are the same culture.</div>
+    </div>
+  </section>
+
+  <div class="study">
+    <h2>📚 <span>Further study</span></h2>
+    <ul>
+      <li>Curriculum Chapter 4 — full mechanism analysis per fault</li>
+      <li>Schmidt &amp; Lee, <em>Motor Control and Learning</em> — error consolidation, practice quality</li>
+      <li>McGinnis, <em>Biomechanics of Sport and Exercise</em> — the physics behind Faults 1–4</li>
+    </ul>
+  </div>
+
+</main>
+
+<footer>The Cheer Hub — Partner Stunting Visual Reference · Figure Brief 4 of 6</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.1/mermaid.min.js"></script>
+<script>mermaid.initialize({startOnLoad:true});</script>
+</body>
+</html>
