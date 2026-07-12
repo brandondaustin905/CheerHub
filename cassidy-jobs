@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Curtin Concierge — Remote Roles for Cassidy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Karla:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --green:#14322B;
+    --green-deep:#0D241F;
+    --brass:#C19A3D;
+    --brass-soft:#E5C878;
+    --cream:#FAF6EE;
+    --paper:#FFFFFF;
+    --ink:#22211C;
+    --ink-soft:#5C594E;
+    --line:#E4DECF;
+    --good:#2E7D5B;
+    --warn:#B4771F;
+    --stretch:#A4502E;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:'Karla',sans-serif;background:var(--cream);color:var(--ink);line-height:1.55}
+
+  /* ---------- Header ---------- */
+  header{background:var(--green);color:var(--cream);padding:44px 20px 34px;position:relative;overflow:hidden}
+  header::after{content:"";position:absolute;left:0;right:0;bottom:0;height:5px;
+    background:repeating-linear-gradient(90deg,var(--brass) 0 26px,transparent 26px 34px)}
+  .hwrap{max-width:880px;margin:0 auto}
+  .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--brass-soft);margin-bottom:14px}
+  h1{font-family:'Fraunces',serif;font-weight:700;font-size:clamp(30px,6vw,46px);line-height:1.08;letter-spacing:-.01em}
+  h1 em{font-style:italic;color:var(--brass-soft)}
+  .hsub{margin-top:14px;max-width:560px;font-size:15px;color:#D8E2DC}
+  .hmeta{margin-top:20px;display:flex;flex-wrap:wrap;gap:8px}
+  .hmeta span{font-family:'IBM Plex Mono',monospace;font-size:11px;padding:5px 10px;border:1px solid rgba(229,200,120,.45);border-radius:3px;color:var(--brass-soft)}
+
+  /* ---------- Strengths strip ---------- */
+  .strengths{background:var(--green-deep);color:#CBDAD2;padding:14px 20px;font-size:13px}
+  .strengths .hwrap{display:flex;flex-wrap:wrap;gap:6px 22px;align-items:baseline}
+  .strengths b{color:var(--brass-soft);font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+
+  /* ---------- Controls ---------- */
+  .controls{max-width:880px;margin:26px auto 8px;padding:0 20px}
+  .searchrow{display:flex;gap:10px;margin-bottom:14px}
+  .searchrow input{flex:1;padding:12px 14px;border:1.5px solid var(--line);border-radius:6px;background:var(--paper);
+    font-family:'Karla',sans-serif;font-size:15px;color:var(--ink)}
+  .searchrow input:focus{outline:2px solid var(--brass);outline-offset:1px;border-color:var(--brass)}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{border:1.5px solid var(--line);background:var(--paper);border-radius:100px;padding:7px 14px;font-size:13px;
+    font-weight:500;color:var(--ink-soft);cursor:pointer;transition:all .15s}
+  .chip:hover{border-color:var(--brass)}
+  .chip.active{background:var(--green);border-color:var(--green);color:var(--cream)}
+  .chip.money.active{background:var(--brass);border-color:var(--brass);color:var(--green-deep)}
+  .chip:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
+  .sortrow{display:flex;justify-content:space-between;align-items:center;margin-top:16px;font-size:13px;color:var(--ink-soft)}
+  .sortrow select{font-family:'Karla',sans-serif;font-size:13px;padding:6px 8px;border:1.5px solid var(--line);border-radius:6px;background:var(--paper);color:var(--ink)}
+  #count{font-family:'IBM Plex Mono',monospace;font-size:12px}
+
+  /* ---------- Cards ---------- */
+  main{max-width:880px;margin:14px auto 60px;padding:0 20px;display:flex;flex-direction:column;gap:14px}
+  .card{background:var(--paper);border:1.5px solid var(--line);border-radius:10px;overflow:hidden;transition:border-color .15s, box-shadow .15s}
+  .card:hover{border-color:#CFC49F}
+  .card.open{border-color:var(--brass);box-shadow:0 6px 24px rgba(20,50,43,.10)}
+  .cardtop{display:grid;grid-template-columns:64px 1fr auto;gap:14px;padding:16px 16px 16px 0;width:100%;
+    background:none;border:none;text-align:left;cursor:pointer;font-family:'Karla',sans-serif;align-items:center}
+  .cardtop:focus-visible{outline:2px solid var(--brass);outline-offset:-2px}
+
+  /* luggage-tag fit score */
+  .tag{justify-self:center;position:relative;width:46px;height:58px;background:var(--green);border-radius:5px 5px 6px 6px;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--cream)}
+  .tag::before{content:"";position:absolute;top:6px;width:9px;height:9px;border-radius:50%;
+    background:var(--cream);box-shadow:inset 0 0 0 2px var(--brass)}
+  .tag .num{font-family:'Fraunces',serif;font-weight:700;font-size:19px;margin-top:9px;color:var(--brass-soft)}
+  .tag .of{font-family:'IBM Plex Mono',monospace;font-size:8.5px;letter-spacing:.08em;opacity:.75}
+  .card[data-fit="stretch"] .tag{background:#6B4A3A}
+
+  .cmain h2{font-family:'Fraunces',serif;font-weight:600;font-size:17.5px;line-height:1.25;color:var(--ink)}
+  .cmain .co{font-size:13.5px;color:var(--ink-soft);margin-top:2px}
+  .cmain .row2{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+  .pill{font-family:'IBM Plex Mono',monospace;font-size:10.5px;padding:3px 8px;border-radius:3px;letter-spacing:.03em}
+  .pill.pay{background:#F4EBD6;color:#7A5E14;border:1px solid #E3D3A6}
+  .pill.remote{background:#E8F0EC;color:var(--good);border:1px solid #CBDFD3}
+  .pill.like{background:#F1EFE9;color:var(--ink-soft);border:1px solid var(--line)}
+  .caret{color:var(--brass);font-size:20px;transition:transform .2s;padding-right:4px}
+  .card.open .caret{transform:rotate(180deg)}
+  .heart{background:none;border:none;font-size:19px;cursor:pointer;color:#C9C2AE;padding:6px;line-height:1}
+  .heart.saved{color:#B23A48}
+  .heart:focus-visible{outline:2px solid var(--brass);outline-offset:2px;border-radius:4px}
+  .topright{display:flex;align-items:center;gap:2px}
+
+  /* details */
+  .details{display:none;border-top:1.5px dashed var(--line);padding:18px 18px 20px}
+  .card.open .details{display:block}
+  .details h3{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--brass);margin:18px 0 7px}
+  .details h3:first-child{margin-top:0}
+  .details p{font-size:14.5px;color:var(--ink)}
+  .details ul{list-style:none;font-size:14.5px}
+  .details ul li{padding-left:18px;position:relative;margin-bottom:6px}
+  .details ul li::before{content:"—";position:absolute;left:0;color:var(--brass)}
+  .whybox{background:#F3F6F2;border-left:3px solid var(--good);padding:12px 14px;border-radius:0 6px 6px 0;font-size:14.5px}
+  .watchbox{background:#FBF4E8;border-left:3px solid var(--warn);padding:12px 14px;border-radius:0 6px 6px 0;font-size:14.5px}
+  .paygrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px}
+  .paycell{border:1.5px solid var(--line);border-radius:6px;padding:10px 12px}
+  .paycell b{display:block;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:3px}
+  .paycell span{font-size:14px}
+  .links{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+  .btn{display:inline-flex;align-items:center;gap:7px;text-decoration:none;font-weight:700;font-size:13.5px;
+    padding:10px 15px;border-radius:6px;transition:all .15s}
+  .btn.primary{background:var(--green);color:var(--cream)}
+  .btn.primary:hover{background:var(--green-deep)}
+  .btn.ghost{border:1.5px solid var(--line);color:var(--ink)}
+  .btn.ghost:hover{border-color:var(--brass);color:var(--green)}
+  .btn:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
+  .linknote{font-size:12px;color:var(--ink-soft);margin-top:8px;font-style:italic}
+
+  /* prep panel */
+  .prep{max-width:880px;margin:34px auto 0;padding:0 20px}
+  .prepbox{background:var(--green);color:var(--cream);border-radius:10px;padding:24px 22px}
+  .prepbox h2{font-family:'Fraunces',serif;font-size:21px;font-weight:600;margin-bottom:4px}
+  .prepbox .sub{font-size:13.5px;color:#C4D4CB;margin-bottom:16px}
+  .prepbox ul{list-style:none}
+  .prepbox li{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-top:1px solid rgba(229,200,120,.22);font-size:14.5px}
+  .prepbox li input{margin-top:4px;accent-color:var(--brass);width:16px;height:16px;flex-shrink:0}
+  .prepbox li b{color:var(--brass-soft)}
+
+  footer{max-width:880px;margin:36px auto 44px;padding:0 20px;font-size:12.5px;color:var(--ink-soft);text-align:center}
+  .empty{display:none;text-align:center;padding:50px 20px;color:var(--ink-soft)}
+  .empty.show{display:block}
+  .empty .big{font-family:'Fraunces',serif;font-size:22px;color:var(--ink);margin-bottom:6px}
+
+  @media(max-width:560px){
+    .cardtop{grid-template-columns:52px 1fr auto;gap:10px}
+    .tag{width:40px;height:52px}
+    .tag .num{font-size:16px}
+    .paygrid{grid-template-columns:1fr}
+  }
+  @media(prefers-reduced-motion:reduce){
+    *{transition:none!important}
+    html{scroll-behavior:auto}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hwrap">
+    <div class="eyebrow">A private directory &middot; prepared July 12, 2026</div>
+    <h1>The Curtin <em>Concierge</em></h1>
+    <p class="hsub">Twenty remote roles across Ontario &amp; Canada, hand-picked and ranked against your resume. Tap any listing to see the full role, why you'd win it, and where to apply.</p>
+    <div class="hmeta">
+      <span>FOR: CASSIDY CURTIN</span>
+      <span>OSHAWA, ON</span>
+      <span>20 LISTINGS</span>
+    </div>
+  </div>
+</header>
+
+<div class="strengths">
+  <div class="hwrap">
+    <b>Your edge:</b>
+    <span>10+ yrs sales &amp; service</span>
+    <span>Hotel manager, Quality Suites</span>
+    <span>15% booking growth</span>
+    <span>Contract negotiation</span>
+    <span>7 yrs membership sales</span>
+  </div>
+</div>
+
+<div class="controls">
+  <div class="searchrow">
+    <input id="search" type="search" placeholder="Search a role, company, or keyword&hellip;" aria-label="Search listings">
+  </div>
+  <div class="chips" id="chips">
+    <button class="chip active" data-filter="all">All roles</button>
+    <button class="chip money" data-filter="80k">$80K+ potential</button>
+    <button class="chip" data-filter="hospitality">Hospitality sales</button>
+    <button class="chip" data-filter="service">Customer service</button>
+    <button class="chip" data-filter="sales">Sales &amp; retention</button>
+    <button class="chip" data-filter="account">Account mgmt &amp; AE</button>
+    <button class="chip" data-filter="saved">&#9829; Shortlist</button>
+  </div>
+  <div class="sortrow">
+    <span id="count"></span>
+    <label>Sort:
+      <select id="sort">
+        <option value="fit">Best fit first</option>
+        <option value="pay">Highest pay potential</option>
+        <option value="ease">Easiest to land</option>
+      </select>
+    </label>
+  </div>
+</div>
+
+<main id="list"></main>
+
+<div class="empty" id="empty">
+  <div class="big">Nothing checked in under that filter.</div>
+  <p>Try clearing the search or picking a different category.</p>
+</div>
+
+<div class="prep">
+  <div class="prepbox">
+    <h2>Before you apply — the 4 quick wins</h2>
+    <p class="sub">Small fixes that raise your hit rate on nearly every listing above.</p>
+    <ul>
+      <li><input type="checkbox" id="p1"><label for="p1"><b>Salesforce Trailhead basics (free, ~1 day).</b> The hotel sales roles — your strongest matches — all name Salesforce or a CRM. This closes the only real gap.</label></li>
+      <li><input type="checkbox" id="p2"><label for="p2"><b>Add your numbers.</b> Memberships sold per month at Durham Ultimate Fitness, retention %, group-booking contract values at Quality Suites. Metrics get interviews.</label></li>
+      <li><input type="checkbox" id="p3"><label for="p3"><b>Reframe for remote.</b> Add a line on phone/email-based client management so ATS filters see "remote-ready."</label></li>
+      <li><input type="checkbox" id="p4"><label for="p4"><b>Consider a gmail address.</b> Recruiters read hotmail as dated; a clean firstname.lastname gmail is a 5-minute upgrade.</label></li>
+    </ul>
+  </div>
+</div>
+
+<footer>
+  Curated from ZipRecruiter, Indeed, LinkedIn, Glassdoor, Workopolis, Hcareers &amp; Wellfound on July 12, 2026. Postings change daily — the buttons open live searches so listings stay current. Pay figures marked "est." are estimated from board salary data for the role type in Ontario. Made with &#9829; by Brandon.
+</footer>
+
+<script>
+const JOBS = [
+ {id:1, fit:10, ease:3, payMax:24*2080/1000, tier:"", cat:"service",
+  title:"Remote Customer Service Rep — Premium Travel & Lifestyle Brands",
+  co:"Aspire Lifestyles", remote:"100% remote (Canada)", pay:"~$20–24/hr + benefits",
+  structure:"Hourly + full benefits", like:"High",
+  role:["Respond to inbound requests by phone, email and chat for high-value customers of global brands","Coordinate travel, dining, events and loyalty-program benefits — concierge-style service","Represent premium brands with polished, accurate, timely support"],
+  why:"This is your hotel front-of-house instinct, done from home. You've spent four years creating premium guest experiences at Quality Suites — travel coordination, dining, events, loyalty. Most applicants have call-centre backgrounds; you have the actual luxury-hospitality one they're imitating.",
+  watch:"Volume-based phone/email/chat role — confirm schedule expectations in the interview.",
+  search:"Aspire Lifestyles remote customer service representative Canada", reviews:"Aspire Lifestyles"},
+
+ {id:2, fit:9, ease:1, payMax:46, tier:"", cat:"service",
+  title:"Remote Customer Service Representative — Ontario (July start)",
+  co:"Multiple employers — permanent full-time posting", remote:"100% remote (Ontario residents)", pay:"$20–22/hr, permanent",
+  structure:"Hourly, permanent full-time", like:"High",
+  role:["Manage inbound customer requests by phone and email","Newly created permanent role, no sales targets","Start date July 2026 — hiring right now"],
+  why:"The fastest yes on this board. Requirements stop at exactly what you have: years of customer-facing service, professional phone manner, reliability. Your 7 years at the Durham Ultimate Fitness front desk is a direct preview of the job.",
+  watch:"Pay is below your manager-level worth — treat it as a remote foothold, not the destination.",
+  search:"remote customer service representative Ontario permanent", reviews:"remote customer service Ontario"},
+
+ {id:3, fit:9, ease:2, payMax:64, tier:"", cat:"sales",
+  title:"Retention Sales Agent — Canada",
+  co:"National contact-centre employer", remote:"100% remote (Canada)", pay:"$19.35/hr + commission ($40K–64K avg)",
+  structure:"Hourly base + retention commission", like:"High",
+  role:["Take calls from customers who want to cancel and win them back","Solve the complaint, then save (or grow) the account","Earn commission on every save"],
+  why:"You did this daily at the gym for seven years — a frustrated member walks up to cancel, and you turn it around. Retention teams hire exactly that combination of complaint-handling patience and closing instinct. Your sales record puts you above the typical applicant immediately.",
+  watch:"Commission variability, and cohort start dates — apply early for the next intake.",
+  search:"retention sales agent remote Canada", reviews:"retention agent remote Canada"},
+
+ {id:4, fit:9, ease:4, payMax:90, tier:"80k", cat:"hospitality",
+  title:"Remote Hotel Area Sales Manager",
+  co:"Gillis Sales (hotel sales outsourcing)", remote:"100% remote", pay:"Up to ~$70K base + bonus (~$80–90K OTE)",
+  structure:"Base + bonus on guestroom revenue", like:"Medium-High",
+  role:["Own guestroom sales for a portfolio of hotel properties, fully remote","Develop and manage a sales pipeline in Salesforce CRM","Prospect, negotiate and close corporate and group room business"],
+  why:"Your unfair advantage, in one posting. It requires 3+ consecutive years of hotel guestroom sales — you have four, plus the 15% booking-growth number to prove it. That hard requirement screens out almost everyone else who applies. Lead your cover letter with the 15%.",
+  watch:"Names Salesforce specifically — do the free Trailhead basics first (see checklist below). Some postings target the US market; confirm Canada eligibility per role.",
+  search:"Gillis Sales remote hotel sales manager", reviews:"Gillis Sales"},
+
+ {id:5, fit:9, ease:4, payMax:85, tier:"80k", cat:"hospitality",
+  title:"Remote Group Sales Manager — Hotels",
+  co:"HEI Hotels & Resorts, Lodgestar & similar hotel groups", remote:"100% remote", pay:"~$65–85K base + incentives (est.)",
+  structure:"Base + group-booking incentives", like:"Medium-High",
+  role:["Solicit new group sales accounts by phone prospecting, presentations and site knowledge","Negotiate and close room, banquet and rental revenue contracts","Manage existing accounts to hit guest-satisfaction and revenue goals"],
+  why:"Read the duties and you'll recognize your own job description at Quality Suites — group bookings, corporate accounts, contract negotiation, revenue targets. Hospitality experience is *required*, which flips the odds in your favour: you're not competing with the whole internet, only with other hotel people.",
+  watch:"Postings often name Delphi (hotel sales software) plus Word/Excel — mention any property-management-system experience you have. Filter for Canada-eligible employers.",
+  search:"remote group sales manager hotel Canada", reviews:"HEI Hotels and Resorts"},
+
+ {id:6, fit:8, ease:3, payMax:100, tier:"80k", cat:"account",
+  title:"Account Executive (Remote)",
+  co:"Planswell — fintech, Toronto-founded", remote:"100% remote (Canada)", pay:"$55K base + uncapped commission (Yr-1 OTE ~$80–100K)",
+  structure:"Base + uncapped commission after 90-day ramp", like:"Medium-High",
+  role:["Sell partnership subscriptions to financial advisors","Work supplied prospect lists — pipeline is warm, not cold","Intensive sales training culture (sales training is part of what they sell)"],
+  why:"The best commission bet on this board for someone crossing into remote sales. They supply the leads, they train obsessively, and they hire for closing ability rather than tech resumes — which is exactly the shape of your ten years.",
+  watch:"First ~90 days you earn near base only; the $80K+ depends on quota. Buyers are financial advisors, so polish your LinkedIn before applying.",
+  search:"Planswell account executive remote", reviews:"Planswell"},
+
+ {id:7, fit:8, ease:3, payMax:60, tier:"", cat:"sales",
+  title:"Inside Sales Representative (Remote)",
+  co:"Multiple employers", remote:"100% remote", pay:"~$45–60K + commission (est.)",
+  structure:"Base + commission", like:"High",
+  role:["Handle inbound and outbound customer calls from home","Qualify leads, build relationships, close sales","Track everything in a CRM"],
+  why:"Your core resume, moved onto a headset. Ten-plus years of combined selling clears the typical 1–3 year requirement several times over, and inside-sales teams love service backgrounds because the reps don't burn leads.",
+  watch:"Add CRM familiarity to the resume first — even framing your gym-software and booking-system work as CRM experience helps.",
+  search:"inside sales representative remote Ontario", reviews:"inside sales representative remote"},
+
+ {id:8, fit:7, ease:4, payMax:100, tier:"80k", cat:"account",
+  title:"Senior Account Executive — B2B Services",
+  co:"WM (Waste Management Canada)", remote:"Remote/field (Canada)", pay:"$61–80K base + incentive (OTE $85K+)",
+  structure:"Base + incentive, RRSP match, stock plan, full benefits", like:"Medium",
+  role:["Prospect and close new B2B customers to hit budgeted sales goals","Business-to-business phone prospecting and appointment-setting","Blue-chip employer with real benefits: medical, dental, RRSP match, stock purchase plan"],
+  why:"A real base salary from a household-name employer. Their requirement reads 'degree OR 4 years of relevant experience' — your ten years qualify without a degree. Your contract negotiation and corporate-account work at the hotel maps cleanly onto their account-development motion.",
+  watch:"They want 4 years of B2B cold-calling specifically — your resume must reframe your corporate outreach and networking as structured prospecting. Some territory travel likely.",
+  search:"WM Waste Management senior account executive Canada remote", reviews:"Waste Management Canada"},
+
+ {id:9, fit:7, ease:3, payMax:80, tier:"80k", cat:"account",
+  title:"Account Manager",
+  co:"TOOLBX — construction-tech", remote:"100% remote (Canada)", pay:"$70–80K base",
+  structure:"Straight base salary", like:"Medium",
+  role:["Manage and grow existing client accounts for a construction-supply platform","Only 2+ years of experience required","Fully remote across Canada"],
+  why:"The least commission risk on the board: a real $70–80K base, remote across Canada, with an experience bar (2+ years) you clear five times over. Account management is your demonstrated strength.",
+  watch:"Base tops out AT $80K rather than above it, and there's a construction-tech product to learn.",
+  search:"TOOLBX account manager remote Canada", reviews:"TOOLBX"},
+
+ {id:10, fit:7, ease:4, payMax:70, tier:"", cat:"account",
+  title:"Account Manager — Client Relationships & Business Development",
+  co:"Tuor Networks Inc. (Toronto)", remote:"Work-from-home + flexible schedule", pay:"Base + commission, RRSP match + full benefits",
+  structure:"Base + commission, extended health, dental, PTO", like:"Medium",
+  role:["Primary relationship manager and escalation point for IT-services clients","Run Quarterly and Annual Business Reviews","Manage relationships through their CRM"],
+  why:"QBRs, escalations, relationship growth — this is key-account management, your Quality Suites specialty, with one of the better benefits packages on this list (health, dental, RRSP match, PTO, flexible schedule).",
+  watch:"Prefers IT/Microsoft 365 familiarity or a diploma/certification — your biggest gap on this listing. A short Microsoft 365 fundamentals course would bridge it.",
+  search:"Tuor Networks account manager Toronto", reviews:"Tuor Networks"},
+
+ {id:11, fit:7, ease:3, payMax:55, tier:"", cat:"service",
+  title:"Customer Service / Inside Sales — RV & Travel Insurance",
+  co:"Roamly Insurance Group (Outdoorsy)", remote:"Remote, 9am–6pm EST", pay:"~$45–55K est. + benefits",
+  structure:"Base + benefits + flexible PTO", like:"Medium",
+  role:["Guide customers through quotes and coverage for RV/travel insurance","Handle a high volume of inbound and outbound calls","Cross-sell additional property & casualty products"],
+  why:"Travel-adjacent, consultative, service-first selling — your hotel background gives you instant rapport with people planning trips. The 'guide, don't push' style they describe is exactly how you sell.",
+  watch:"Likely requires obtaining an Ontario insurance licence (typically employer-supported).",
+  search:"Roamly insurance remote customer service Toronto", reviews:"Roamly Outdoorsy"},
+
+ {id:12, fit:7, ease:4, payMax:90, tier:"80k", cat:"hospitality",
+  title:"Business Development Manager — Luxury Travel",
+  co:"TCS Expeditions & similar luxury travel companies", remote:"Remote", pay:"~$70–90K + commission (est.)",
+  structure:"Base + commission on high-ticket bookings", like:"Medium",
+  role:["Build partnerships and sell high-ticket luxury travel experiences","Relationship-driven outside sales, done remotely","Represent a premium brand to affluent clients"],
+  why:"Luxury guest experience is your native language after managing a hotel. Affluent travel buyers trust people who've actually run hospitality — that credibility is hard to fake and you have it.",
+  watch:"Wants CRM fluency and a documented closing record — quantify your numbers before applying. A competitive niche.",
+  search:"business development manager luxury travel remote Canada", reviews:"TCS World Travel"},
+
+ {id:13, fit:7, ease:3, payMax:70, tier:"", cat:"sales",
+  title:"Sales Representative (Remote)",
+  co:"Harris — software & solutions", remote:"Remote + benefits", pay:"$60–70K + commission",
+  structure:"Base + commission", like:"Medium",
+  role:["Full-cycle relationship selling aligned to company growth goals","Remote work with a salary band that respects experience"],
+  why:"A salary band that matches a manager-level candidate, in a relationship-selling role built on the negotiation and account skills you already use daily.",
+  watch:"Software product knowledge is a learning curve, and the pool will be competitive.",
+  search:"Harris sales representative remote Canada", reviews:"Harris Computer"},
+
+ {id:14, fit:6, ease:4, payMax:65, tier:"", cat:"sales",
+  title:"Commercial Lines Inside Sales Broker",
+  co:"Insurance brokerage (Ontario)", remote:"100% remote (Ontario), Mon–Fri 9–5", pay:"~$50–65K est.",
+  structure:"Base salary, predictable weekday hours", like:"Medium",
+  role:["Inbound calls from commercial clients; day-to-day service plus sales","Relationship building with business owners","Steady Monday–Friday 9–5 schedule"],
+  why:"Predictable hours, fully remote in Ontario, and a role built on the trust-building you're good at.",
+  watch:"Requires a RIBO licence (or willingness to obtain) — a licensing exam stands between you and the desk.",
+  search:"commercial lines inside sales broker remote Ontario RIBO", reviews:"insurance broker Ontario remote"},
+
+ {id:15, fit:6, ease:1, payMax:80, tier:"80k", cat:"sales",
+  title:"Entry-Level Remote Sales Agent (Training Provided)",
+  co:"AO Globe Life", remote:"100% remote (Canada)", pay:"Commission-based, uncapped",
+  structure:"Commission only — uncapped", like:"High to get, medium to earn",
+  role:["Sell supplemental insurance to provided leads, fully remote","Full training provided, no experience required","Uncapped commission"],
+  why:"The easiest offer on this board — and your closing record would put you ahead of the typical zero-experience applicant from day one.",
+  watch:"Commission-only means unpredictable income for the first months. Research the model carefully before accepting; read the reviews link below first.",
+  search:"AO Globe Life remote sales agent Canada", reviews:"AO Globe Life"},
+
+ {id:16, fit:6, ease:3, payMax:60, tier:"", cat:"sales",
+  title:"Outbound Sales Representative (Remote)",
+  co:"AGM Renovations", remote:"Remote (Ontario)", pay:"~$45–60K est. + commission",
+  structure:"Base + commission", like:"Medium",
+  role:["Outbound phone sales and appointment-setting for a GTA renovation company","Follow up warm and cold leads to book consultations"],
+  why:"Persuasion and follow-up are the whole job, and they're your strengths. Established local company.",
+  watch:"They ask for 3+ years of *phone* sales specifically — yours is mostly in-person, so the resume must lead with your phone-heavy duties.",
+  search:"AGM Renovations outbound sales remote", reviews:"AGM Renovations"},
+
+ {id:17, fit:5, ease:5, payMax:200, tier:"80k", cat:"account",
+  title:"Account Executive",
+  co:"Project X Ltd. — data consulting, Toronto", remote:"Hybrid (Toronto)", pay:"$80–110K base + $70–90K variable (OTE $150K+)",
+  structure:"High base + variable at target", like:"Low-Medium",
+  role:["Full-cycle enterprise selling for a Toronto data-consulting firm","Hybrid working model — commutable from Oshawa"],
+  why:"The biggest package on the board. Enterprise selling rewards the negotiation muscle you've built — if you can get in the room.",
+  watch:"Enterprise tech sales without a tech-sales history is a big leap; apply only with a strongly tailored pitch, and note it's hybrid, not fully remote.",
+  search:"Project X Ltd account executive Toronto", reviews:"Project X Ltd Toronto"},
+
+ {id:18, fit:5, ease:4, payMax:70, tier:"", cat:"sales",
+  title:"Digital Advertising Sales Consultant (Remote)",
+  co:"sMedia", remote:"100% remote", pay:"~$50–70K est. + commission",
+  structure:"Base + commission", like:"Low-Medium",
+  role:["Consultative selling of digital advertising to automotive dealers","Remote-first company"],
+  why:"Consultative selling and client relationships transfer straight across; the company is remote-first by design.",
+  watch:"Digital-advertising product knowledge gap — needs a tailored cover letter to bridge it.",
+  search:"sMedia digital advertising sales consultant remote", reviews:"sMedia"},
+
+ {id:19, fit:4, ease:5, payMax:135, tier:"80k", cat:"account",
+  title:"Account Executive — Building Controls & HVAC Service",
+  co:"Building-services companies (Johnson Controls-type)", remote:"Remote + site visits", pay:"$85–135K base + commission",
+  structure:"Highest base range on the board + incentive plan", like:"Low",
+  role:["Sell building-controls service agreements to facility owners","Develop account-specific business plans for long-term partnerships","Site walkthroughs required (driver's licence needed)"],
+  why:"Service-agreement selling is relationship selling, and the account-planning approach matches how you work. The base range is the biggest on this list.",
+  watch:"Technical HVAC/controls knowledge is expected and site visits mean it's not fully remote. A genuine stretch.",
+  search:"remote account executive building controls HVAC Canada", reviews:"Johnson Controls Canada"},
+
+ {id:20, fit:3, ease:5, payMax:171, tier:"80k", cat:"account",
+  title:"SaaS Account Executive (US company, Canada-eligible)",
+  co:"Various — RemoteQuota / Career Vault boards", remote:"100% remote", pay:"Median base ~$90K, median OTE ~$171K",
+  structure:"Tech-sales OTE (50/50 or 60/40 base/commission)", like:"Low (today)",
+  role:["Full-cycle software selling: demos, pipeline, closing","Canadian candidates can apply to most US remote AE roles"],
+  why:"Not for this month — for 2028. Land one of the roles above, bank 1–2 years of remote sales with a CRM track record, and this tier opens up. Median on-target earnings in this lane are ~$171K.",
+  watch:"SaaS AE roles expect software closing experience and CRM fluency, and only ~43% of AEs consistently hit quota. The long-term destination, not the July application.",
+  search:"remote account executive SaaS Canada", reviews:"tech sales account executive"},
+];
+
+const state = {filter:"all", search:"", sort:"fit", saved:new Set()};
+
+function applyUrl(q){return "https://ca.indeed.com/jobs?q=" + encodeURIComponent(q);}
+function zipUrl(q){return "https://www.ziprecruiter.com/candidate/search?search=" + encodeURIComponent(q) + "&location=Ontario%2C+Canada";}
+function liUrl(q){return "https://www.linkedin.com/jobs/search/?keywords=" + encodeURIComponent(q) + "&location=Canada&f_WT=2";}
+function gdUrl(q){return "https://www.glassdoor.ca/Search/results.htm?keyword=" + encodeURIComponent(q);}
+
+function likeRank(l){ if(l.startsWith("High")) return 0; if(l.startsWith("Medium-High")) return 1; if(l.startsWith("Medium")) return 2; return 3; }
+
+function render(){
+  const list = document.getElementById("list");
+  const q = state.search.toLowerCase();
+  let jobs = JOBS.filter(j=>{
+    if(state.filter==="80k" && j.tier!=="80k") return false;
+    if(["hospitality","service","sales","account"].includes(state.filter) && j.cat!==state.filter) return false;
+    if(state.filter==="saved" && !state.saved.has(j.id)) return false;
+    if(q && !(j.title+" "+j.co+" "+j.why+" "+j.pay).toLowerCase().includes(q)) return false;
+    return true;
+  });
+  if(state.sort==="fit") jobs.sort((a,b)=>b.fit-a.fit);
+  if(state.sort==="pay") jobs.sort((a,b)=>b.payMax-a.payMax);
+  if(state.sort==="ease") jobs.sort((a,b)=>a.ease-b.ease || b.fit-a.fit);
+
+  document.getElementById("count").textContent = jobs.length + " of " + JOBS.length + " listings";
+  document.getElementById("empty").classList.toggle("show", jobs.length===0);
+
+  list.innerHTML = jobs.map(j=>`
+    <article class="card" data-fit="${j.fit<=5?'stretch':'good'}" id="job${j.id}">
+      <button class="cardtop" aria-expanded="false" onclick="toggle(${j.id})">
+        <span class="tag" aria-label="Fit score ${j.fit} out of 10"><span class="num">${j.fit}</span><span class="of">/10 FIT</span></span>
+        <span class="cmain">
+          <h2>${j.title}</h2>
+          <span class="co">${j.co}</span>
+          <span class="row2">
+            <span class="pill pay">${j.pay}</span>
+            <span class="pill remote">${j.remote}</span>
+            <span class="pill like">Odds: ${j.like}</span>
+          </span>
+        </span>
+        <span class="topright">
+          <span class="heart ${state.saved.has(j.id)?'saved':''}" role="button" tabindex="0" aria-label="Save to shortlist"
+            onclick="event.stopPropagation();saveJob(${j.id})"
+            onkeydown="if(event.key==='Enter'){event.stopPropagation();saveJob(${j.id})}">&#9829;</span>
+          <span class="caret">&#9662;</span>
+        </span>
+      </button>
+      <div class="details">
+        <h3>The role</h3>
+        <ul>${j.role.map(r=>`<li>${r}</li>`).join("")}</ul>
+        <h3>Why you'd win it</h3>
+        <div class="whybox">${j.why}</div>
+        <h3>Watch-outs</h3>
+        <div class="watchbox">${j.watch}</div>
+        <h3>Pay</h3>
+        <div class="paygrid">
+          <div class="paycell"><b>Advertised</b><span>${j.pay}</span></div>
+          <div class="paycell"><b>Structure</b><span>${j.structure}</span></div>
+        </div>
+        <h3>Apply &amp; research</h3>
+        <div class="links">
+          <a class="btn primary" target="_blank" rel="noopener" href="${applyUrl(j.search)}">Open on Indeed &rarr;</a>
+          <a class="btn ghost" target="_blank" rel="noopener" href="${zipUrl(j.search)}">ZipRecruiter</a>
+          <a class="btn ghost" target="_blank" rel="noopener" href="${liUrl(j.search)}">LinkedIn (remote)</a>
+          <a class="btn ghost" target="_blank" rel="noopener" href="${gdUrl(j.reviews)}">Reviews &amp; salaries</a>
+        </div>
+        <p class="linknote">Buttons open a live search for this exact role, so you always land on current postings. Applications go through the job board or the company's careers page — contact emails appear on the posting itself.</p>
+      </div>
+    </article>`).join("");
+}
+
+function toggle(id){
+  const card = document.getElementById("job"+id);
+  const wasOpen = card.classList.contains("open");
+  card.classList.toggle("open");
+  card.querySelector(".cardtop").setAttribute("aria-expanded", String(!wasOpen));
+}
+
+function saveJob(id){
+  if(state.saved.has(id)) state.saved.delete(id); else state.saved.add(id);
+  render();
+}
+
+document.getElementById("chips").addEventListener("click", e=>{
+  const chip = e.target.closest(".chip"); if(!chip) return;
+  document.querySelectorAll(".chip").forEach(c=>c.classList.remove("active"));
+  chip.classList.add("active");
+  state.filter = chip.dataset.filter;
+  render();
+});
+document.getElementById("search").addEventListener("input", e=>{state.search=e.target.value;render();});
+document.getElementById("sort").addEventListener("change", e=>{state.sort=e.target.value;render();});
+
+render();
+</script>
+</body>
+</html>
