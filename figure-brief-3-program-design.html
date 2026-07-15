@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Figure Brief 3 — The 8-Week Program: Gates, Not Calendars | The Cheer Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#14213D; --navy-deep:#0D1730; --gold:#FCA311; --red:#C1121F;
+    --paper:#FAF9F6; --card:#FFFFFF; --ink:#1B2A4A; --line:#E4E1D8;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--paper); color:var(--ink); font-family:Georgia,'Times New Roman',serif; line-height:1.65; font-size:17px; overflow-x:hidden;}
+  #progress{position:fixed; top:0; left:0; height:4px; width:0%; background:linear-gradient(90deg,var(--gold),#ffd479); z-index:99;}
+  .top{background:var(--navy); color:#fff; padding:14px 20px; display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; position:relative; z-index:5;}
+  .top .brand{font-family:'Archivo',sans-serif; font-weight:900; letter-spacing:.4px;}
+  .top .brand span{color:var(--gold);}
+  .top .series{font-family:'Archivo',sans-serif; font-size:.78rem; color:#C9D2E4; text-transform:uppercase; letter-spacing:.12em;}
+  .hero{position:relative; min-height:92vh; display:flex; align-items:center; justify-content:center; text-align:center;
+        background:radial-gradient(120% 100% at 50% 0%, #1D2E52 0%, var(--navy) 45%, var(--navy-deep) 100%);
+        color:#fff; overflow:hidden; border-bottom:5px solid var(--gold); perspective:900px;}
+  .hero-inner{position:relative; z-index:3; max-width:820px; padding:40px 22px; will-change:transform,opacity;}
+  .eyebrow{font-family:'Archivo',sans-serif; color:var(--gold); font-weight:700; text-transform:uppercase; letter-spacing:.2em; font-size:.78rem;}
+  h1{font-family:'Archivo',sans-serif; font-weight:900; font-size:clamp(2rem,6.5vw,3.6rem); line-height:1.08; margin:14px 0 16px; text-shadow:0 18px 40px rgba(0,0,0,.45);}
+  .hero p{color:#D7DEEC; max-width:56ch; margin:0 auto;}
+  .scrollcue{position:absolute; bottom:26px; left:50%; transform:translateX(-50%); z-index:3; color:var(--gold); font-family:'Archivo',sans-serif; font-size:.75rem; letter-spacing:.2em; text-transform:uppercase;}
+  .scrollcue::after{content:"▾"; display:block; font-size:1.3rem; animation:bob 1.6s ease-in-out infinite;}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(8px)}}
+  .shape{position:absolute; z-index:1; opacity:.5; will-change:transform;}
+  .shape .spin{width:100%; height:100%;}
+  .diamond{width:70px; height:70px;}
+  .diamond .spin{border:2px solid var(--gold); animation:spin3d 14s linear infinite;}
+  .ring{width:130px; height:130px;}
+  .ring .spin{border:2px solid rgba(252,163,17,.5); border-radius:50%; animation:spin3dR 20s linear infinite;}
+  .dot{width:14px; height:14px; background:var(--gold); border-radius:50%; box-shadow:0 0 24px rgba(252,163,17,.8);}
+  @keyframes spin3d{from{transform:rotate(45deg) rotateY(0)}to{transform:rotate(45deg) rotateY(360deg)}}
+  @keyframes spin3dR{from{transform:rotateX(60deg) rotateZ(0)}to{transform:rotateX(60deg) rotateZ(360deg)}}
+  .toolbar{text-align:right; padding:0 20px; max-width:880px; margin:16px auto 0;}
+  .toolbar button, .toolbar .btn{font-family:'Archivo',sans-serif; font-weight:700; background:var(--gold); border:none; color:var(--navy); padding:9px 16px; cursor:pointer; text-decoration:none; display:inline-block; font-size:.9rem; margin-left:8px; box-shadow:0 4px 14px rgba(252,163,17,.35); transition:transform .2s ease, box-shadow .2s ease;}
+  .toolbar button:hover, .toolbar .btn:hover{transform:translateY(-2px); box-shadow:0 8px 20px rgba(252,163,17,.45);}
+  main{padding:34px 20px 10px; perspective:1200px;}
+  .wrap{max-width:880px; margin:0 auto;}
+  .reveal{opacity:0; transform:rotateX(16deg) translateY(70px) scale(.96); transform-origin:50% 100%; transition:opacity .8s ease, transform .9s cubic-bezier(.16,.84,.3,1); will-change:transform,opacity;}
+  .reveal.in{opacity:1; transform:none;}
+  .orient{background:var(--card); border-left:5px solid var(--gold); padding:18px 20px; margin-bottom:44px; box-shadow:0 1px 4px rgba(20,33,61,.08);}
+  .plate{background:var(--card); border:1px solid var(--line); box-shadow:0 24px 50px -28px rgba(20,33,61,.45); margin:0 0 54px; position:relative;}
+  .plate-tab{position:absolute; top:-14px; left:18px; background:var(--gold); color:var(--navy); font-family:'Archivo',sans-serif; font-weight:900; font-size:.82rem; letter-spacing:.1em; padding:5px 14px; box-shadow:0 6px 16px rgba(20,33,61,.25);}
+  .plate h2{font-family:'Archivo',sans-serif; font-weight:700; font-size:1.25rem; padding:28px 22px 4px; color:var(--navy);}
+  .plate .body{padding:12px 22px 24px;}
+  .stagger > *{opacity:0; transform:translateY(24px); transition:opacity .55s ease, transform .55s cubic-bezier(.16,.84,.3,1);}
+  .in .stagger > *{opacity:1; transform:none;}
+  .in .stagger > *:nth-child(1){transition-delay:.05s} .in .stagger > *:nth-child(2){transition-delay:.13s}
+  .in .stagger > *:nth-child(3){transition-delay:.21s} .in .stagger > *:nth-child(4){transition-delay:.29s}
+  .in .stagger > *:nth-child(5){transition-delay:.37s} .in .stagger > *:nth-child(6){transition-delay:.45s}
+  .in .stagger > *:nth-child(7){transition-delay:.53s} .in .stagger > *:nth-child(8){transition-delay:.61s}
+  .in .stagger > *:nth-child(9){transition-delay:.69s}
+
+  /* gate chain */
+  .chain{position:relative; padding-left:26px;}
+  .chain::before{content:""; position:absolute; left:9px; top:8px; bottom:8px; width:4px; background:linear-gradient(180deg,var(--gold),#e2b45f);}
+  .phase,.gate{position:relative; margin:0 0 14px;}
+  .phase::before,.gate::before{content:""; position:absolute; left:-24px; top:16px; width:14px; height:14px; border-radius:50%; background:var(--navy); border:3px solid var(--gold);}
+  .gate::before{background:var(--gold); border-color:var(--navy);}
+  .phase .box{background:var(--navy); color:#FAF9F6; padding:14px 16px;}
+  .phase .box strong{color:var(--gold); font-family:'Archivo',sans-serif; letter-spacing:.05em;}
+  .gate .box{background:#FFF6E3; border:2px solid var(--gold); padding:12px 16px; font-size:.95rem;}
+  .gate .box strong{font-family:'Archivo',sans-serif; color:var(--navy);}
+  .grad .box{background:var(--gold); color:var(--navy); font-weight:bold;}
+
+  .stall{display:grid; gap:14px;}
+  .stallcard{border:1px solid var(--line); border-left:6px solid var(--navy); padding:14px 16px; background:#FBF7EE;}
+  .stallcard h3{font-family:'Archivo',sans-serif; color:var(--navy); font-size:1rem; margin-bottom:4px;}
+  .stallcard .fix{color:var(--ink); font-size:.95rem;}
+  .stallcard .fix strong{font-family:'Archivo',sans-serif; color:var(--red);}
+  .stallcard.quiet{border-left-color:var(--red); background:#FBEAEA;}
+
+  table{width:100%; border-collapse:collapse; font-size:.92rem; margin:10px 0;}
+  th{background:var(--navy); color:#fff; font-family:'Archivo',sans-serif; font-weight:700; text-align:left; padding:9px 10px; font-size:.82rem; letter-spacing:.03em;}
+  td{border-bottom:1px solid var(--line); padding:9px 10px; vertical-align:top;}
+  tr:nth-child(even) td{background:#FBF7EE;}
+  .read{background:#FFF6E3; border-left:4px solid var(--gold); padding:12px 16px; margin-top:14px; font-size:.95rem;}
+  .read strong{font-family:'Archivo',sans-serif;}
+  .warn{background:#FBEAEA; border-left:4px solid var(--red); padding:12px 16px; margin-top:14px; font-size:.95rem;}
+  .study{background:var(--navy); color:#D7DEEC; padding:28px 22px; margin:44px 0 0; box-shadow:0 24px 50px -28px rgba(13,23,48,.8);}
+  .study h2{font-family:'Archivo',sans-serif; color:#fff; font-size:1.05rem; margin-bottom:10px;}
+  .study h2 span{color:var(--gold);}
+  .study li{margin:6px 0 6px 20px;}
+  .study a{color:var(--gold);}
+  footer{background:var(--navy-deep); color:#93A0BC; text-align:center; font-family:'Archivo',sans-serif; font-size:.8rem; padding:20px;}
+  @media print{.top,.toolbar,footer,.scrollcue,#progress,.shape{display:none;} .hero{min-height:auto; padding:24px 20px;} .reveal{opacity:1; transform:none;} .stagger > *{opacity:1; transform:none;} .plate{box-shadow:none; break-inside:avoid;}}
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto;}
+    .reveal,.stagger > *{opacity:1 !important; transform:none !important; transition:none !important;}
+    .diamond .spin,.ring .spin,.scrollcue::after{animation:none !important;}
+  }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+
+<div class="top">
+  <div class="brand">🥾 The <span>Cheer Hub</span></div>
+  <div class="series">Partner Stunting · Visual Reference 3 of 6</div>
+</div>
+
+<section class="hero">
+  <div class="shape diamond" data-speed="0.25" style="top:18%; left:8%;"><div class="spin"></div></div>
+  <div class="shape ring" data-speed="0.45" style="top:12%; right:6%;"><div class="spin"></div></div>
+  <div class="shape dot" data-speed="0.6" style="top:64%; left:16%;"></div>
+  <div class="shape diamond" data-speed="0.35" style="bottom:14%; right:14%; width:44px; height:44px;"><div class="spin"></div></div>
+  <div class="shape dot" data-speed="0.3" style="top:34%; right:26%;"></div>
+  <div class="hero-inner" id="heroInner">
+    <div class="eyebrow">Figure Brief 3 · Companion to Advanced Curriculum, Chapter 3</div>
+    <h1>📅 The 8-Week Program:<br>Gates, Not Calendars</h1>
+    <p>You move forward when you can prove you're ready — not because the calendar says so. The chain below IS the program.</p>
+  </div>
+  <div class="scrollcue">Scroll</div>
+</section>
+
+<div class="toolbar">
+  <a class="btn" href="mailto:?subject=Cheer%20Hub%20Visual%20Reference%20%E2%80%94%20Figure%20Brief%203&body=The%208-Week%20Program%3A%20Gates%2C%20Not%20Calendars%20%E2%80%94%20diagrams%20%26%20quick-reference%3A%0A%0Ahttps%3A%2F%2Fbrandondaustin905.github.io%2FCheerHub%2Ffigure-brief-3-program-design.html">✉️ Email me this link</a>
+  <button onclick="window.print()">🖨️ Print</button>
+</div>
+
+<main>
+<div class="wrap">
+
+  <div class="orient reveal"><strong>How to read this page:</strong> Plate 3A is the whole program as a chain of locked gates — pass one, unlock the next. Plate 3B is what's really happening when a week won't pass. Plate 3C shows how to adapt the program without breaking it.</div>
+
+  <section class="plate reveal">
+    <div class="plate-tab">FIG 3A</div>
+    <h2>The gate chain — pass it to unlock it</h2>
+    <div class="body">
+      <div class="chain stagger">
+        <div class="phase"><div class="box"><strong>PHASE 1 · CALIBRATE (Weeks 1–2)</strong><br>Calls, hollow work, shoulder sits. Nothing above the shoulders — the pair is learning each other.</div></div>
+        <div class="gate"><div class="box"><strong>✅ GATE 1:</strong> 30-second hollow hold · 20-second one-leg balance · 10/10 shoulder sits · calls automatic — <em>and each athlete says they're ready, asked separately</em></div></div>
+        <div class="phase"><div class="box"><strong>PHASE 2 · PREP MASTERY (Weeks 3–4)</strong><br>The prep is the laboratory: load timing, micro-step corrections, and cradles graded by ear (a quiet catch is a soft catch).</div></div>
+        <div class="gate"><div class="box"><strong>✅ GATE 2:</strong> 10-second motionless prep · 10/10 QUIET cradles · timing so steady the coach can't tell rep 1 from rep 10</div></div>
+        <div class="phase"><div class="box"><strong>PHASE 3 · EXTENSION (Weeks 5–6)</strong><br>Press to lockout, walking extensions — plus 🛡 <strong>FALL SCHOOL</strong> in Week 6: practicing the break before Phase 4 makes breaks likely. Train the parachute before the jump.</div></div>
+        <div class="gate"><div class="box"><strong>✅ GATE 3:</strong> 8/10 extensions held 5 s · 5-step walking extension · 15-second ground shape holds · fall drill complete — <em>a gate, not a formality</em></div></div>
+        <div class="phase"><div class="box"><strong>PHASE 4 · THE SINGLE-LEG DOOR (Weeks 7–8)</strong><br>Extended liberty, then the first shape — but only if the liberty holds 5+ seconds AND her ground gate is passed. Prerequisites, not dates.</div></div>
+        <div class="gate grad"><div class="box"><strong>🎓 GRADUATION:</strong> liberty at 80%+ over LOGGED reps · ALL earlier gates retested (skills fade quietly if you stop checking) · both athletes confident, asked separately</div></div>
+      </div>
+      <div class="read"><strong>Why gates beat calendars:</strong> stunt skills genuinely stack — an extension can't be pressed off a shaky prep, and a liberty can't balance on a shaky platform. Calendars guess how fast a pair adapts; gates measure it. And "93% over 40 logged reps" protects athletes in a way "they look ready" never can.</div>
+    </div>
+  </section>
+
+  <section class="plate reveal">
+    <div class="plate-tab">FIG 3B</div>
+    <h2>The stuck weeks — what's really happening</h2>
+    <div class="body">
+      <div class="stall stagger">
+        <div class="stallcard"><h3>Stuck at Week 4 — cradle hesitation</h3><div class="fix">It's fear, not technique. Grinding reps on a scared flyer teaches her to brace, which makes cradles worse. <strong>Fix:</strong> back to low-height fall practice until the catch is trusted — then climb again.</div></div>
+        <div class="stallcard"><h3>Stuck at Week 5 — the press won't lock out</h3><div class="fix">It's strength. Words don't add kilograms. <strong>Fix:</strong> honest look at his pressing numbers, add a pressing day, hold the stunt progression one week, retest.</div></div>
+        <div class="stallcard"><h3>Stuck at Week 7 — the liberty wobbles</h3><div class="fix">Run the ground test first: can she stand one-legged, dead still, for 20 seconds? If not, it's her one-leg conditioning — more liberty attempts just practice the wobble. <strong>Fix:</strong> the balance ladder. If she passes, watch his feet.</div></div>
+        <div class="stallcard quiet"><h3>Stuck anywhere — an athlete goes quiet</h3><div class="fix">Quiet is fear. <strong>Fix:</strong> stop progressing and find out why. No deadline is worth training scared.</div></div>
+      </div>
+      <div class="read"><strong>The rule over all of it:</strong> diagnose before you drill (Figure Brief 4 is the full method). Repeating a week is the system working — repeating honestly beats advancing dishonestly, and the log proves it by graduation.</div>
+    </div>
+  </section>
+
+  <section class="plate reveal">
+    <div class="plate-tab">FIG 3C</div>
+    <h2>Adapting the program without breaking it</h2>
+    <div class="body">
+      <table>
+        <tr><th>Situation</th><th>The adaptation</th><th>What must survive</th></tr>
+        <tr><td>Experienced pair</td><td>enter at Week 3 — by passing Gate 1 on day one</td><td>you enter on evidence, not your résumé</td></tr>
+        <tr><td>Coming back from a fall or time off</td><td>run the whole chain, faster</td><td>phases can shorten — never skip</td></tr>
+        <tr><td>Veteran paired with a rookie</td><td>the PAIR moves at the slower partner's speed</td><td>the connection can't be rushed; the veteran's own conditioning can keep moving</td></tr>
+        <tr><td>Different practice schedules</td><td>rearrange the days freely</td><td>new skills happen FRESH · consistency reps get LOGGED · no heavy lifting on max-stunting days</td></tr>
+      </table>
+      <div class="warn"><strong>The standing rules:</strong> a failed gate repeats the week · every session gets logged · pain beyond normal soreness pauses the plan. The program bends; the standards don't.</div>
+    </div>
+  </section>
+
+  <div class="study reveal">
+    <h2>📚 <span>Want to go deeper?</span></h2>
+    <ul>
+      <li>The full chapter in the Advanced Curriculum — why every phase and every gate asks for exactly what it asks for</li>
+      <li>The 8-Week Program itself lives in the Premium Masterclass, Lesson 3 — this page is the "why" behind it</li>
+      <li>Coach education in Canada: <a href="https://coach.ca">coach.ca</a> (NCCP) · <a href="https://cheercanada.ca">cheercanada.ca</a></li>
+    </ul>
+  </div>
+
+</div>
+</main>
+
+<footer>The Cheer Hub — Partner Stunting Visual Reference · Figure Brief 3 of 6</footer>
+
+<script>
+(function(){
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var bar = document.getElementById('progress');
+  function progress(){
+    var h = document.documentElement;
+    bar.style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight) * 100) + '%';
+  }
+  document.addEventListener('scroll', progress, {passive:true}); progress();
+  if (reduced) return;
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if (e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, {threshold:0.15});
+  document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+  var shapes = document.querySelectorAll('.shape');
+  var heroInner = document.getElementById('heroInner');
+  var ticking = false;
+  function parallax(){
+    var y = window.scrollY;
+    shapes.forEach(function(s){
+      var sp = parseFloat(s.getAttribute('data-speed')) || 0.3;
+      s.style.transform = 'translate3d(0,' + (y * sp) + 'px,0)';
+    });
+    if (heroInner){
+      var t = Math.min(y / 600, 1);
+      heroInner.style.transform = 'rotateX(' + (t * 8) + 'deg) translateY(' + (y * 0.18) + 'px)';
+      heroInner.style.opacity = String(1 - t * 0.8);
+    }
+    ticking = false;
+  }
+  document.addEventListener('scroll', function(){
+    if (!ticking){ requestAnimationFrame(parallax); ticking = true; }
+  }, {passive:true});
+})();
+</script>
+</body>
+</html>
