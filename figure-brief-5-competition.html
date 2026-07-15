@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Figure Brief 5 — Competing: How Judges Score & How Routines Win | The Cheer Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#14213D; --navy-deep:#0D1730; --gold:#FCA311; --red:#C1121F;
+    --paper:#FAF9F6; --card:#FFFFFF; --ink:#1B2A4A; --line:#E4E1D8;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--paper); color:var(--ink); font-family:Georgia,'Times New Roman',serif; line-height:1.65; font-size:17px; overflow-x:hidden;}
+  #progress{position:fixed; top:0; left:0; height:4px; width:0%; background:linear-gradient(90deg,var(--gold),#ffd479); z-index:99;}
+  .top{background:var(--navy); color:#fff; padding:14px 20px; display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; position:relative; z-index:5;}
+  .top .brand{font-family:'Archivo',sans-serif; font-weight:900; letter-spacing:.4px;}
+  .top .brand span{color:var(--gold);}
+  .top .series{font-family:'Archivo',sans-serif; font-size:.78rem; color:#C9D2E4; text-transform:uppercase; letter-spacing:.12em;}
+  .hero{position:relative; min-height:92vh; display:flex; align-items:center; justify-content:center; text-align:center;
+        background:radial-gradient(120% 100% at 50% 0%, #1D2E52 0%, var(--navy) 45%, var(--navy-deep) 100%);
+        color:#fff; overflow:hidden; border-bottom:5px solid var(--gold); perspective:900px;}
+  .hero-inner{position:relative; z-index:3; max-width:820px; padding:40px 22px; will-change:transform,opacity;}
+  .eyebrow{font-family:'Archivo',sans-serif; color:var(--gold); font-weight:700; text-transform:uppercase; letter-spacing:.2em; font-size:.78rem;}
+  h1{font-family:'Archivo',sans-serif; font-weight:900; font-size:clamp(2rem,6.5vw,3.6rem); line-height:1.08; margin:14px 0 16px; text-shadow:0 18px 40px rgba(0,0,0,.45);}
+  .hero p{color:#D7DEEC; max-width:56ch; margin:0 auto;}
+  .scrollcue{position:absolute; bottom:26px; left:50%; transform:translateX(-50%); z-index:3; color:var(--gold); font-family:'Archivo',sans-serif; font-size:.75rem; letter-spacing:.2em; text-transform:uppercase;}
+  .scrollcue::after{content:"▾"; display:block; font-size:1.3rem; animation:bob 1.6s ease-in-out infinite;}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(8px)}}
+  .shape{position:absolute; z-index:1; opacity:.5; will-change:transform;}
+  .shape .spin{width:100%; height:100%;}
+  .diamond{width:70px; height:70px;}
+  .diamond .spin{border:2px solid var(--gold); animation:spin3d 14s linear infinite;}
+  .ring{width:130px; height:130px;}
+  .ring .spin{border:2px solid rgba(252,163,17,.5); border-radius:50%; animation:spin3dR 20s linear infinite;}
+  .dot{width:14px; height:14px; background:var(--gold); border-radius:50%; box-shadow:0 0 24px rgba(252,163,17,.8);}
+  @keyframes spin3d{from{transform:rotate(45deg) rotateY(0)}to{transform:rotate(45deg) rotateY(360deg)}}
+  @keyframes spin3dR{from{transform:rotateX(60deg) rotateZ(0)}to{transform:rotateX(60deg) rotateZ(360deg)}}
+  .toolbar{text-align:right; padding:0 20px; max-width:880px; margin:16px auto 0;}
+  .toolbar button, .toolbar .btn{font-family:'Archivo',sans-serif; font-weight:700; background:var(--gold); border:none; color:var(--navy); padding:9px 16px; cursor:pointer; text-decoration:none; display:inline-block; font-size:.9rem; margin-left:8px; box-shadow:0 4px 14px rgba(252,163,17,.35); transition:transform .2s ease, box-shadow .2s ease;}
+  .toolbar button:hover, .toolbar .btn:hover{transform:translateY(-2px); box-shadow:0 8px 20px rgba(252,163,17,.45);}
+  main{padding:34px 20px 10px; perspective:1200px;}
+  .wrap{max-width:880px; margin:0 auto;}
+  .reveal{opacity:0; transform:rotateX(16deg) translateY(70px) scale(.96); transform-origin:50% 100%; transition:opacity .8s ease, transform .9s cubic-bezier(.16,.84,.3,1); will-change:transform,opacity;}
+  .reveal.in{opacity:1; transform:none;}
+  .orient{background:var(--card); border-left:5px solid var(--gold); padding:18px 20px; margin-bottom:44px; box-shadow:0 1px 4px rgba(20,33,61,.08);}
+  .plate{background:var(--card); border:1px solid var(--line); box-shadow:0 24px 50px -28px rgba(20,33,61,.45); margin:0 0 54px; position:relative;}
+  .plate-tab{position:absolute; top:-14px; left:18px; background:var(--gold); color:var(--navy); font-family:'Archivo',sans-serif; font-weight:900; font-size:.82rem; letter-spacing:.1em; padding:5px 14px; box-shadow:0 6px 16px rgba(20,33,61,.25);}
+  .plate h2{font-family:'Archivo',sans-serif; font-weight:700; font-size:1.25rem; padding:28px 22px 4px; color:var(--navy);}
+  .plate .body{padding:12px 22px 24px;}
+  .stagger > *{opacity:0; transform:translateY(24px); transition:opacity .55s ease, transform .55s cubic-bezier(.16,.84,.3,1);}
+  .in .stagger > *{opacity:1; transform:none;}
+  .in .stagger > *:nth-child(1){transition-delay:.05s} .in .stagger > *:nth-child(2){transition-delay:.13s}
+  .in .stagger > *:nth-child(3){transition-delay:.21s} .in .stagger > *:nth-child(4){transition-delay:.29s}
+  .in .stagger > *:nth-child(5){transition-delay:.37s} .in .stagger > *:nth-child(6){transition-delay:.45s}
+
+  /* four beats timeline */
+  .timeline{height:10px; background:linear-gradient(90deg,var(--gold) 0 22%, var(--navy) 22% 66%, var(--red) 66% 80%, var(--gold) 80% 100%); margin:14px 0 4px;}
+  .timelabels{display:flex; justify-content:space-between; font-family:'Archivo',sans-serif; font-size:.72rem; color:#5A6478; letter-spacing:.06em; margin-bottom:14px;}
+  .beats{display:grid; gap:12px;}
+  .beat{border:1px solid var(--line); border-left:6px solid var(--gold); background:#FBF7EE; padding:14px 16px; transition:transform .3s ease, box-shadow .3s ease;}
+  .beat:hover{transform:translateY(-4px); box-shadow:0 16px 30px -18px rgba(20,33,61,.4);}
+  .beat.b2{border-left-color:var(--navy);}
+  .beat.b3{border-left-color:var(--red);}
+  .beat .bn{font-family:'Archivo',sans-serif; font-weight:900; color:var(--gold); background:var(--navy); display:inline-block; padding:2px 10px; font-size:.75rem; letter-spacing:.08em; margin-bottom:6px;}
+  .beat h3{font-family:'Archivo',sans-serif; color:var(--navy); font-size:1rem; margin-bottom:4px;}
+  .beat p{font-size:.92rem;}
+  .beat .rule{margin-top:6px; font-size:.9rem;}
+  .beat .rule strong{font-family:'Archivo',sans-serif; color:var(--red);}
+
+  /* comparison */
+  .compare{display:grid; gap:14px; grid-template-columns:1fr 1fr;}
+  @media (max-width:640px){ .compare{grid-template-columns:1fr;} }
+  .routine{padding:16px; border:2px solid var(--line);}
+  .routine.a{border-color:#2E7D32; background:#E8F3E9;}
+  .routine.b{border-color:var(--red); background:#FBEAEA;}
+  .routine h3{font-family:'Archivo',sans-serif; font-size:1rem; margin-bottom:6px; color:var(--navy);}
+  .routine p{font-size:.92rem;}
+  .verdict{text-align:center; font-family:'Archivo',sans-serif; font-weight:900; color:var(--navy); background:var(--gold); padding:10px 14px; margin-top:14px;}
+
+  /* day protocol */
+  .flow{display:grid; gap:10px;}
+  .flowstep{display:grid; grid-template-columns:auto 1fr; gap:12px; align-items:start; background:#EEF1F7; border-left:5px solid var(--navy); padding:13px 15px;}
+  .flowstep .n{font-family:'Archivo',sans-serif; font-weight:900; background:var(--navy); color:var(--gold); width:34px; height:34px; display:flex; align-items:center; justify-content:center; font-size:1rem;}
+  .flowstep h3{font-family:'Archivo',sans-serif; color:var(--navy); font-size:1rem; margin-bottom:2px;}
+  .flowstep p{font-size:.93rem;}
+
+  table{width:100%; border-collapse:collapse; font-size:.92rem; margin:10px 0;}
+  th{background:var(--navy); color:#fff; font-family:'Archivo',sans-serif; font-weight:700; text-align:left; padding:9px 10px; font-size:.82rem; letter-spacing:.03em;}
+  td{border-bottom:1px solid var(--line); padding:9px 10px; vertical-align:top;}
+  tr:nth-child(even) td{background:#FBF7EE;}
+  .read{background:#FFF6E3; border-left:4px solid var(--gold); padding:12px 16px; margin-top:14px; font-size:.95rem;}
+  .read strong{font-family:'Archivo',sans-serif;}
+  .warn{background:#FBEAEA; border-left:4px solid var(--red); padding:12px 16px; margin-top:14px; font-size:.95rem;}
+  .study{background:var(--navy); color:#D7DEEC; padding:28px 22px; margin:44px 0 0; box-shadow:0 24px 50px -28px rgba(13,23,48,.8);}
+  .study h2{font-family:'Archivo',sans-serif; color:#fff; font-size:1.05rem; margin-bottom:10px;}
+  .study h2 span{color:var(--gold);}
+  .study li{margin:6px 0 6px 20px;}
+  .study a{color:var(--gold);}
+  footer{background:var(--navy-deep); color:#93A0BC; text-align:center; font-family:'Archivo',sans-serif; font-size:.8rem; padding:20px;}
+  @media print{.top,.toolbar,footer,.scrollcue,#progress,.shape{display:none;} .hero{min-height:auto; padding:24px 20px;} .reveal{opacity:1; transform:none;} .stagger > *{opacity:1; transform:none;} .plate{box-shadow:none; break-inside:avoid;}}
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto;}
+    .reveal,.stagger > *{opacity:1 !important; transform:none !important; transition:none !important;}
+    .diamond .spin,.ring .spin,.scrollcue::after{animation:none !important;}
+  }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+
+<div class="top">
+  <div class="brand">🥾 The <span>Cheer Hub</span></div>
+  <div class="series">Partner Stunting · Visual Reference 5 of 6</div>
+</div>
+
+<section class="hero">
+  <div class="shape diamond" data-speed="0.25" style="top:18%; left:8%;"><div class="spin"></div></div>
+  <div class="shape ring" data-speed="0.45" style="top:12%; right:6%;"><div class="spin"></div></div>
+  <div class="shape dot" data-speed="0.6" style="top:64%; left:16%;"></div>
+  <div class="shape diamond" data-speed="0.35" style="bottom:14%; right:14%; width:44px; height:44px;"><div class="spin"></div></div>
+  <div class="shape dot" data-speed="0.3" style="top:34%; right:26%;"></div>
+  <div class="hero-inner" id="heroInner">
+    <div class="eyebrow">Figure Brief 5 · Companion to Advanced Curriculum, Chapter 5</div>
+    <h1>🏆 Competing:<br>How Judges Score &amp; How Routines Win</h1>
+    <p>45–60 seconds. Roughly 6–10 scoring moments. Two athletes, nowhere to hide. Judges score in predictable ways — and a winning routine is engineered for exactly that.</p>
+  </div>
+  <div class="scrollcue">Scroll</div>
+</section>
+
+<div class="toolbar">
+  <a class="btn" href="mailto:?subject=Cheer%20Hub%20Visual%20Reference%20%E2%80%94%20Figure%20Brief%205&body=Competing%3A%20How%20Judges%20Score%20%26%20How%20Routines%20Win%20%E2%80%94%20diagrams%20%26%20quick-reference%3A%0A%0Ahttps%3A%2F%2Fbrandondaustin905.github.io%2FCheerHub%2Ffigure-brief-5-competition.html">✉️ Email me this link</a>
+  <button onclick="window.print()">🖨️ Print</button>
+</div>
+
+<main>
+<div class="wrap">
+
+  <div class="orient reveal"><strong>How to read this page:</strong> Plate 5A is the routine blueprint — four beats on a 45-second clock. Plate 5B is the math behind the 90% rule. Plate 5C is where a pair can compete in Canada, and how competition day runs.</div>
+
+  <section class="plate reveal">
+    <div class="plate-tab">FIG 5A</div>
+    <h2>The four-beat routine on a 45-second clock</h2>
+    <div class="body">
+      <div class="timeline"></div>
+      <div class="timelabels"><span>0 s</span><span>~10 s</span><span>~34 s</span><span>45 s</span></div>
+      <div class="beats stagger">
+        <div class="beat"><span class="bn">BEAT 1 · THE OPENING STATEMENT</span><h3>Set the judges' expectations</h3><p>The first skill tells the panel what kind of pair they're watching — and buys (or costs) benefit-of-the-doubt on every close call after it.</p><div class="rule"><strong>The rule:</strong> open with your most impressive GUARANTEED skill. Not your hardest. Those are different skills.</div></div>
+        <div class="beat b2"><span class="bn">BEAT 2 · THE SEQUENCE BLOCK</span><h3>Pack in the difficulty</h3><p>Connected skills — mount into shape into dismount, no resets — read as harder, because connecting removes the rest moments.</p><div class="rule"><strong>The chain rule:</strong> five 95% skills chained only survive about 3 runs in 4 — chains are built from your most boringly reliable skills only. 90% material lives alone, where a wobble stays contained.</div></div>
+        <div class="beat b3"><span class="bn">BEAT 3 · THE PEAK</span><h3>Put the risk where it costs least</h3><p>The hardest skill lands after judges are invested, before fatigue peaks, and late enough that a miss can't shadow the whole routine.</p><div class="rule"><strong>The rule:</strong> ONE reach skill maximum (85–90%), and it travels with a rehearsed escape plan — a save that looks like choreography. A pair with a plan fears the skill less.</div></div>
+        <div class="beat"><span class="bn">BEAT 4 · THE FINISH</span><h3>Own the last image</h3><p>A dismount at your legal max — caught quiet, stuck, and HELD for a full beat. The final picture is what judges carry into the score; a stuck finish cleans up small wobbles in their memory.</p><div class="rule"><strong>The rule:</strong> never end on the peak skill's landing. The last picture should be a chosen picture.</div></div>
+      </div>
+      <div class="read"><strong>Pacing rules:</strong> no dead time (unscored seconds are points on the floor) · build rest INTO held skills — a held extension scores and recovers at the same time · build a 40-second routine for a 45-second cap (adrenaline runs long) · music follows the pair's load rhythm, never fights it.</div>
+    </div>
+  </section>
+
+  <section class="plate reveal">
+    <div class="plate-tab">FIG 5B</div>
+    <h2>Why the 90% rule is math, not caution</h2>
+    <div class="body">
+      <div class="compare stagger">
+        <div class="routine a"><h3>ROUTINE A — 8 solid skills, each hits 95%</h3><p>Most runs: a clean sheet, maybe one wobble. The judges see confidence from the first skill to the held finish.</p></div>
+        <div class="routine b"><h3>ROUTINE B — 10 elite skills, each hits 80%</h3><p>Most runs: about 2 drops. Each drop loses three ways — the deduction, the credit that never landed, and the doubt over everything after it.</p></div>
+      </div>
+      <div class="verdict">ROUTINE A WINS — ALMOST EVERY TIME, ON ALMOST EVERY SHEET</div>
+      <div class="read"><strong>The core truth:</strong> a dropped hard skill costs more than a hit solid skill earns — and with only 6–10 scoring moments, one fall is 10–15% of the entire routine. Pick skills by what they'll score across ten runs, not what they could score on the perfect one.</div>
+    </div>
+  </section>
+
+  <section class="plate reveal">
+    <div class="plate-tab">FIG 5C</div>
+    <h2>Where a pair competes — and how the day runs</h2>
+    <div class="body">
+      <table>
+        <tr><th>Where</th><th>The format</th><th>The pair's job</th></tr>
+        <tr><td>🇨🇦 Partner stunt specialty divisions</td><td>~1 min · pair + spotter · rules VARY by province — get the sheet <strong>in writing</strong></td><td>the most accessible door in Canada — no team needed</td></tr>
+        <tr><td>🇨🇦 Level 6/7 co-ed team routines</td><td>current-season IASF level rules</td><td>a short, guaranteed sequence at a focal point</td></tr>
+        <tr><td>🇺🇸 U.S. college championships</td><td>NCA: 45 s max, one spotter who can't touch skills · UCA: video-entry qualifying, spotter required, no two-base skills</td><td>the standard to study — watch the finals film</td></tr>
+      </table>
+      <div class="flow stagger" style="margin-top:16px;">
+        <div class="flowstep"><div class="n">1</div><div><h3>THE WRITTEN WARM-UP</h3><p>Exact skills, exact order, ending on the opener hit clean. Warm-up fires the patterns — it tests nothing. No "one more" after a clean rep.</p></div></div>
+        <div class="flowstep"><div class="n">2</div><div><h3>THE 30-MINUTE RULE</h3><p>Inside the final window, nothing changes. A late change trades a known 90% for an unknown anything. Never worth it.</p></div></div>
+        <div class="flowstep"><div class="n">3</div><div><h3>NERVES → "SET… DIP"</h3><p>All attention goes to the first call of the first skill. The rhythm the pair protected for months is a portable piece of home — and the swap is practiced in run-throughs, not invented on the day.</p></div></div>
+        <div class="flowstep"><div class="n">4</div><div><h3>AFTERWARD, EVERY TIME</h3><p>Collect the sheet → score check with your video (usually a 20–30 minute window — free points live there) → log the performance like any other practice.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="study reveal">
+    <h2>📚 <span>Want to go deeper?</span></h2>
+    <ul>
+      <li>The full chapter in the Advanced Curriculum — the reasoning behind every rule on this page</li>
+      <li>Competing Partner Stunting in the Premium Masterclass, Lesson 5 — the gym-floor version</li>
+      <li>Division rules: your provincial organization + event producer, in writing, every season · <a href="https://cheercanada.ca">cheercanada.ca</a></li>
+    </ul>
+  </div>
+
+</div>
+</main>
+
+<footer>The Cheer Hub — Partner Stunting Visual Reference · Figure Brief 5 of 6</footer>
+
+<script>
+(function(){
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var bar = document.getElementById('progress');
+  function progress(){
+    var h = document.documentElement;
+    bar.style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight) * 100) + '%';
+  }
+  document.addEventListener('scroll', progress, {passive:true}); progress();
+  if (reduced) return;
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if (e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, {threshold:0.12});
+  document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+  var shapes = document.querySelectorAll('.shape');
+  var heroInner = document.getElementById('heroInner');
+  var ticking = false;
+  function parallax(){
+    var y = window.scrollY;
+    shapes.forEach(function(s){
+      var sp = parseFloat(s.getAttribute('data-speed')) || 0.3;
+      s.style.transform = 'translate3d(0,' + (y * sp) + 'px,0)';
+    });
+    if (heroInner){
+      var t = Math.min(y / 600, 1);
+      heroInner.style.transform = 'rotateX(' + (t * 8) + 'deg) translateY(' + (y * 0.18) + 'px)';
+      heroInner.style.opacity = String(1 - t * 0.8);
+    }
+    ticking = false;
+  }
+  document.addEventListener('scroll', function(){
+    if (!ticking){ requestAnimationFrame(parallax); ticking = true; }
+  }, {passive:true});
+})();
+</script>
+</body>
+</html>
