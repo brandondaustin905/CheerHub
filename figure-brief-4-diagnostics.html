@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Figure Brief 4 — Finding the Real Cause: How to Fix Any Stunt | The Cheer Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#14213D; --navy-deep:#0D1730; --gold:#FCA311; --red:#C1121F;
+    --paper:#FAF9F6; --card:#FFFFFF; --ink:#1B2A4A; --line:#E4E1D8;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--paper); color:var(--ink); font-family:Georgia,'Times New Roman',serif; line-height:1.65; font-size:17px; overflow-x:hidden;}
+  #progress{position:fixed; top:0; left:0; height:4px; width:0%; background:linear-gradient(90deg,var(--gold),#ffd479); z-index:99;}
+  .top{background:var(--navy); color:#fff; padding:14px 20px; display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; position:relative; z-index:5;}
+  .top .brand{font-family:'Archivo',sans-serif; font-weight:900; letter-spacing:.4px;}
+  .top .brand span{color:var(--gold);}
+  .top .series{font-family:'Archivo',sans-serif; font-size:.78rem; color:#C9D2E4; text-transform:uppercase; letter-spacing:.12em;}
+  .hero{position:relative; min-height:92vh; display:flex; align-items:center; justify-content:center; text-align:center;
+        background:radial-gradient(120% 100% at 50% 0%, #1D2E52 0%, var(--navy) 45%, var(--navy-deep) 100%);
+        color:#fff; overflow:hidden; border-bottom:5px solid var(--gold); perspective:900px;}
+  .hero-inner{position:relative; z-index:3; max-width:820px; padding:40px 22px; will-change:transform,opacity;}
+  .eyebrow{font-family:'Archivo',sans-serif; color:var(--gold); font-weight:700; text-transform:uppercase; letter-spacing:.2em; font-size:.78rem;}
+  h1{font-family:'Archivo',sans-serif; font-weight:900; font-size:clamp(2rem,6.5vw,3.6rem); line-height:1.08; margin:14px 0 16px; text-shadow:0 18px 40px rgba(0,0,0,.45);}
+  .hero p{color:#D7DEEC; max-width:56ch; margin:0 auto;}
+  .scrollcue{position:absolute; bottom:26px; left:50%; transform:translateX(-50%); z-index:3; color:var(--gold); font-family:'Archivo',sans-serif; font-size:.75rem; letter-spacing:.2em; text-transform:uppercase;}
+  .scrollcue::after{content:"▾"; display:block; font-size:1.3rem; animation:bob 1.6s ease-in-out infinite;}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(8px)}}
+  .shape{position:absolute; z-index:1; opacity:.5; will-change:transform;}
+  .shape .spin{width:100%; height:100%;}
+  .diamond{width:70px; height:70px;}
+  .diamond .spin{border:2px solid var(--gold); animation:spin3d 14s linear infinite;}
+  .ring{width:130px; height:130px;}
+  .ring .spin{border:2px solid rgba(252,163,17,.5); border-radius:50%; animation:spin3dR 20s linear infinite;}
+  .dot{width:14px; height:14px; background:var(--gold); border-radius:50%; box-shadow:0 0 24px rgba(252,163,17,.8);}
+  @keyframes spin3d{from{transform:rotate(45deg) rotateY(0)}to{transform:rotate(45deg) rotateY(360deg)}}
+  @keyframes spin3dR{from{transform:rotateX(60deg) rotateZ(0)}to{transform:rotateX(60deg) rotateZ(360deg)}}
+  .toolbar{text-align:right; padding:0 20px; max-width:880px; margin:16px auto 0;}
+  .toolbar button, .toolbar .btn{font-family:'Archivo',sans-serif; font-weight:700; background:var(--gold); border:none; color:var(--navy); padding:9px 16px; cursor:pointer; text-decoration:none; display:inline-block; font-size:.9rem; margin-left:8px; box-shadow:0 4px 14px rgba(252,163,17,.35); transition:transform .2s ease, box-shadow .2s ease;}
+  .toolbar button:hover, .toolbar .btn:hover{transform:translateY(-2px); box-shadow:0 8px 20px rgba(252,163,17,.45);}
+  main{padding:34px 20px 10px; perspective:1200px;}
+  .wrap{max-width:880px; margin:0 auto;}
+  .reveal{opacity:0; transform:rotateX(16deg) translateY(70px) scale(.96); transform-origin:50% 100%; transition:opacity .8s ease, transform .9s cubic-bezier(.16,.84,.3,1); will-change:transform,opacity;}
+  .reveal.in{opacity:1; transform:none;}
+  .orient{background:var(--card); border-left:5px solid var(--gold); padding:18px 20px; margin-bottom:44px; box-shadow:0 1px 4px rgba(20,33,61,.08);}
+  .plate{background:var(--card); border:1px solid var(--line); box-shadow:0 24px 50px -28px rgba(20,33,61,.45); margin:0 0 54px; position:relative;}
+  .plate-tab{position:absolute; top:-14px; left:18px; background:var(--gold); color:var(--navy); font-family:'Archivo',sans-serif; font-weight:900; font-size:.82rem; letter-spacing:.1em; padding:5px 14px; box-shadow:0 6px 16px rgba(20,33,61,.25);}
+  .plate h2{font-family:'Archivo',sans-serif; font-weight:700; font-size:1.25rem; padding:28px 22px 4px; color:var(--navy);}
+  .plate .body{padding:12px 22px 24px;}
+  .stagger > *{opacity:0; transform:translateY(24px); transition:opacity .55s ease, transform .55s cubic-bezier(.16,.84,.3,1);}
+  .in .stagger > *{opacity:1; transform:none;}
+  .in .stagger > *:nth-child(1){transition-delay:.05s} .in .stagger > *:nth-child(2){transition-delay:.12s}
+  .in .stagger > *:nth-child(3){transition-delay:.19s} .in .stagger > *:nth-child(4){transition-delay:.26s}
+  .in .stagger > *:nth-child(5){transition-delay:.33s} .in .stagger > *:nth-child(6){transition-delay:.40s}
+  .in .stagger > *:nth-child(7){transition-delay:.47s} .in .stagger > *:nth-child(8){transition-delay:.54s}
+  .in .stagger > *:nth-child(9){transition-delay:.61s} .in .stagger > *:nth-child(10){transition-delay:.68s}
+
+  /* checking-order flow */
+  .flow{display:grid; gap:10px;}
+  .flowstep{display:grid; grid-template-columns:auto 1fr; gap:12px; align-items:start; background:#EEF1F7; border-left:5px solid var(--navy); padding:13px 15px;}
+  .flowstep .n{font-family:'Archivo',sans-serif; font-weight:900; background:var(--navy); color:var(--gold); width:34px; height:34px; display:flex; align-items:center; justify-content:center; font-size:1rem;}
+  .flowstep h3{font-family:'Archivo',sans-serif; color:var(--navy); font-size:1rem; margin-bottom:2px;}
+  .flowstep p{font-size:.93rem;}
+  .flowstep.last{border-left-color:var(--red); background:#FBEAEA;}
+  .flowstep.last .n{background:var(--red); color:#fff;}
+
+  /* fault cards */
+  .faults{display:grid; gap:14px; grid-template-columns:1fr 1fr;}
+  @media (max-width:680px){ .faults{grid-template-columns:1fr;} }
+  .fault{border:1px solid var(--line); border-top:5px solid var(--navy); background:#fff; padding:15px 16px; transition:transform .3s ease, box-shadow .3s ease;}
+  .fault:hover{transform:translateY(-4px); box-shadow:0 16px 30px -18px rgba(20,33,61,.4);}
+  .fault .fn{font-family:'Archivo',sans-serif; font-weight:900; color:var(--gold); background:var(--navy); display:inline-block; padding:2px 10px; font-size:.75rem; letter-spacing:.08em; margin-bottom:8px;}
+  .fault h3{font-family:'Archivo',sans-serif; color:var(--navy); font-size:1rem; margin-bottom:6px;}
+  .fault p{font-size:.9rem; margin-bottom:6px;}
+  .fault .test{background:#FFF6E3; border-left:3px solid var(--gold); padding:7px 10px; font-size:.87rem; margin:8px 0;}
+  .fault .fix{font-size:.9rem;}
+  .fault .fix strong{font-family:'Archivo',sans-serif; color:var(--red);}
+  .fault.danger{border-top-color:var(--red);}
+
+  /* film strip */
+  .strip{display:flex; gap:8px; flex-wrap:wrap; margin:12px 0;}
+  .frame{flex:1 1 90px; min-width:90px; border:2px solid var(--line); background:#EEF1F7; padding:10px 8px; text-align:center; font-size:.8rem; font-family:'Archivo',sans-serif;}
+  .frame .fno{font-weight:900; color:var(--navy); display:block; margin-bottom:4px; font-size:.72rem; letter-spacing:.08em;}
+  .frame.onset{border-color:#2E7D32; background:#E8F3E9;}
+  .frame.crash{border-color:var(--red); background:#FBEAEA;}
+
+  .read{background:#FFF6E3; border-left:4px solid var(--gold); padding:12px 16px; margin-top:14px; font-size:.95rem;}
+  .read strong{font-family:'Archivo',sans-serif;}
+  .warn{background:#FBEAEA; border-left:4px solid var(--red); padding:12px 16px; margin-top:14px; font-size:.95rem;}
+  .study{background:var(--navy); color:#D7DEEC; padding:28px 22px; margin:44px 0 0; box-shadow:0 24px 50px -28px rgba(13,23,48,.8);}
+  .study h2{font-family:'Archivo',sans-serif; color:#fff; font-size:1.05rem; margin-bottom:10px;}
+  .study h2 span{color:var(--gold);}
+  .study li{margin:6px 0 6px 20px;}
+  .study a{color:var(--gold);}
+  footer{background:var(--navy-deep); color:#93A0BC; text-align:center; font-family:'Archivo',sans-serif; font-size:.8rem; padding:20px;}
+  @media print{.top,.toolbar,footer,.scrollcue,#progress,.shape{display:none;} .hero{min-height:auto; padding:24px 20px;} .reveal{opacity:1; transform:none;} .stagger > *{opacity:1; transform:none;} .plate{box-shadow:none; break-inside:avoid;}}
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto;}
+    .reveal,.stagger > *{opacity:1 !important; transform:none !important; transition:none !important;}
+    .diamond .spin,.ring .spin,.scrollcue::after{animation:none !important;}
+  }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+
+<div class="top">
+  <div class="brand">🥾 The <span>Cheer Hub</span></div>
+  <div class="series">Partner Stunting · Visual Reference 4 of 6</div>
+</div>
+
+<section class="hero">
+  <div class="shape diamond" data-speed="0.25" style="top:18%; left:8%;"><div class="spin"></div></div>
+  <div class="shape ring" data-speed="0.45" style="top:12%; right:6%;"><div class="spin"></div></div>
+  <div class="shape dot" data-speed="0.6" style="top:64%; left:16%;"></div>
+  <div class="shape diamond" data-speed="0.35" style="bottom:14%; right:14%; width:44px; height:44px;"><div class="spin"></div></div>
+  <div class="shape dot" data-speed="0.3" style="top:34%; right:26%;"></div>
+  <div class="hero-inner" id="heroInner">
+    <div class="eyebrow">Figure Brief 4 · Companion to Advanced Curriculum, Chapter 4</div>
+    <h1>🔍 Finding the Real Cause:<br>How to Fix Any Stunt</h1>
+    <p>Repping a mistake harder doesn't wear it down — it wears it in. Diagnose before you drill. Here's the method, and the ten faults every pair meets.</p>
+  </div>
+  <div class="scrollcue">Scroll</div>
+</section>
+
+<div class="toolbar">
+  <a class="btn" href="mailto:?subject=Cheer%20Hub%20Visual%20Reference%20%E2%80%94%20Figure%20Brief%204&body=Finding%20the%20Real%20Cause%3A%20How%20to%20Fix%20Any%20Stunt%20%E2%80%94%20diagrams%20%26%20quick-reference%3A%0A%0Ahttps%3A%2F%2Fbrandondaustin905.github.io%2FCheerHub%2Ffigure-brief-4-diagnostics.html">✉️ Email me this link</a>
+  <button onclick="window.print()">🖨️ Print</button>
+</div>
+
+<main>
+<div class="wrap">
+
+  <div class="orient reveal"><strong>How to read this page:</strong> Plate 4A is the method — run it on any problem. Plate 4B is the ten most common faults, each with the quick test that finds the real cause. Plate 4C shows where in the video the cause actually lives.</div>
+
+  <section class="plate reveal">
+    <div class="plate-tab">FIG 4A</div>
+    <h2>The checking order — tightness → timing → stack → strength</h2>
+    <div class="body">
+      <div class="flow stagger">
+        <div class="flowstep"><div class="n">1</div><div><h3>FILM TWO ANGLES, FREEZE AT THE START</h3><p>Side view = forward-back problems. Front view = side-to-side. Then scrub backward to the FIRST frame where something changed — the cause lives there, not at the crash.</p></div></div>
+        <div class="flowstep"><div class="n">2</div><div><h3>CHECK TIGHTNESS FIRST</h3><p>Is she one solid piece? Cheapest thing to check — and a loose flyer imitates every other problem: weak, off-balance, and bad timing all at once.</p></div></div>
+        <div class="flowstep"><div class="n">3</div><div><h3>THEN TIMING</h3><p>Slow-motion: does her jump finish exactly as his drive peaks? A gap there makes strong pairs feel weak and causes travel that looks like a balance problem.</p></div></div>
+        <div class="flowstep"><div class="n">4</div><div><h3>THEN THE STACK</h3><p>Freeze-frame: is her weight over his hands? Are his hands over his feet? These are the true alignment problems.</p></div></div>
+        <div class="flowstep last"><div class="n">5</div><div><h3>STRENGTH — LAST, ALWAYS</h3><p>Blamed first, guilty least often, and the only one you can't fix today. You only get to blame strength after the other three are proven clean.</p></div></div>
+        <div class="flowstep"><div class="n">✓</div><div><h3>CHANGE ONE THING → FAIR REPS → RETEST → WRITE IT DOWN</h3><p>Change three things and you've learned nothing — you don't know which one worked.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="plate reveal">
+    <div class="plate-tab">FIG 4B</div>
+    <h2>The ten faults — what's really happening, and the quick test</h2>
+    <div class="body">
+      <div class="faults stagger">
+        <div class="fault"><span class="fn">FAULT 1</span><h3>The stunt drifts backward</h3><p>Her weight has moved behind centre — heels, or a flared-rib arch that shifts her upper body back. Gravity pries at him non-stop.</p><div class="test">🧪 Side view, freeze: hips behind ankles = her. Her line clean but the whole tower leans = his hands.</div><div class="fix"><strong>Fix the weight, not his arms:</strong> "ribs to hips" + "toes heavy" (her) · "hands over your toes" (him).</div></div>
+        <div class="fault"><span class="fn">FAULT 2</span><h3>The extension slowly sinks</h3><p>Elbows never truly locked, the shrug collapsing with fatigue, or her squeeze fading so she sits into his grip.</p><div class="test">🧪 Sinks immediately = never locked (him). Sinks at 4–5 s = fatigue, or her ribs flaring — watch that moment.</div><div class="fix"><strong>Fix:</strong> lockout holds + honest pressing numbers (him) · longer hollows + "squeeze tall" mid-hold (her).</div></div>
+        <div class="fault"><span class="fn">FAULT 3</span><h3>The flyer travels on tosses</h3><p>Once she leaves his hands, her path is already decided — travel is ALWAYS a launch problem: broken shape, angled push, or a late jump.</p><div class="test">🧪 Shape breaks = her. Same direction every rep = his push angle (check his chest in the dip). Direction varies = timing.</div><div class="fix"><strong>Fix:</strong> straight-rides only · the wall drill (him) · loads on counts.</div></div>
+        <div class="fault"><span class="fn">FAULT 4</span><h3>The heavy cradle</h3><p>The slow-down got crammed into an instant: caught too low, stiff arms and knees, or she opened her shape early and landed loose.</p><div class="test">🧪 Ears first — loud IS hard. Then his knees at contact. Then her hips against the peak.</div><div class="fix"><strong>Fix:</strong> "meet her high, ride it down" from prep height first (him) · "hold your shape till hands" (her).</div></div>
+        <div class="fault"><span class="fn">FAULT 5</span><h3>The wobbly liberty</h3><p>The muscle on the side of her standing hip keeps her pelvis level — if it's weak, the hip drops, weight slides, and the wobble loop begins. Or his feet are frozen.</p><div class="test">🧪 THE GROUND TEST: one leg, floor, dead still, 20 seconds. Fails = her conditioning. Passes = film his feet.</div><div class="fix"><strong>Fix:</strong> the balance ladder (her) · "quiet hands, busy feet" (him). More wobbling liberties just practice the wobble.</div></div>
+        <div class="fault"><span class="fn">FAULT 6</span><h3>The heel stretch dumps sideways</h3><p>She's chasing the lifted leg past what her strength can control, shifting weight off the standing column. Worse if he follows the lean — following teaches leaning.</p><div class="test">🧪 THE GROUND GATE: 15-second hold on the floor, that leg. Fails = the stunt was never the problem.</div><div class="fix"><strong>Fix:</strong> cap the air shape at ~80% of her ground range and grow it with strength-at-range work.</div></div>
+        <div class="fault"><span class="fn">FAULT 7</span><h3>Everything feels heavy</h3><p>Her jump finishes AFTER his drive peaks — she lands on his power instead of adding to it. The pair works double and everyone blames strength. It was never strength.</p><div class="test">🧪 Slow-mo, side view: her push should hand off to his arms in one smooth motion. A visible gap = timing.</div><div class="fix"><strong>Fix:</strong> counts out loud, loads-to-sponge volume. Nearly 100% fix rate for pairs who do the boring work.</div></div>
+        <div class="fault"><span class="fn">FAULT 8</span><h3>The base's wrists hurt</h3><p>Weight hanging on bent-back wrists instead of flat, stacked ones — or a volume spike his wrists couldn't keep up with.</p><div class="test">🧪 Look at his grip under a held prep. Bent wrists = mechanics. Flat but painful = check the log for a spike.</div><div class="fix"><strong>Fix:</strong> "punch the ceiling," daily wrist care, cut volume until pain-free. <strong>Pain that lingers → professional. No hero weeks.</strong></div></div>
+        <div class="fault danger"><span class="fn">FAULT 9</span><h3>Fear after a fall</h3><p>Her body is protecting her: bracing, hesitating, over-gripping — which makes the stunt worse, which "proves" the fear right. It feeds itself.</p><div class="test">🧪 You don't test — you notice. She goes quiet, hesitates on "set," starts "forgetting" the skill. QUIET IS FEAR.</div><div class="fix"><strong>Fix:</strong> drop TWO stages, rebuild with full spotting — fast guaranteed wins convince the nervous system. Talk the fall through. The timeline belongs to her. <strong>Never force the rep.</strong></div></div>
+        <div class="fault"><span class="fn">FAULT 10</span><h3>The full-up that hits sometimes</h3><p>A twist on an unstable foundation: she starts it with her head, his release timing varies, or the toss is too low so every tiny error gets magnified.</p><div class="test">🧪 Several reps, two angles: head whips early = her. Height varies = his toss (test it plain, no twist). Identical but landings vary = his hands.</div><div class="fix"><strong>Fix:</strong> rebuild from the half-up, a quarter turn at a time. "Grow first, then turn."</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="plate reveal">
+    <div class="plate-tab">FIG 4C</div>
+    <h2>Freeze at the start, not the crash</h2>
+    <div class="body">
+      <div class="strip stagger">
+        <div class="frame"><span class="fno">FRAME 1</span>clean</div>
+        <div class="frame"><span class="fno">FRAME 2</span>clean</div>
+        <div class="frame onset"><span class="fno">FRAME 3 ✅</span>ribs flare —<br><strong>the cause lives here</strong></div>
+        <div class="frame"><span class="fno">FRAME 4</span>lean visible —<br>everyone corrects here</div>
+        <div class="frame crash"><span class="fno">FRAME 5 ❌</span>the fall —<br>what everyone watches</div>
+      </div>
+      <div class="read"><strong>The habit:</strong> scrub backward from the crash to the first frame where something changed. That frame is your answer — everything after it is just consequences.</div>
+      <div class="warn"><strong>🛡 The culture that makes all of this work:</strong> faults are information, not accusations. Blame athletes for problems and they stop reporting them — no more down-calls, no more "that felt off," no more honest logs. The best fix-it culture and the best safety culture are the same culture.</div>
+    </div>
+  </section>
+
+  <div class="study reveal">
+    <h2>📚 <span>Want to go deeper?</span></h2>
+    <ul>
+      <li>The full chapter in the Advanced Curriculum — every fault explained top to bottom, plus the beyond-the-list method</li>
+      <li>The Troubleshooting Clinic in the Premium Masterclass, Lesson 4 — the gym-floor version of this page</li>
+      <li>The science of technique behind Faults 1–4: Figure Brief 1</li>
+    </ul>
+  </div>
+
+</div>
+</main>
+
+<footer>The Cheer Hub — Partner Stunting Visual Reference · Figure Brief 4 of 6</footer>
+
+<script>
+(function(){
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var bar = document.getElementById('progress');
+  function progress(){
+    var h = document.documentElement;
+    bar.style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight) * 100) + '%';
+  }
+  document.addEventListener('scroll', progress, {passive:true}); progress();
+  if (reduced) return;
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if (e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, {threshold:0.12});
+  document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+  var shapes = document.querySelectorAll('.shape');
+  var heroInner = document.getElementById('heroInner');
+  var ticking = false;
+  function parallax(){
+    var y = window.scrollY;
+    shapes.forEach(function(s){
+      var sp = parseFloat(s.getAttribute('data-speed')) || 0.3;
+      s.style.transform = 'translate3d(0,' + (y * sp) + 'px,0)';
+    });
+    if (heroInner){
+      var t = Math.min(y / 600, 1);
+      heroInner.style.transform = 'rotateX(' + (t * 8) + 'deg) translateY(' + (y * 0.18) + 'px)';
+      heroInner.style.opacity = String(1 - t * 0.8);
+    }
+    ticking = false;
+  }
+  document.addEventListener('scroll', function(){
+    if (!ticking){ requestAnimationFrame(parallax); ticking = true; }
+  }, {passive:true});
+})();
+</script>
+</body>
+</html>
