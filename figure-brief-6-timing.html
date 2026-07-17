@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Figure Brief 6 — Timing & Communication: Moving as One | The Cheer Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#14213D; --navy-deep:#0D1730; --gold:#FCA311; --red:#C1121F;
+    --paper:#FAF9F6; --card:#FFFFFF; --ink:#1B2A4A; --line:#E4E1D8;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--paper); color:var(--ink); font-family:Georgia,'Times New Roman',serif; line-height:1.65; font-size:17px; overflow-x:hidden;}
+  #progress{position:fixed; top:0; left:0; height:4px; width:0%; background:linear-gradient(90deg,var(--gold),#ffd479); z-index:99;}
+  .top{background:var(--navy); color:#fff; padding:14px 20px; display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; position:relative; z-index:5;}
+  .top .brand{font-family:'Archivo',sans-serif; font-weight:900; letter-spacing:.4px;}
+  .top .brand span{color:var(--gold);}
+  .top .series{font-family:'Archivo',sans-serif; font-size:.78rem; color:#C9D2E4; text-transform:uppercase; letter-spacing:.12em;}
+  .hero{position:relative; min-height:92vh; display:flex; align-items:center; justify-content:center; text-align:center;
+        background:radial-gradient(120% 100% at 50% 0%, #1D2E52 0%, var(--navy) 45%, var(--navy-deep) 100%);
+        color:#fff; overflow:hidden; border-bottom:5px solid var(--gold); perspective:900px;}
+  .hero-inner{position:relative; z-index:3; max-width:820px; padding:40px 22px; will-change:transform,opacity;}
+  .eyebrow{font-family:'Archivo',sans-serif; color:var(--gold); font-weight:700; text-transform:uppercase; letter-spacing:.2em; font-size:.78rem;}
+  h1{font-family:'Archivo',sans-serif; font-weight:900; font-size:clamp(2rem,6.5vw,3.6rem); line-height:1.08; margin:14px 0 16px; text-shadow:0 18px 40px rgba(0,0,0,.45);}
+  .hero p{color:#D7DEEC; max-width:56ch; margin:0 auto;}
+  .scrollcue{position:absolute; bottom:26px; left:50%; transform:translateX(-50%); z-index:3; color:var(--gold); font-family:'Archivo',sans-serif; font-size:.75rem; letter-spacing:.2em; text-transform:uppercase;}
+  .scrollcue::after{content:"▾"; display:block; font-size:1.3rem; animation:bob 1.6s ease-in-out infinite;}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(8px)}}
+  .shape{position:absolute; z-index:1; opacity:.5; will-change:transform;}
+  .shape .spin{width:100%; height:100%;}
+  .diamond{width:70px; height:70px;}
+  .diamond .spin{border:2px solid var(--gold); animation:spin3d 14s linear infinite;}
+  .ring{width:130px; height:130px;}
+  .ring .spin{border:2px solid rgba(252,163,17,.5); border-radius:50%; animation:spin3dR 20s linear infinite;}
+  .dot{width:14px; height:14px; background:var(--gold); border-radius:50%; box-shadow:0 0 24px rgba(252,163,17,.8);}
+  @keyframes spin3d{from{transform:rotate(45deg) rotateY(0)}to{transform:rotate(45deg) rotateY(360deg)}}
+  @keyframes spin3dR{from{transform:rotateX(60deg) rotateZ(0)}to{transform:rotateX(60deg) rotateZ(360deg)}}
+  .toolbar{text-align:right; padding:0 20px; max-width:880px; margin:16px auto 0;}
+  .toolbar button, .toolbar .btn{font-family:'Archivo',sans-serif; font-weight:700; background:var(--gold); border:none; color:var(--navy); padding:9px 16px; cursor:pointer; text-decoration:none; display:inline-block; font-size:.9rem; margin-left:8px; box-shadow:0 4px 14px rgba(252,163,17,.35); transition:transform .2s ease, box-shadow .2s ease;}
+  .toolbar button:hover, .toolbar .btn:hover{transform:translateY(-2px); box-shadow:0 8px 20px rgba(252,163,17,.45);}
+  main{padding:34px 20px 10px; perspective:1200px;}
+  .wrap{max-width:880px; margin:0 auto;}
+  .reveal{opacity:0; transform:rotateX(16deg) translateY(70px) scale(.96); transform-origin:50% 100%; transition:opacity .8s ease, transform .9s cubic-bezier(.16,.84,.3,1); will-change:transform,opacity;}
+  .reveal.in{opacity:1; transform:none;}
+  .orient{background:var(--card); border-left:5px solid var(--gold); padding:18px 20px; margin-bottom:44px; box-shadow:0 1px 4px rgba(20,33,61,.08);}
+  .plate{background:var(--card); border:1px solid var(--line); box-shadow:0 24px 50px -28px rgba(20,33,61,.45); margin:0 0 54px; position:relative;}
+  .plate-tab{position:absolute; top:-14px; left:18px; background:var(--gold); color:var(--navy); font-family:'Archivo',sans-serif; font-weight:900; font-size:.82rem; letter-spacing:.1em; padding:5px 14px; box-shadow:0 6px 16px rgba(20,33,61,.25);}
+  .plate h2{font-family:'Archivo',sans-serif; font-weight:700; font-size:1.25rem; padding:28px 22px 4px; color:var(--navy);}
+  .plate .body{padding:12px 22px 24px;}
+  .stagger > *{opacity:0; transform:translateY(24px); transition:opacity .55s ease, transform .55s cubic-bezier(.16,.84,.3,1);}
+  .in .stagger > *{opacity:1; transform:none;}
+  .in .stagger > *:nth-child(1){transition-delay:.05s} .in .stagger > *:nth-child(2){transition-delay:.13s}
+  .in .stagger > *:nth-child(3){transition-delay:.21s} .in .stagger > *:nth-child(4){transition-delay:.29s}
+  .in .stagger > *:nth-child(5){transition-delay:.37s} .in .stagger > *:nth-child(6){transition-delay:.45s}
+
+  /* count system */
+  .countbar{height:10px; background:linear-gradient(90deg,var(--gold) 0 20%, #e2b45f 20% 40%, var(--navy) 40% 60%, var(--red) 60% 80%, var(--gold) 80% 100%); margin:14px 0 4px;}
+  .counts{display:grid; gap:12px;}
+  .count{border:1px solid var(--line); border-left:6px solid var(--gold); background:#FBF7EE; padding:14px 16px; transition:transform .3s ease, box-shadow .3s ease;}
+  .count:hover{transform:translateY(-4px); box-shadow:0 16px 30px -18px rgba(20,33,61,.4);}
+  .count .word{font-family:'Archivo',sans-serif; font-weight:900; color:var(--gold); background:var(--navy); display:inline-block; padding:3px 12px; font-size:.95rem; letter-spacing:.1em; margin-bottom:8px;}
+  .count .roles{display:grid; gap:6px; font-size:.92rem;}
+  .count .roles div strong{font-family:'Archivo',sans-serif; color:var(--navy);}
+  .count.hit{border-left-color:var(--red);}
+
+  /* drills */
+  .drills{display:grid; gap:14px;}
+  .drill{border:1px solid var(--line); border-top:5px solid var(--gold); padding:16px 18px; background:#FBF7EE; transition:transform .3s ease, box-shadow .3s ease;}
+  .drill:hover{transform:translateY(-4px); box-shadow:0 16px 30px -18px rgba(20,33,61,.4);}
+  .drill h3{font-family:'Archivo',sans-serif; color:var(--navy); font-size:1.05rem; margin-bottom:4px;}
+  .drill p{font-size:.93rem;}
+  .drill .pass{background:#E8F3E9; border-left:4px solid #2E7D32; padding:8px 12px; margin-top:8px; font-size:.88rem;}
+  .drill .pass strong{font-family:'Archivo',sans-serif; color:var(--navy);}
+
+  /* comms */
+  .calls{display:grid; gap:12px; grid-template-columns:1fr 1fr 1fr;}
+  @media (max-width:680px){ .calls{grid-template-columns:1fr;} }
+  .call{border:2px solid var(--line); padding:14px; text-align:center;}
+  .call .cw{font-family:'Archivo',sans-serif; font-weight:900; font-size:1.2rem; display:block; margin-bottom:6px;}
+  .call p{font-size:.88rem; text-align:left;}
+  .call.down{border-color:var(--red); background:#FBEAEA;}
+  .call.down .cw{color:var(--red);}
+  .call.hold{border-color:var(--navy); background:#EEF1F7;}
+  .call.hold .cw{color:var(--navy);}
+  .call.check{border-color:var(--gold); background:#FFF6E3;}
+  .call.check .cw{color:#9A6607;}
+
+  .read{background:#FFF6E3; border-left:4px solid var(--gold); padding:12px 16px; margin-top:14px; font-size:.95rem;}
+  .read strong{font-family:'Archivo',sans-serif;}
+  .warn{background:#FBEAEA; border-left:4px solid var(--red); padding:12px 16px; margin-top:14px; font-size:.95rem;}
+  .quote{background:var(--navy); color:#FAF9F6; padding:18px 20px; font-size:1.05rem; font-style:italic; margin-top:14px; border-left:6px solid var(--gold);}
+  .study{background:var(--navy); color:#D7DEEC; padding:28px 22px; margin:44px 0 0; box-shadow:0 24px 50px -28px rgba(13,23,48,.8);}
+  .study h2{font-family:'Archivo',sans-serif; color:#fff; font-size:1.05rem; margin-bottom:10px;}
+  .study h2 span{color:var(--gold);}
+  .study li{margin:6px 0 6px 20px;}
+  footer{background:var(--navy-deep); color:#93A0BC; text-align:center; font-family:'Archivo',sans-serif; font-size:.8rem; padding:20px;}
+  @media print{.top,.toolbar,footer,.scrollcue,#progress,.shape{display:none;} .hero{min-height:auto; padding:24px 20px;} .reveal{opacity:1; transform:none;} .stagger > *{opacity:1; transform:none;} .plate{box-shadow:none; break-inside:avoid;}}
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto;}
+    .reveal,.stagger > *{opacity:1 !important; transform:none !important; transition:none !important;}
+    .diamond .spin,.ring .spin,.scrollcue::after{animation:none !important;}
+  }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+
+<div class="top">
+  <div class="brand">🥾 The <span>Cheer Hub</span></div>
+  <div class="series">Partner Stunting · Visual Reference 6 of 6</div>
+</div>
+
+<section class="hero">
+  <div class="shape diamond" data-speed="0.25" style="top:18%; left:8%;"><div class="spin"></div></div>
+  <div class="shape ring" data-speed="0.45" style="top:12%; right:6%;"><div class="spin"></div></div>
+  <div class="shape dot" data-speed="0.6" style="top:64%; left:16%;"></div>
+  <div class="shape diamond" data-speed="0.35" style="bottom:14%; right:14%; width:44px; height:44px;"><div class="spin"></div></div>
+  <div class="shape dot" data-speed="0.3" style="top:34%; right:26%;"></div>
+  <div class="hero-inner" id="heroInner">
+    <div class="eyebrow">Figure Brief 6 · Companion to Advanced Curriculum, Chapter 6</div>
+    <h1>⏱ Timing &amp; Communication:<br>Moving as One</h1>
+    <p>Timing is the foundation of successful stunting. When base and flyer move as one unified rhythm, magic happens — and the magic is trainable.</p>
+  </div>
+  <div class="scrollcue">Scroll</div>
+</section>
+
+<div class="toolbar">
+  <a class="btn" href="mailto:?subject=Cheer%20Hub%20Visual%20Reference%20%E2%80%94%20Figure%20Brief%206&body=Timing%20%26%20Communication%3A%20Moving%20as%20One%20%E2%80%94%20diagrams%20%26%20quick-reference%3A%0A%0Ahttps%3A%2F%2Fbrandondaustin905.github.io%2FCheerHub%2Ffigure-brief-6-timing.html">✉️ Email me this link</a>
+  <button onclick="window.print()">🖨️ Print</button>
+</div>
+
+<main>
+<div class="wrap">
+
+  <div class="orient reveal"><strong>How to read this page:</strong> Plate 6A is the count system — the pair's shared clock, count by count. Plate 6B is the three drills that build perfect synchronization. Plate 6C is how partners talk: before, during, and after every rep.</div>
+
+  <section class="plate reveal">
+    <div class="plate-tab">FIG 6A</div>
+    <h2>The count system — "1 — Up — 2 — pull — Hit"</h2>
+    <div class="body">
+      <div class="countbar"></div>
+      <div class="counts stagger">
+        <div class="count"><span class="word">"1"</span><div class="roles"><div><strong>Both:</strong> SET. Grips confirmed, breath in, everything still — the next four counts never start from chaos.</div></div></div>
+        <div class="count"><span class="word">"UP"</span><div class="roles"><div><strong>Flyer:</strong> steps and loads in.</div><div><strong>Base:</strong> hands take her weight. From here, both athletes share one clock.</div></div></div>
+        <div class="count"><span class="word">"2"</span><div class="roles"><div><strong>Both:</strong> THE DIP — his quick shallow bend and her loading bend happen as ONE motion. Two separate dips = two separate stunts.</div></div></div>
+        <div class="count"><span class="word">"PULL"</span><div class="roles"><div><strong>Base:</strong> drives up through the legs.</div><div><strong>Flyer:</strong> jumps and pulls tall at the exact same instant — forces adding, not colliding.</div></div></div>
+        <div class="count hit"><span class="word">"HIT"</span><div class="roles"><div><strong>Both:</strong> lockout, squeeze, stillness. The count ends at the top of the STILLNESS, not the top of the motion.</div></div></div>
+      </div>
+      <div class="warn"><strong>The one unbreakable rule:</strong> the rhythm never changes. Same words, same speed, every rep, all season — the call IS the pair's shared clock. (Different words at your gym? Fine. The words matter less than the constancy.)</div>
+      <div class="read"><strong>Why timing beats strength:</strong> when his drive and her jump peak together, their power ADDS — she feels light. When her jump lands late, she lands ON his power instead — and a strong pair suddenly "feels weak." It was never strength.</div>
+    </div>
+  </section>
+
+  <section class="plate reveal">
+    <div class="plate-tab">FIG 6B</div>
+    <h2>Building rhythm together — three proven drills</h2>
+    <div class="body">
+      <div class="drills stagger">
+        <div class="drill"><h3>🙈 The Blind Count Drill</h3><p>Both partners close their eyes and sync the dip on the count — ground dips and shoulder-height loads only, spotter present. Closing the eyes forces the pair onto the two channels that actually matter at height: the rhythm in their ears and the pressure in their hands and feet.</p><div class="pass"><strong>You've passed when:</strong> ten eyes-closed dips in a row land on the same beat — and both partners can FEEL when one was off.</div></div>
+        <div class="drill"><h3>🎵 The Metronome Drill</h3><p>Set a metronome to 60–80 BPM and dip on every beat. The metronome is an honesty machine — it never speeds up when you're excited or drags when you're tired, which is exactly what human counting does without noticing.</p><div class="pass"><strong>You've passed when:</strong> the coach can't tell rep 1 from rep 10.</div></div>
+        <div class="drill"><h3>🎥 Film &amp; Review</h3><p>Record your stunts, watch in slow motion TOGETHER, and count out loud over the footage. Find the seam — the exact frame where her jump meets his drive. One continuous motion = clean; a visible hitch = the timing gap you couldn't feel at full speed.</p><div class="pass"><strong>You've passed when:</strong> the pair spots its own timing errors before the coach does.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="plate reveal">
+    <div class="plate-tab">FIG 6C</div>
+    <h2>How partners talk — before, during, after</h2>
+    <div class="body">
+      <div class="read" style="margin-top:0;"><strong>BEFORE the rep:</strong> name the skill, name the exit — "Extension, cradle down." Two seconds that prevent two athletes doing two different stunts. Changes get said BEFORE "1," never invented mid-air.</div>
+      <div class="calls stagger" style="margin-top:14px;">
+        <div class="call down"><span class="cw">"DOWN"</span><p>Anyone can call any stunt down, any time — honoured instantly, never argued. An athlete afraid to say "I'm off" hides exactly the signal everyone needs.</p></div>
+        <div class="call hold"><span class="cw">"HOLD"</span><p>Freeze and squeeze — the base is fixing something. The flyer goes statue-mode: stay tight, change nothing.</p></div>
+        <div class="call check"><span class="cw">"CHECK"</span><p>Something feels off but isn't failing: re-squeeze, re-stack, finish the rep.</p></div>
+      </div>
+      <div class="read"><strong>AFTER the rep — the 30-second debrief:</strong> What did you feel? What drifted? Who felt it first? Reps teach the body; debriefs teach the partnership.</div>
+      <div class="quote">"The flyer trusts what she feels, not what she sees. Make her feel your rhythm."</div>
+      <div class="warn"><strong>How trust actually works:</strong> every identical rep is a promise kept — enough of them and her body stops bracing for surprises. What breaks it: surprises, and above all an ignored down-call. How it's repaired: not with speeches — with fast, identical, guaranteed wins lower on the ladder, and the ignored down-call made right out loud first.</div>
+    </div>
+  </section>
+
+  <div class="study reveal">
+    <h2>📚 <span>Want to go deeper?</span></h2>
+    <ul>
+      <li>The full chapter in the Advanced Curriculum — every count, every drill, and the trust-repair plan</li>
+      <li>Chemistry's three trainable connections: Figure Brief 2</li>
+      <li>What to do when timing breaks — "everything feels heavy": Figure Brief 4, Fault 7</li>
+    </ul>
+  </div>
+
+</div>
+</main>
+
+<footer>The Cheer Hub — Partner Stunting Visual Reference · Figure Brief 6 of 6</footer>
+
+<script>
+(function(){
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var bar = document.getElementById('progress');
+  function progress(){
+    var h = document.documentElement;
+    bar.style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight) * 100) + '%';
+  }
+  document.addEventListener('scroll', progress, {passive:true}); progress();
+  if (reduced) return;
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if (e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, {threshold:0.12});
+  document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+  var shapes = document.querySelectorAll('.shape');
+  var heroInner = document.getElementById('heroInner');
+  var ticking = false;
+  function parallax(){
+    var y = window.scrollY;
+    shapes.forEach(function(s){
+      var sp = parseFloat(s.getAttribute('data-speed')) || 0.3;
+      s.style.transform = 'translate3d(0,' + (y * sp) + 'px,0)';
+    });
+    if (heroInner){
+      var t = Math.min(y / 600, 1);
+      heroInner.style.transform = 'rotateX(' + (t * 8) + 'deg) translateY(' + (y * 0.18) + 'px)';
+      heroInner.style.opacity = String(1 - t * 0.8);
+    }
+    ticking = false;
+  }
+  document.addEventListener('scroll', function(){
+    if (!ticking){ requestAnimationFrame(parallax); ticking = true; }
+  }, {passive:true});
+})();
+</script>
+</body>
+</html>
