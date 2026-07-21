@@ -112,6 +112,18 @@ textarea{min-height:88px;resize:vertical;}
   font-weight:800;font-size:.78rem;padding:9px 14px;cursor:pointer;transition:all .18s;}
 .fchip.on{border-color:var(--red);background:linear-gradient(120deg,#fff1f2,#ffe1e3);box-shadow:0 4px 14px rgba(193,18,31,.25);}
 
+/* athlete switcher */
+.athletes{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:6px;}
+.atab{display:inline-flex;align-items:center;gap:7px;border:2px solid rgba(20,33,61,.14);border-radius:999px;
+  background:#fff;color:var(--navy);font-family:'Archivo',sans-serif;font-weight:800;font-size:.84rem;
+  padding:10px 16px;cursor:pointer;transition:all .18s;}
+.atab:hover{transform:translateY(-2px);border-color:var(--gold);}
+.atab.on{background:linear-gradient(120deg,var(--gold),#ffce6b);border-color:var(--gold);color:var(--navy);
+  box-shadow:0 6px 18px rgba(252,163,17,.4);}
+.atab .acount{font-size:.7rem;opacity:.7;font-weight:700;}
+.atab.add{border-style:dashed;color:var(--soft);}
+.atab.add:hover{color:var(--navy);}
+
 .photo-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
 .photo-prev{width:74px;height:74px;border-radius:12px;object-fit:cover;border:2px solid var(--gold);display:none;}
 .photo-prev.show{display:block;}
@@ -275,14 +287,21 @@ footer small{display:block;margin-top:12px;font-size:.8rem;color:rgba(250,249,24
 <section class="panel" id="profilePanel">
   <span class="plate">Make It Yours</span>
   <h2 class="title" id="profileHeading">Who are we cheering for?</h2>
-  <p class="sub">Add your athlete's details and the whole tracker — including the shareable Season Recap card — becomes theirs.</p>
+  <p class="sub">Add your athlete's details and the whole tracker — including the shareable Season Recap card — becomes theirs. Got more than one in the sport? Add them all and switch between them any time.</p>
+
+  <label>Your athletes</label>
+  <div class="athletes" id="athleteTabs"></div>
+
   <div class="grid2">
     <div><label for="pName">Athlete's name</label><input type="text" id="pName" placeholder="Avery" maxlength="30"></div>
     <div><label for="pTeam">Team</label><input type="text" id="pTeam" placeholder="Junior 3 — Storm" maxlength="40"></div>
     <div><label for="pGym">Gym</label><input type="text" id="pGym" placeholder="Northside Cheer Athletics" maxlength="40"></div>
     <div><label for="pSeason">Season</label><input type="text" id="pSeason" placeholder="2026–2027" maxlength="20"></div>
   </div>
-  <div class="btn-row"><button class="btn btn-gold btn-sm" id="saveProfile">✦ Save Details</button></div>
+  <div class="btn-row">
+    <button class="btn btn-gold btn-sm" id="saveProfile">✦ Save Details</button>
+    <button class="btn btn-ghost btn-sm" id="delAthlete">🗑 Remove This Athlete</button>
+  </div>
 </section>
 
 <!-- LOG A WIN -->
@@ -436,23 +455,41 @@ const BADGES_CAT=[
   {type:'growth', n:5, em:'🌱', name:'Growing Strong',  req:'5 growth wins'},
   {type:'mile',   n:3, em:'⭐', name:'Moment Maker',    req:'3 milestones'}
 ];
-let state={profile:{name:'',team:'',gym:'',season:''},wins:[],highlights:{}};
+let STATE={athletes:[],active:null};
 let filter='all', search='', editingId=null, pendingPhoto=null;
 const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+function blankAthlete(name){
+  return {id:'a'+Date.now()+Math.floor(Math.random()*999),
+          profile:{name:name||'',team:'',gym:'',season:''},wins:[],highlights:{}};
+}
+function cur(){
+  let a=STATE.athletes.find(x=>x.id===STATE.active);
+  if(!a){a=STATE.athletes[0];STATE.active=a?a.id:null;}
+  if(!a){a=blankAthlete();STATE.athletes.push(a);STATE.active=a.id;}
+  return a;
+}
 function load(){
   try{
     const raw=JSON.parse(localStorage.getItem(KEY));
-    if(Array.isArray(raw)){state.wins=raw;}           // migrate old format
-    else if(raw&&typeof raw==='object'){
-      state.wins=Array.isArray(raw.wins)?raw.wins:[];
-      state.profile=Object.assign(state.profile,raw.profile||{});
-      state.highlights=raw.highlights||{};
+    if(raw&&Array.isArray(raw.athletes)&&raw.athletes.length){
+      STATE.athletes=raw.athletes;
+      STATE.active=raw.active||raw.athletes[0].id;
+    }else if(Array.isArray(raw)){                       // oldest format: bare wins array
+      const a=blankAthlete();a.wins=raw;
+      STATE.athletes=[a];STATE.active=a.id;
+    }else if(raw&&typeof raw==='object'){               // single-athlete format
+      const a=blankAthlete();
+      a.wins=Array.isArray(raw.wins)?raw.wins:[];
+      a.profile=Object.assign(a.profile,raw.profile||{});
+      a.highlights=raw.highlights||{};
+      STATE.athletes=[a];STATE.active=a.id;
     }
   }catch(e){}
+  cur();
 }
 function save(){
-  try{localStorage.setItem(KEY,JSON.stringify(state));}
+  try{localStorage.setItem(KEY,JSON.stringify(STATE));}
   catch(e){toast('Storage is full — try removing a photo or two');}
 }
 function esc(s){const d=document.createElement('div');d.textContent=s||'';return d.innerHTML;}
@@ -471,8 +508,8 @@ function weekId(dateStr){
   return d.toISOString().slice(0,10);       // Monday of that week
 }
 function streak(){
-  if(!state.wins.length)return 0;
-  const weeks=new Set(state.wins.map(w=>weekId(w.date)));
+  if(!cur().wins.length)return 0;
+  const weeks=new Set(cur().wins.map(w=>weekId(w.date)));
   let cur=weekId(new Date().toISOString().slice(0,10));
   if(!weeks.has(cur)){
     const prev=new Date(cur+'T12:00:00');prev.setDate(prev.getDate()-7);
@@ -490,12 +527,13 @@ function streak(){
 
 /* ================= RENDER ================= */
 function earnedCount(){
-  const total=BADGES_COUNT.filter(b=>state.wins.length>=b.n).length;
-  const cat=BADGES_CAT.filter(b=>state.wins.filter(w=>w.type===b.type).length>=b.n).length;
+  const total=BADGES_COUNT.filter(b=>cur().wins.length>=b.n).length;
+  const cat=BADGES_CAT.filter(b=>cur().wins.filter(w=>w.type===b.type).length>=b.n).length;
   return total+cat;
 }
 function render(){
-  const p=state.profile;
+  renderAthletes();
+  const p=cur().profile;
   /* hero */
   document.getElementById('heroTitle').innerHTML=p.name
     ? esc(p.name)+"'s <span class=\"shimmer-text\">Cheer Wins</span>"
@@ -507,38 +545,38 @@ function render(){
 
   /* stats */
   const nowKey=new Date().toISOString().slice(0,7);
-  document.getElementById('statTotal').textContent=state.wins.length;
-  document.getElementById('statMonth').textContent=state.wins.filter(w=>monthKey(w.date)===nowKey).length;
+  document.getElementById('statTotal').textContent=cur().wins.length;
+  document.getElementById('statMonth').textContent=cur().wins.filter(w=>monthKey(w.date)===nowKey).length;
   document.getElementById('statStreak').textContent=streak();
   document.getElementById('statBadges').textContent=earnedCount();
 
   /* badges */
   const bc=document.getElementById('badgesCount');bc.innerHTML='';
   BADGES_COUNT.forEach(b=>{
-    const won=state.wins.length>=b.n;
+    const won=cur().wins.length>=b.n;
     bc.insertAdjacentHTML('beforeend','<div class="badge'+(won?' won':'')+'"><span class="bem">'+b.em+'</span><div class="badge-name">'+b.name+'</div><div class="breq">'+b.req+'</div></div>');
   });
   const bk=document.getElementById('badgesCat');bk.innerHTML='';
   BADGES_CAT.forEach(b=>{
-    const won=state.wins.filter(w=>w.type===b.type).length>=b.n;
+    const won=cur().wins.filter(w=>w.type===b.type).length>=b.n;
     bk.insertAdjacentHTML('beforeend','<div class="badge'+(won?' won':'')+'"><span class="bem">'+b.em+'</span><div class="badge-name">'+b.name+'</div><div class="breq">'+b.req+'</div></div>');
   });
 
   /* feed */
   const feed=document.getElementById('feed');feed.innerHTML='';
   const q=search.toLowerCase();
-  const list=state.wins
+  const list=cur().wins
     .filter(w=>(filter==='all'||w.type===filter))
     .filter(w=>!q||(w.title+' '+(w.note||'')).toLowerCase().includes(q))
     .slice().sort((a,b)=>b.date.localeCompare(a.date)||b.id-a.id);
   if(!list.length){
-    feed.innerHTML='<div class="empty"><span class="big">📣</span>'+(state.wins.length?'No wins match that search or filter.':'No wins yet. Log the first one above — the season starts now!')+'</div>';
+    feed.innerHTML='<div class="empty"><span class="big">📣</span>'+(cur().wins.length?'No wins match that search or filter.':'No wins yet. Log the first one above — the season starts now!')+'</div>';
     return;
   }
   const groups={};
   list.forEach(w=>{(groups[monthKey(w.date)]=groups[monthKey(w.date)]||[]).push(w);});
   Object.keys(groups).sort().reverse().forEach(k=>{
-    const hl=state.highlights[k]||{};
+    const hl=cur().highlights[k]||{};
     feed.insertAdjacentHTML('beforeend',
       '<div class="month-h">'+monthLabel(k)+'<button class="mh-toggle" data-mk="'+k+'">✎ Month notes</button></div>'+
       '<div class="mh-box" id="mh-'+k+'">'+
@@ -623,12 +661,12 @@ document.getElementById('addBtn').addEventListener('click',e=>{
   if(!title){toast('Give the win a title first ✎');return;}
   const before=earnedCount();
   if(editingId){
-    const w=state.wins.find(x=>x.id===editingId);
+    const w=cur().wins.find(x=>x.id===editingId);
     if(w){w.title=title;w.date=date;w.note=note;w.type=type;w.feel=feel;
       if(pendingPhoto!==null)w.photo=pendingPhoto||undefined;}
     toast('Win updated ✦');
   }else{
-    state.wins.push({id:Date.now(),type,title,date,note,feel,photo:pendingPhoto||undefined});
+    cur().wins.push({id:Date.now(),type,title,date,note,feel,photo:pendingPhoto||undefined});
     celebrate(e.clientX,e.clientY);
     toast(earnedCount()>before?'New badge unlocked! 🎉':'Win added! ✦');
   }
@@ -659,11 +697,11 @@ document.getElementById('feed').addEventListener('click',async e=>{
   if(del){
     const id=Number(del.dataset.del);
     if(!(await askConfirm('Delete this win? This can\'t be undone.','Yes, delete it')))return;
-    state.wins=state.wins.filter(w=>w.id!==id);
+    cur().wins=cur().wins.filter(w=>w.id!==id);
     save();render();toast('Win removed');return;
   }
   if(ed){
-    const w=state.wins.find(x=>x.id===Number(ed.dataset.edit));if(!w)return;
+    const w=cur().wins.find(x=>x.id===Number(ed.dataset.edit));if(!w)return;
     editingId=w.id;
     document.getElementById('winTitle').value=w.title;
     document.getElementById('winDate').value=w.date;
@@ -682,8 +720,8 @@ document.getElementById('feed').addEventListener('click',async e=>{
 document.getElementById('feed').addEventListener('input',e=>{
   const inp=e.target.closest('input[data-mk]');if(!inp)return;
   const k=inp.dataset.mk,f=inp.dataset.mf;
-  state.highlights[k]=state.highlights[k]||{};
-  state.highlights[k][f]=inp.value;
+  cur().highlights[k]=cur().highlights[k]||{};
+  cur().highlights[k][f]=inp.value;
   save();
 });
 
@@ -695,23 +733,73 @@ document.getElementById('filters').addEventListener('click',e=>{
 });
 document.getElementById('searchBox').addEventListener('input',e=>{search=e.target.value;render();});
 
+/* athlete switcher */
+function renderAthletes(){
+  const wrap=document.getElementById('athleteTabs');
+  wrap.innerHTML='';
+  STATE.athletes.forEach((a,i)=>{
+    const nm=a.profile.name||('Athlete '+(i+1));
+    wrap.insertAdjacentHTML('beforeend',
+      '<button class="atab'+(a.id===STATE.active?' on':'')+'" data-aid="'+a.id+'">'+
+      '✦ '+esc(nm)+' <span class="acount">'+a.wins.length+'</span></button>');
+  });
+  wrap.insertAdjacentHTML('beforeend','<button class="atab add" id="addAthlete">＋ Add Athlete</button>');
+  document.getElementById('delAthlete').style.display=STATE.athletes.length>1?'inline-flex':'none';
+}
+document.getElementById('athleteTabs').addEventListener('click',e=>{
+  if(e.target.closest('#addAthlete')){
+    const a=blankAthlete();
+    STATE.athletes.push(a);STATE.active=a.id;
+    save();fillProfile();render();
+    document.getElementById('pName').focus();
+    toast('New athlete added — give them a name ✦');
+    return;
+  }
+  const t=e.target.closest('.atab[data-aid]');if(!t)return;
+  STATE.active=t.dataset.aid;
+  resetForm();save();fillProfile();render();
+  toast('Now showing '+(cur().profile.name||'this athlete')+' ✦');
+});
+document.getElementById('delAthlete').addEventListener('click',async()=>{
+  if(STATE.athletes.length<2)return;
+  const nm=cur().profile.name||'this athlete';
+  if(!(await askConfirm('Remove '+nm+' and all their wins? This can\'t be undone.','Yes, remove')))return;
+  STATE.athletes=STATE.athletes.filter(a=>a.id!==STATE.active);
+  STATE.active=STATE.athletes[0].id;
+  save();fillProfile();render();toast('Athlete removed');
+});
+
 /* profile */
 document.getElementById('saveProfile').addEventListener('click',()=>{
-  state.profile={
+  cur().profile={
     name:document.getElementById('pName').value.trim(),
     team:document.getElementById('pTeam').value.trim(),
     gym:document.getElementById('pGym').value.trim(),
     season:document.getElementById('pSeason').value.trim()
   };
-  save();render();toast('Looking good, '+(state.profile.name||'cheer fam')+' ✦');
+  save();render();toast('Looking good, '+(cur().profile.name||'cheer fam')+' ✦');
 });
 
 /* ================= SEASON RECAP CARD ================= */
+/* older iOS Safari (15 and below) has no ctx.roundRect — add it */
+if(typeof CanvasRenderingContext2D!=='undefined' && !CanvasRenderingContext2D.prototype.roundRect){
+  CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h,r){
+    if(typeof r!=='number')r=(r&&r.length)?r[0]:0;
+    r=Math.min(r,w/2,h/2);
+    this.moveTo(x+r,y);
+    this.arcTo(x+w,y,x+w,y+h,r);
+    this.arcTo(x+w,y+h,x,y+h,r);
+    this.arcTo(x,y+h,x,y,r);
+    this.arcTo(x,y,x+w,y,r);
+    this.closePath();
+    return this;
+  };
+}
 document.getElementById('recapBtn').addEventListener('click',()=>{
   const cv=document.getElementById('recapCanvas');
   const ctx=cv.getContext('2d');
   const W=1080,H=1350;
-  const p=state.profile;
+  const p=cur().profile;
 
   /* background */
   const g=ctx.createLinearGradient(0,0,W,H);
@@ -754,7 +842,7 @@ document.getElementById('recapBtn').addEventListener('click',()=>{
   if(sub)center(sub,395,'800 30px Archivo, Arial','rgba(250,249,246,.8)');
 
   /* stat blocks */
-  const stats=[[String(state.wins.length),'TOTAL WINS'],[String(streak()),'WEEK STREAK'],[String(earnedCount()),'BADGES']];
+  const stats=[[String(cur().wins.length),'TOTAL WINS'],[String(streak()),'WEEK STREAK'],[String(earnedCount()),'BADGES']];
   const bw=300,bh=170,gap=30,x0=(W-(bw*3+gap*2))/2,y0=460;
   stats.forEach((s,i)=>{
     const x=x0+i*(bw+gap);
@@ -770,7 +858,7 @@ document.getElementById('recapBtn').addEventListener('click',()=>{
   /* latest wins */
   center('LATEST WINS',740,'900 34px Archivo, Arial','#FAF9F6');
   ctx.fillStyle='#FCA311';ctx.fillRect(W/2-90,760,180,6);
-  const latest=state.wins.slice().sort((a,b)=>b.date.localeCompare(a.date)).slice(0,4);
+  const latest=cur().wins.slice().sort((a,b)=>b.date.localeCompare(a.date)).slice(0,4);
   ctx.textAlign='left';
   latest.forEach((w,i)=>{
     const y=830+i*105;
@@ -805,7 +893,7 @@ document.getElementById('recapBtn').addEventListener('click',()=>{
 
 /* ================= BACKUP ================= */
 document.getElementById('backupBtn').addEventListener('click',()=>{
-  const blob=new Blob([JSON.stringify({app:'cheerWinsTracker',exported:new Date().toISOString(),...state},null,2)],{type:'application/json'});
+  const blob=new Blob([JSON.stringify({app:'cheerWinsTracker',v:2,exported:new Date().toISOString(),athletes:STATE.athletes,active:STATE.active},null,2)],{type:'application/json'});
   const a=document.createElement('a');
   a.href=URL.createObjectURL(blob);
   a.download='cheer-wins-backup-'+new Date().toISOString().slice(0,10)+'.json';
@@ -819,14 +907,29 @@ document.getElementById('restoreFile').addEventListener('change',ev=>{
   r.onload=async()=>{
     try{
       const data=JSON.parse(r.result);
-      const incoming=Array.isArray(data)?data:data.wins;
-      if(!Array.isArray(incoming))throw 0;
-      if(!(await askConfirm('Restore '+incoming.length+' wins? This replaces what\'s currently saved on this device.','Yes, restore')))return;
-      state.wins=incoming.filter(w=>w&&w.title&&w.date&&TYPES[w.type]);
-      if(!Array.isArray(data)){
-        state.profile=Object.assign({name:'',team:'',gym:'',season:''},data.profile||{});
-        state.highlights=data.highlights||{};
+      let athletes=null;
+      if(data&&Array.isArray(data.athletes)&&data.athletes.length){
+        athletes=data.athletes;
+      }else if(Array.isArray(data)){
+        const a=blankAthlete();a.wins=data;athletes=[a];
+      }else if(data&&Array.isArray(data.wins)){
+        const a=blankAthlete();
+        a.wins=data.wins;
+        a.profile=Object.assign(a.profile,data.profile||{});
+        a.highlights=data.highlights||{};
+        athletes=[a];
       }
+      if(!athletes)throw 0;
+      const total=athletes.reduce((n,a)=>n+(a.wins?a.wins.length:0),0);
+      const who=athletes.length>1?(athletes.length+' athletes, '+total+' wins'):(total+' wins');
+      if(!(await askConfirm('Restore '+who+'? This replaces what\'s currently saved on this device.','Yes, restore')))return;
+      STATE.athletes=athletes.map(a=>({
+        id:a.id||('a'+Date.now()+Math.floor(Math.random()*999)),
+        profile:Object.assign({name:'',team:'',gym:'',season:''},a.profile||{}),
+        wins:(a.wins||[]).filter(w=>w&&w.title&&w.date&&TYPES[w.type]),
+        highlights:a.highlights||{}
+      }));
+      STATE.active=STATE.athletes[0].id;
       save();fillProfile();render();toast('Backup restored ✦');
     }catch(e){toast('That file doesn\'t look like a Cheer Wins backup');}
   };
@@ -889,10 +992,10 @@ window.addEventListener('scroll',()=>{
 
 /* ================= INIT ================= */
 function fillProfile(){
-  document.getElementById('pName').value=state.profile.name||'';
-  document.getElementById('pTeam').value=state.profile.team||'';
-  document.getElementById('pGym').value=state.profile.gym||'';
-  document.getElementById('pSeason').value=state.profile.season||'';
+  document.getElementById('pName').value=cur().profile.name||'';
+  document.getElementById('pTeam').value=cur().profile.team||'';
+  document.getElementById('pGym').value=cur().profile.gym||'';
+  document.getElementById('pSeason').value=cur().profile.season||'';
 }
 document.getElementById('winDate').value=new Date().toISOString().slice(0,10);
 load();fillProfile();render();
